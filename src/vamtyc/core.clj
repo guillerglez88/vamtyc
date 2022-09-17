@@ -1,36 +1,11 @@
 (ns vamtyc.core
-  (:require [io.pedestal.http :as http]))
+  (:require [ring.adapter.jetty :refer [run-jetty]])
+  (:gen-class))
 
-(defn respond-hello
-  [request]
+(defn handler [_request]
   {:status 200
-   :body "Hello World!"})
+   :headers {"Content-Type" "text/plain; charset=UTF-8"}
+   :body "Hello World!\n"})
 
-(def routes
-  #{["/hello" :get `respond-hello]})
-
-(defn start
-  []
-  (-> {::http/routes routes
-       ::http/port 8890
-       ::http/type :jetty
-       ::http/host "0.0.0.0"
-       ::http/join? false}
-      http/create-server
-      http/start))
-
-(defonce server (atom nil))
-
-(defn start-dev []
-  (reset! server (start)))
-
-(defn stop-dev []
-  (http/stop @server))
-
-(defn restart []
-  (stop-dev)
-  (start-dev))
-
-(comment
-  (start-dev)
-  (restart))
+(defn -main [& _args]
+  (run-jetty handler {:port 3000}))
