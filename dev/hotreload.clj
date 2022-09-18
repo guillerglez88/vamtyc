@@ -1,11 +1,13 @@
 (ns hotreload
   (:require [ring.adapter.jetty :refer [run-jetty]]
             [ring.middleware.reload :refer [wrap-reload]]
-            [vamtyc.core :refer [handler]])
+            [vamtyc.core :refer [app]])
   (:gen-class))
 
 (def dev-handler
-  (wrap-reload #'handler))
+  (wrap-reload #'app))
 
 (defn -main [& _args]
-  (run-jetty dev-handler {:port 13000}))
+  (let [port (Integer/parseInt (or (System/getenv "PORT") "3000"))]
+    (run-jetty dev-handler {:port port})
+    (println (str "Running webserver at http://127.0.0.1:" port "/"))))
