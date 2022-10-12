@@ -5,7 +5,7 @@
 (defn simple-body-page [req]
   {:status 200
    :headers {"Content-Type" "text/html"}
-   :body "Hello World"})
+   :body "Hello World!"})
 
 (defn request-example [req]
   {:status 200,
@@ -16,6 +16,4 @@
 (defn hello-name [req]
   {:status 200
    :headers {"Content-Type" "text/html"}
-   :body (-> req
-             (get-in [:query-params "name"] req)
-             ((partial str "Hello ")))})
+   :body (str "Hello " (-> req :query-params (get "name")))})
