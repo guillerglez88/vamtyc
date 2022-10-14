@@ -2,6 +2,12 @@
   (:require [clojure.pprint :as pp]
             [clojure.data.json :as json]))
 
+(defn home-page [req]
+  (def last-req req)
+  {:status 200
+   :headers {"Content-Type" "application/json"}
+   :body (json/write-str {:status :ok})})
+
 (defn simple-body-page [req]
   {:status 200
    :headers {"Content-Type" "text/html"}
