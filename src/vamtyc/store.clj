@@ -57,6 +57,10 @@
   (let [id (java.util.UUID/randomUUID)]
     (sql/insert! ds entity {:id id :resource res})))
 
+(defn update [entity, id, res]
+  (let [uuid (parse-uuid id)]
+    (sql/update! ds entity {:resource res} {:id uuid})))
+
 (comment
   ;; pgsql
   (jdbc/execute! ds ["CREATE TABLE public.person (
@@ -65,7 +69,9 @@
                         CONSTRAINT person_pk PRIMARY KEY (id)
                     );"])
   (jdbc/execute! ds ["SELECT * FROM public.person"])
+  ;; CRUD
   (create :person {:name [{:given "John" :family ["Doe"]}]})
+  (update :person "ab165937-f667-43f1-933a-f491e4cbddbc" {:name [{:given "John" :family ["Smith"]}]})
   ;; utils
   (java.util.UUID/randomUUID)
   ;; jsonb
