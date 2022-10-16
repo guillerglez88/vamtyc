@@ -64,7 +64,7 @@
 (defn delete [resourceType, id]
   (let [uuid (parse-uuid id)
         entity (sql/get-by-id ds resourceType uuid)
-        resKey (keyword (str "person" "/resource"))]
+        resKey (keyword (name resourceType) "resource")]
     (sql/delete! ds resourceType {:id uuid})
     (resKey entity)))
 
@@ -78,13 +78,13 @@
   (jdbc/execute! ds ["SELECT * FROM public.person"])
   ;; CRUD
   (create :person {:name [{:given "John" :family ["Doe"]}]})
-  (update :person "e0292468-cbc7-41a0-8841-c821f9a03abe" {:name [{:given "John" :family ["Smith"]}]})
-  (delete :person "e0292468-cbc7-41a0-8841-c821f9a03abe")
+  (update :person "11b8a511-5c74-4ebc-b105-3495bdec4a5d" {:name [{:given "John" :family ["Smith"]}]})
+  (delete :person "11b8a511-5c74-4ebc-b105-3495bdec4a5d")
   ;; utils
   (java.util.UUID/randomUUID)
   ;; jsonb
   (def pgobjct
     (to-jsonb {:name [{:given "John" :family ["Doe"]}]}))
   (from-jsonb pgobjct)
-  ((keyword (str "person" "/resource")) #:person{:resource {:name [{:given "John"}]}})
+  ((keyword (name :person) "resource") #:person{:resource {:name [{:given "John"}]}})
   )
