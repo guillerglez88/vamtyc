@@ -53,13 +53,20 @@
 
 ;; TODO: implement CURD operations
 
-(defn create [entity, res]
+(defn create [resourceType, res]
   (let [id (java.util.UUID/randomUUID)]
-    (sql/insert! ds entity {:id id :resource res})))
+    (sql/insert! ds resourceType {:id id :resource res})))
 
-(defn update [entity, id, res]
+(defn update [resourceType, id, res]
   (let [uuid (parse-uuid id)]
-    (sql/update! ds entity {:resource res} {:id uuid})))
+    (sql/update! ds resourceType {:resource res} {:id uuid})))
+
+(defn delete [resourceType, id]
+  (let [uuid (parse-uuid id)
+        entity (sql/get-by-id ds resourceType uuid)
+        resKey (keyword (str "person" "/resource"))]
+    (sql/delete! ds resourceType {:id uuid})
+    (resKey entity)))
 
 (comment
   ;; pgsql
@@ -71,11 +78,13 @@
   (jdbc/execute! ds ["SELECT * FROM public.person"])
   ;; CRUD
   (create :person {:name [{:given "John" :family ["Doe"]}]})
-  (update :person "ab165937-f667-43f1-933a-f491e4cbddbc" {:name [{:given "John" :family ["Smith"]}]})
+  (update :person "e0292468-cbc7-41a0-8841-c821f9a03abe" {:name [{:given "John" :family ["Smith"]}]})
+  (delete :person "e0292468-cbc7-41a0-8841-c821f9a03abe")
   ;; utils
   (java.util.UUID/randomUUID)
   ;; jsonb
   (def pgobjct
     (to-jsonb {:name [{:given "John" :family ["Doe"]}]}))
   (from-jsonb pgobjct)
+  ((keyword (str "person" "/resource")) #:person{:resource {:name [{:given "John"}]}})
   )
