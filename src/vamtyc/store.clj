@@ -51,7 +51,17 @@
 
 (def ds (jdbc/get-datasource db))
 
-;; TODO: implement CURD operations
+(defn provision [resourceType]
+  (let [tableName (name resourceType)]
+    (jdbc/execute! ds [(str
+                        "CREATE TABLE public." tableName " (
+                          id uuid NOT NULL,
+                          resource jsonb NULL,
+                          CONSTRAINT " tableName "_pk PRIMARY KEY (id));
+                        CREATE TABLE public." tableName "_history (
+                          id uuid NOT NULL,
+                          resource jsonb NULL,
+                          CONSTRAINT " tableName "_history_pk PRIMARY KEY (id));")])))
 
 (defn create [resourceType, res]
   (let [id (java.util.UUID/randomUUID)]
@@ -70,12 +80,10 @@
 
 (comment
   ;; pgsql
-  (jdbc/execute! ds ["CREATE TABLE public.person (
-                        id uuid NOT NULL,
-                        resource jsonb NULL,
-                        CONSTRAINT person_pk PRIMARY KEY (id)
-                    );"])
   (jdbc/execute! ds ["SELECT * FROM public.person"])
+  ;; provision
+  (provision "person")
+  (provision "country")
   ;; CRUD
   (create :person {:name [{:given "John" :family ["Doe"]}]})
   (update :person "11b8a511-5c74-4ebc-b105-3495bdec4a5d" {:name [{:given "John" :family ["Smith"]}]})
