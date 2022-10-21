@@ -42,14 +42,7 @@
   (read-column-by-index [^org.postgresql.util.PGobject v _2 _3]
     (from-jsonb v)))
 
-(def db {:dbtype "postgresql"
-         :host "localhost"
-         :port 5432
-         :user "postgres"
-         :password "postgres"
-         :dbname "vamtyc"})
-
-(def ds (jdbc/get-datasource db))
+(def ds (jdbc/get-datasource (System/getenv "DB_CNX_STR")))
 
 (defn provision [resourceType]
   (let [tableName (name resourceType)]
@@ -86,8 +79,8 @@
   (provision "country")
   ;; CRUD
   (create :person {:name [{:given "John" :family ["Doe"]}]})
-  (update :person "11b8a511-5c74-4ebc-b105-3495bdec4a5d" {:name [{:given "John" :family ["Smith"]}]})
-  (delete :person "11b8a511-5c74-4ebc-b105-3495bdec4a5d")
+  (update :person "8b657ddf-2bd7-4eac-9ca7-3d43888bf44e" {:name [{:given "John" :family ["Smith"]}]})
+  (delete :person "8b657ddf-2bd7-4eac-9ca7-3d43888bf44e")
   ;; utils
   (java.util.UUID/randomUUID)
   ;; jsonb
