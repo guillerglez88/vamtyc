@@ -23,7 +23,8 @@
           (into {}))))
   ([] (load-dot-env ".env")))
 
-(def def-env {:DB_CNX_STR "jdbc:postgresql://localhost:5432/vamtyc"})
+(def def-env {:DB_CNX_STR "jdbc:postgresql://localhost:5432/vamtyc"
+              :PORT       "3000"})
 
 (def env
   (let [keys (keys def-env)

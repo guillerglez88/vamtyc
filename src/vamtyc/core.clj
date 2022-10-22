@@ -3,6 +3,8 @@
             [ring.middleware.params :refer [wrap-params]]
             [compojure.core :refer [defroutes GET]]
             [compojure.route :as route]
+
+            [vamtyc.config.env :refer [env]]
             [vamtyc.handlers :refer [home-page
                                      simple-body-page
                                      request-example
@@ -24,9 +26,7 @@
                         :join? false}))
 
 (defn -main [& _args]
-  (let [port (-> (System/getenv "PORT")
-                 (or "3000")
-                 (Integer/parseInt))]
+  (let [port (Integer/parseInt (:PORT env))]
     (start port)
     (println (str "Running webserver at http://127.0.0.1:" port "/"))))
 
@@ -34,6 +34,7 @@
   ;; start service from main
   (-main)
   ;; start service
-  (def server (start 3000))
+  (def server
+    (start (Integer/parseInt (:PORT env))))
   ;; stop service
   (.stop server))
