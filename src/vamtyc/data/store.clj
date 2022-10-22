@@ -1,8 +1,8 @@
-(ns vamtyc.store
+(ns vamtyc.data.store
   (:require [next.jdbc.sql :as sql]
             [next.jdbc.result-set :as rs]
 
-            [vamtyc.datasource :refer [ds]]))
+            [vamtyc.data.datasource :refer [ds]]))
 
 (defn create [resourceType, res]
   (let [id (java.util.UUID/randomUUID)]
@@ -21,6 +21,6 @@
 
 (comment
   (create :person {:name [{:given "John" :family ["Doe"]}]})
-  (update :person "91894c4d-5b2c-4ab7-b952-059504712aab" {:name [{:given "John" :family ["Smith"]}]})
-  (delete :person "91894c4d-5b2c-4ab7-b952-059504712aab")
+  (update :person "29e515d7-ddcb-4761-80a9-2bbba7403758" {:name [{:given "John" :family ["Smith"]}]})
+  (delete :person "29e515d7-ddcb-4761-80a9-2bbba7403758")
   )

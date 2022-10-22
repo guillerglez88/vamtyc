@@ -1,7 +1,7 @@
-(ns vamtyc.schema
+(ns vamtyc.data.schema
   (:require [next.jdbc :as jdbc]
 
-            [vamtyc.datasource :refer [ds]]))
+            [vamtyc.data.datasource :refer [ds]]))
 
 (defn storage-ddl [name]
   (str "CREATE TABLE public." name " (
@@ -16,9 +16,9 @@
             CONSTRAINT " name "_history_pk PRIMARY KEY (id));"))
 
 (defn provision [resourceType]
-  (let [tableName (name resourceType)]
-    (jdbc/execute! ds [(str (storage-ddl name) "\n"
-                            (history-ddl name))])))
+  (let [table-name (name resourceType)]
+    (jdbc/execute! ds [(str (storage-ddl table-name) "\n"
+                            (history-ddl table-name))])))
 
 (comment
   (provision "person")

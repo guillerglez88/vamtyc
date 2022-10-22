@@ -1,4 +1,4 @@
-(ns vamtyc.env
+(ns vamtyc.config.env
   (:require [clojure.java.io :as io]
             [clojure.string :as str]))
 
@@ -21,7 +21,7 @@
           (filter #(not (should-ignore? %)))
           (map parse-line)
           (into {}))))
-  ([] (dot-env ".env")))
+  ([] (load-dot-env ".env")))
 
 (def def-env {:DB_CNX_STR "jdbc:postgresql://localhost:5432/vamtyc"})
 
