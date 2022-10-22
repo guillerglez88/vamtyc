@@ -5,14 +5,14 @@
 
 (defn storage-ddl [name]
   (str "CREATE TABLE public." name " (
-            id uuid NOT NULL,
-            resource jsonb NULL,
+            id TEXT NOT NULL,
+            resource JSONB NULL,
             CONSTRAINT " name "_pk PRIMARY KEY (id));"))
 
 (defn history-ddl [name]
   (str "CREATE TABLE public." name "_history (
-            id uuid NOT NULL,
-            resource jsonb NULL,
+            id TEXT NOT NULL,
+            resource JSONB NULL,
             CONSTRAINT " name "_history_pk PRIMARY KEY (id));"))
 
 (defn provision [resourceType]
