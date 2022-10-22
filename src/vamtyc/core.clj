@@ -3,22 +3,30 @@
             [ring.middleware.params :refer [wrap-params]]
             [compojure.core :refer [defroutes GET]]
             [compojure.route :as route]
+            [clojure.pprint :as pp]
+            [clojure.data.json :as json]
 
-            [vamtyc.config.env :refer [env]]
-            [vamtyc.handlers :refer [home-page
-                                     simple-body-page
-                                     request-example
-                                     hello-name]])
+            ;; [vamtyc.handlers :refer [home-page
+            ;;                          simple-body-page
+            ;;                          request-example
+            ;;                          hello-name]]
+            [vamtyc.config.env :refer [env]])
   (:gen-class))
 
-(defroutes app-routes
-  (GET "/"                      []  home-page)
-  (GET "/request"               []  request-example)
-  (GET "/hello"                 []  hello-name)
-  (route/not-found "Error, page not found!"))
+;; (defroutes app-routes
+;;   (GET "/"                      []  home-page)
+;;   (GET "/request"               []  request-example)
+;;   (GET "/hello"                 []  hello-name)
+;;   (route/not-found "Error, page not found!"))
+
+(defn simple-handler [req]
+  (let [parsed-req (select-keys req [:uri :params :form-params :query-params])]
+    {:status 200
+     :headers {"Content-Type" "application/json"}
+     :body (json/write-str parsed-req)}))
 
 (def app
-  (wrap-params app-routes))
+  (wrap-params simple-handler))
 
 (defn start
   [port]
@@ -37,4 +45,5 @@
   (def server
     (start (Integer/parseInt (:PORT env))))
   ;; stop service
-  (.stop server))
+  (.stop server)
+  )
