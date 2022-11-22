@@ -4,13 +4,13 @@
             [vamtyc.data.datasource :refer [ds]]))
 
 (defn storage-ddl [name]
-  (str "CREATE TABLE public." name " (
+  (str "CREATE TABLE IF NOT EXISTS public." name " (
             id TEXT NOT NULL,
             resource JSONB NULL,
             CONSTRAINT " name "_pk PRIMARY KEY (id));"))
 
 (defn history-ddl [name]
-  (str "CREATE TABLE public." name "_history (
+  (str "CREATE TABLE IF NOT EXISTS public." name "_history (
             id TEXT NOT NULL,
             resource JSONB NULL,
             CONSTRAINT " name "_history_pk PRIMARY KEY (id));"))
