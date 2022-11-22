@@ -23,10 +23,8 @@
     (sql/delete! ds resourceType {:id id})
     (resKey entity)))
 
-(comment
-  (create :person {:name [{:given "John" :family ["Doe"]}]})
-  (create :person "1" {:name [{:given "John" :family ["Doe"]}]})
-  (update :person "29e515d7-ddcb-4761-80a9-2bbba7403758" {:name [{:given "John" :family ["Smith"]}]})
-  (delete :person "29e515d7-ddcb-4761-80a9-2bbba7403758")
-  (read :person "1")
-  )
+(defn list [resourceType]
+  (let [table (name resourceType)
+        limit 128
+        sql-query (str "select * from " table " limit ?")]
+    (sql/query ds [sql-query limit])))
