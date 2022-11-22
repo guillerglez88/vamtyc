@@ -10,7 +10,8 @@
             ;;                          simple-body-page
             ;;                          request-example
             ;;                          hello-name]]
-            [vamtyc.config.env :refer [env]])
+            [vamtyc.config.env :refer [env]]
+            [vamtyc.api :as api])
   (:gen-class))
 
 ;; (defroutes app-routes
