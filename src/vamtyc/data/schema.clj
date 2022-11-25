@@ -15,7 +15,11 @@
             resource JSONB NULL,
             CONSTRAINT " name "_history_pk PRIMARY KEY (id));"))
 
-;; (defn provision [resourceType]
-;;   (let [table-name (name resourceType)]
-;;     (jdbc/execute! ds [(str (storage-ddl table-name) "\n"
-;;                             (history-ddl table-name))])))
+(defn provision [resourceType]
+  (let [table-name (name resourceType)]
+    (jdbc/execute! ds [(str (storage-ddl table-name) "\n"
+                            (history-ddl table-name))])))
+
+;;
+(comment
+  (provision :HttpRoute))
