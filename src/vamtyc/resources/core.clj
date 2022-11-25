@@ -67,4 +67,6 @@
 ;;
 (comment
   (provision :Currency)
+  (provision :HttpRoute)
+  (provision :MoneyExchange)
   )
