@@ -1,11 +1,11 @@
-(ns vamtyc.resources.core
-  (:require [vamtyc.data.schema :as schema]
-            [vamtyc.data.store :as store]
-            [clojure.string :as str]))
+(ns vamtyc.resources
+  (:require [clojure.string :as str]
+            [vamtyc.data.schema :as schema]
+            [vamtyc.data.store :as store]))
 
 (defn list [resourceType]
-  (let [res-name    (-> resourceType name str/lower-case)
-        route-name  (str "list-" res-name)]
+  (let [res-name    (name resourceType)
+        route-name  (str "list-" (str/lower-case res-name))]
     {:method  "GET"
      :path    [{:name "resourceType" :value res-name}]
      :name    route-name
@@ -13,8 +13,8 @@
      :handler "list"}))
 
 (defn read [resourceType]
-  (let [res-name    (-> resourceType name str/lower-case)
-        route-name  (str "read-" res-name)]
+  (let [res-name    (name resourceType)
+        route-name  (str "read-" (str/lower-case res-name))]
     {:method  "GET"
      :path    [{:name "resourceType" :value res-name}
                {:name "id"}]
@@ -23,8 +23,8 @@
      :handler "read"}))
 
 (defn create [resourceType]
-  (let [res-name    (-> resourceType name str/lower-case)
-        route-name  (str "create-" res-name)]
+  (let [res-name    (name resourceType)
+        route-name  (str "create-" (str/lower-case res-name))]
     {:method  "POST"
      :path    [{:name "resourceType" :value res-name}]
      :name    route-name
@@ -32,8 +32,8 @@
      :handler "create"}))
 
 (defn upsert [resourceType]
-  (let [res-name    (-> resourceType name str/lower-case)
-        route-name  (str "upsert-" res-name)]
+  (let [res-name    (name resourceType)
+        route-name  (str "upsert-" (str/lower-case res-name))]
     {:method  "POST"
      :path    [{:name "resourceType" :value res-name}
                {:name "id"}]
@@ -42,8 +42,8 @@
      :handler "upsert"}))
 
 (defn delete [resourceType]
-  (let [res-name    (-> resourceType name str/lower-case)
-        route-name  (str "delete-" res-name)]
+  (let [res-name    (name resourceType)
+        route-name  (str "delete-" (str/lower-case res-name))]
     {:method  "POST"
      :path    [{:name "resourceType" :value res-name}
                {:name "id"}]
@@ -66,7 +66,7 @@
 
 ;;
 (comment
-  (provision :Currency)
   (provision :HttpRoute)
+  (provision :Currency)
   (provision :MoneyExchange)
   )

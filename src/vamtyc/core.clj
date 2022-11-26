@@ -6,7 +6,7 @@
             [clojure.pprint :as pp]
             [clojure.data.json :as json]
             [vamtyc.config.env :refer [env]]
-            [vamtyc.api :as api])
+            [vamtyc.routes :as routes])
   (:gen-class))
 
 (defn simple-handler [req]
@@ -16,7 +16,7 @@
      :body (json/write-str parsed-req)}))
 
 (def app
-  (wrap-params (api/load-routes)))
+  (wrap-params (routes/load-cpj-routes)))
 
 (defn start
   [port]
