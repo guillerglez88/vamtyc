@@ -2,20 +2,37 @@
   (:require [next.jdbc.sql :as sql]
             [next.jdbc.result-set :as rs]
 
-            [vamtyc.data.datasource :refer [ds]]))
+            [vamtyc.data.datasource :refer [ds]]
+            [clojure.string :as str]))
+
+(defn process [resourceType entity]
+  (let [res-name    (name resourceType)
+        res-name-lc (str/lower-case res-name)
+        id-key      (keyword res-name-lc "id")
+        res-key     (keyword res-name-lc "resource")
+        id          (or (id-key entity) (:id entity))
+        res         (or (res-key entity) (:resource entity))
+        url         (str "/" res-name "/" id)]
+    (merge res {:resourceType res-name
+                :id id
+                :url url})))
 
 (defn create
   ([resourceType, id, res]
-   (sql/insert! ds resourceType {:id id :resource res}))
+   (let [entity {:id id :resource res}]
+    (sql/insert! ds resourceType entity)
+    (process resourceType entity)))
   ([resourceType, res]
    (let [id (str (java.util.UUID/randomUUID))]
      (create resourceType id res))))
 
 (defn read [resourceType, id]
-  (sql/get-by-id ds resourceType id :id {}))
+  (->> (sql/get-by-id ds resourceType id :id {})
+       (process resourceType)))
 
 (defn update [resourceType, id, res]
-  (sql/update! ds resourceType {:resource res} {:id id}))
+  (->> (sql/update! ds resourceType {:resource res} {:id id})
+       (process resourceType)))
 
 (defn delete [resourceType, id]
   (let [entity (read resourceType id)
@@ -23,10 +40,9 @@
     (sql/delete! ds resourceType {:id id})
     (resKey entity)))
 
-(comment
-  (create :person {:name [{:given "John" :family ["Doe"]}]})
-  (create :person "1" {:name [{:given "John" :family ["Doe"]}]})
-  (update :person "29e515d7-ddcb-4761-80a9-2bbba7403758" {:name [{:given "John" :family ["Smith"]}]})
-  (delete :person "29e515d7-ddcb-4761-80a9-2bbba7403758")
-  (read :person "1")
-  )
+(defn list [resourceType]
+  (let [table (name resourceType)
+        limit 128
+        sql-query (str "select * from " table " limit ?")]
+    (->> (sql/query ds [sql-query limit])
+         (map (fn [entity] (process resourceType entity))))))

@@ -5,19 +5,9 @@
             [compojure.route :as route]
             [clojure.pprint :as pp]
             [clojure.data.json :as json]
-
-            ;; [vamtyc.handlers :refer [home-page
-            ;;                          simple-body-page
-            ;;                          request-example
-            ;;                          hello-name]]
-            [vamtyc.config.env :refer [env]])
+            [vamtyc.config.env :refer [env]]
+            [vamtyc.api :as api])
   (:gen-class))
-
-;; (defroutes app-routes
-;;   (GET "/"                      []  home-page)
-;;   (GET "/request"               []  request-example)
-;;   (GET "/hello"                 []  hello-name)
-;;   (route/not-found "Error, page not found!"))
 
 (defn simple-handler [req]
   (let [parsed-req (select-keys req [:uri :params :form-params :query-params])]
@@ -26,7 +16,7 @@
      :body (json/write-str parsed-req)}))
 
 (def app
-  (wrap-params simple-handler))
+  (wrap-params (api/load-routes)))
 
 (defn start
   [port]

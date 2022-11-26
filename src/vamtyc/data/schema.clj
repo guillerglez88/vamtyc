@@ -20,7 +20,6 @@
     (jdbc/execute! ds [(str (storage-ddl table-name) "\n"
                             (history-ddl table-name))])))
 
+;;
 (comment
-  (provision "person")
-  (provision "country")
-  )
+  (provision :HttpRoute))
