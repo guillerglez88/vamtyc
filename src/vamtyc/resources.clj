@@ -3,34 +3,45 @@
             [vamtyc.data.schema :as schema]
             [vamtyc.data.store :as store]))
 
-(defn build-route [name-prefix method resourceType type]
-  (let [res-name    (name resourceType)
-        route-name  (str name-prefix "-" (str/lower-case res-name))
-        resource    (str "/Resource/" res-name)]
-    {:method  method
-     :path    [{:name "resourceType" :value res-name}]
-     :name    route-name
-     :resource resource
-     :type    "core"
-     :handler "list"}))
+(defn build-route [name-prefix method path]
+  (let [res-type    (-> (filter #(-> % :name (= "resourceType")) path) first :value)
+        res-name    (name res-type)
+        res-name-lc (str/lower-case res-name)
+        route-name  (str name-prefix "-" res-name-lc)
+        resource    (str "/Resource/" res-name-lc)]
+    {:method    method
+     :path      path
+     :name      route-name
+     :resource  resource
+     :type      :core}))
 
 (defn build-routes [resourceType]
-  [(build-route "list"      :GET    resourceType    :core)
-   (build-route "read"      :GET    resourceType    :core)
-   (build-route "create"    :POST   resourceType    :core)
-   (build-route "upsert"    :PUT    resourceType    :core)
-   (build-route "delete"    :DELETE resourceType    :core)])
+  (let [res-type    {:name "resourceType" :value resourceType}
+        id          {:name "id"}]
+    [(build-route "list"      :GET    [res-type   ])
+     (build-route "read"      :GET    [res-type id])
+     (build-route "create"    :POST   [res-type   ])
+     (build-route "upsert"    :PUT    [res-type id])
+     (build-route "delete"    :DELETE [res-type id])]))
 
-(defn provision [resourceType]
-  (let [routes (build-routes resourceType)]
-    (schema/provision resourceType)
-    (for [route routes]
-      (store/create :HttpRoute route))))
+(def base-entities
+  [{:id     "resource"
+    :type   :Resource
+    :desc   "Represents a REST resource"}
+   {:id     "route"
+    :type   :Route
+    :desc   "Represents a REST route"}])
 
+(defn bootstrap []
+  (for [resource    base-entities
+        :let        [resourceType   (:type  resource)
+                     id             (:id    resource)]]
+    (do
+      (schema/provision resourceType)
+      (store/create :Resource id resource)
+      (for [route (build-routes resourceType)]
+        (store/create :Route route)))))
 ;;
 (comment
-  (provision :HttpRoute)
-  (provision :Currency)
-  (provision :MoneyExchange)
-  (provision :Resource)
+  (bootstrap)
   )
