@@ -8,7 +8,8 @@
             [vamtyc.utils.path      :as     path]
             [vamtyc.handlers.list   :as     list]
             [vamtyc.handlers.read   :as     read]
-            [vamtyc.handlers.create :as     create]))
+            [vamtyc.handlers.create :as     create]
+            [vamtyc.handlers.delete :as delete]))
 
 (defn build-route [code method path]
   (let [res-type    (path/get-res-type path)
@@ -44,7 +45,8 @@
 (def handlers
   {:core/list   list/handler
    :core/read   read/handler
-   :core/create create/handler})
+   :core/create create/handler
+   :core/delete delete/handler})
 
 (defn build-cpj-route [route]
   (let [method  (-> route :method str/lower-case keyword)

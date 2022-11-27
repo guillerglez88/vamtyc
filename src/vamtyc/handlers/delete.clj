@@ -1,5 +1,5 @@
-(ns vamtyc.handlers.read
-  (:require [ring.util.response :refer  [content-type response]]
+(ns vamtyc.handlers.delete
+  (:require [ring.util.response :refer  [content-type response status]]
             [vamtyc.data.store  :as     store]
             [vamtyc.utils.path  :as     path]
             [clojure.data.json  :as     json]))
@@ -9,14 +9,11 @@
     (let [res-type  (-> route :path path/get-res-type keyword)
           id        (-> req :params :id)]
       (-> res-type
-          (store/read id)
+          (store/delete id)
           (json/write-str)
           (response)
+          (status 204)
           (content-type "application/json")))))
 
 (comment
-  ((handler {:name "read-route"
-             :path [{:name "resourceType" :value "Route"},
-                    {:name "id"}]}) {:uri "/Route/9ddf6cbd-1def-4306-8b19-a664bbbdf2ae"
-                                     :params {:id "9ddf6cbd-1def-4306-8b19-a664bbbdf2ae"}})
   )
