@@ -5,7 +5,8 @@
             [lambdaisland.uri       :refer  [uri query-string->map]]
             [vamtyc.data.store      :as     store]
             [vamtyc.utils.path      :as     path]
-            [vamtyc.handlers.list   :as     list]))
+            [vamtyc.handlers.list   :as     list]
+            [vamtyc.handlers.read   :as     read]))
 
 (defn meta-handler [route]
   (fn [req]
@@ -16,7 +17,8 @@
        :body (json/write-str body)})))
 
 (def core-handlers
-  {:core/list   list/handler})
+  {:core/list   list/handler
+   :core/read   read/handler})
 
 (defn build-cpj-route [route]
   (let [method  (-> route :method str/lower-case keyword)

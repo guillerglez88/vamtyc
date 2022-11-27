@@ -1,7 +1,7 @@
 (ns vamtyc.handlers.list
   (:require [vamtyc.data.store :as store]
             [vamtyc.utils.path :as path]
-            [clojure.data.json :as json]))
+            [vamtyc.utils.response :as response]))
 
 (defn build-result-set [items url]
   {:resourceType  :List
@@ -21,10 +21,9 @@
       (-> res-type
           (store/list)
           (build-result-set url)
-          (json/write-str)))))
+          (response/ok)))))
 
 (comment
-  ((handler {:name "read-route"
-             :path [{:name "resourceType" :value "Route"},
-                    {:name "id"}]}) {:uri "/Route/9ddf6cbd-1def-4306-8b19-a664bbbdf2ae"})
+  ((handler {:name "list-route"
+             :path [{:name "resourceType" :value "Route"}]}) {:uri "/Route/9ddf6cbd-1def-4306-8b19-a664bbbdf2ae"})
   )
