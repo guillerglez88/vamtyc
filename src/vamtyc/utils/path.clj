@@ -1,4 +1,5 @@
-(ns vamtyc.utils.path)
+(ns vamtyc.utils.path
+  (:require [clojure.string :as str]))
 
 (defn is-res-type? [path-cmp]
   (-> path-cmp :name (= "resourceType")))

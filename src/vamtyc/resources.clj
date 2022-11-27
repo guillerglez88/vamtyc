@@ -10,7 +10,7 @@
         res-name-lc (str/lower-case res-name)
         route-name  (str code "-" res-name-lc)
         resource    (str "/Resource/" res-name-lc)
-        coding      (str "https://github.com/guillerglez88/vamtyc/wiki/core-handlers?code=" code)]
+        coding      (str "/Coding/core-handlers?code=" code)]
     {:method    method
      :path      path
      :name      route-name
