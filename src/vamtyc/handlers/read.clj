@@ -1,7 +1,8 @@
 (ns vamtyc.handlers.read
-  (:require [vamtyc.data.store :as store]
-            [vamtyc.utils.path :as path]
-            [vamtyc.utils.response :as response]))
+  (:require [ring.util.response :refer  [content-type response]]
+            [vamtyc.data.store  :as     store]
+            [vamtyc.utils.path  :as     path]
+            [clojure.data.json :as json]))
 
 (defn handler [route]
   (fn [req]
@@ -10,7 +11,9 @@
           id        (-> req :params :id)]
       (-> res-type
           (store/read id)
-          (response/ok)))))
+          (json/write-str)
+          (response)
+          (content-type "application/json")))))
 
 (comment
   ((handler {:name "read-route"

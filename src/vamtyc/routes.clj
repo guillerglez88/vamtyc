@@ -6,7 +6,8 @@
             [vamtyc.data.store      :as     store]
             [vamtyc.utils.path      :as     path]
             [vamtyc.handlers.list   :as     list]
-            [vamtyc.handlers.read   :as     read]))
+            [vamtyc.handlers.read   :as     read]
+            [vamtyc.handlers.create :as     create]))
 
 (defn meta-handler [route]
   (fn [req]
@@ -18,7 +19,8 @@
 
 (def handlers
   {:core/list   list/handler
-   :core/read   read/handler})
+   :core/read   read/handler
+   :core/create create/handler})
 
 (defn build-cpj-route [route]
   (let [method  (-> route :method str/lower-case keyword)
