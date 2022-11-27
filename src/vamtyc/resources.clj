@@ -1,19 +1,22 @@
 (ns vamtyc.resources
   (:require [clojure.string :as str]
             [vamtyc.data.schema :as schema]
-            [vamtyc.data.store :as store]))
+            [vamtyc.data.store :as store]
+            [vamtyc.utils.path :as path]))
 
-(defn build-route [name-prefix method path]
-  (let [res-type    (-> (filter #(-> % :name (= "resourceType")) path) first :value)
+(defn build-route [code method path]
+  (let [res-type    (path/get-res-type path)
         res-name    (name res-type)
         res-name-lc (str/lower-case res-name)
-        route-name  (str name-prefix "-" res-name-lc)
-        resource    (str "/Resource/" res-name-lc)]
+        route-name  (str code "-" res-name-lc)
+        resource    (str "/Resource/" res-name-lc)
+        coding      (str "https://github.com/guillerglez88/vamtyc/wiki/core-handlers?code=" code)]
     {:method    method
      :path      path
      :name      route-name
      :resource  resource
-     :type      :core}))
+     :type      :core
+     :code      coding}))
 
 (defn build-routes [resourceType]
   (let [res-type    {:name "resourceType" :value resourceType}
@@ -41,7 +44,7 @@
       (store/create :Resource id resource)
       (for [route (build-routes resourceType)]
         (store/create :Route route)))))
-;;
+
 (comment
   (bootstrap)
   )
