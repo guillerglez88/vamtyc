@@ -16,7 +16,7 @@
        :headers {"Content-Type" "application/json"}
        :body (json/write-str body)})))
 
-(def core-handlers
+(def handlers
   {:core/list   list/handler
    :core/read   read/handler})
 
@@ -25,7 +25,7 @@
         path    (-> route :path path/stringify)
         code    (-> route :code uri :query query-string->map :code)
         hkey    (-> route :type (keyword code))
-        handler (-> hkey core-handlers (or meta-handler) (#(% route)))]
+        handler (-> hkey handlers (or meta-handler) (#(% route)))]
     (make-route method path handler)))
 
 (defn load-cpj-routes []
