@@ -6,7 +6,8 @@
             [vamtyc.data.store      :as     store]
             [vamtyc.utils.path      :as     path]
             [vamtyc.handlers.list   :as     list]
-            [vamtyc.handlers.read   :as     read]))
+            [vamtyc.handlers.read   :as     read]
+            [vamtyc.handlers.create :as     create]))
 
 (defn meta-handler [route]
   (fn [req]
@@ -16,16 +17,17 @@
        :headers {"Content-Type" "application/json"}
        :body (json/write-str body)})))
 
-(def core-handlers
+(def handlers
   {:core/list   list/handler
-   :core/read   read/handler})
+   :core/read   read/handler
+   :core/create create/handler})
 
 (defn build-cpj-route [route]
   (let [method  (-> route :method str/lower-case keyword)
         path    (-> route :path path/stringify)
         code    (-> route :code uri :query query-string->map :code)
         hkey    (-> route :type (keyword code))
-        handler (-> hkey core-handlers (or meta-handler) (#(% route)))]
+        handler (-> hkey handlers (or meta-handler) (#(% route)))]
     (make-route method path handler)))
 
 (defn load-cpj-routes []
