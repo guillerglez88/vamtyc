@@ -1,4 +1,4 @@
-(ns vamtyc.handlers.create
+(ns vamtyc.handlers.upsert
   (:require [ring.util.response :refer  [content-type response]]
             [ring.util.request  :refer  [body-string]]
             [vamtyc.data.store  :as     store]
@@ -8,9 +8,10 @@
 (defn handler [route]
   (fn [req]
     (let [res-type  (-> route :path path/get-res-type keyword)
+          id        (-> req :params :id)
           body      (-> req body-string (json/read-str :key-fn keyword))]
       (-> res-type
-          (store/create body)
+          (store/upsert id body)
           (json/write-str)
           (response)
           (content-type "application/json")))))
