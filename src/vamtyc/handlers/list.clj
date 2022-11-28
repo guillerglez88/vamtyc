@@ -15,16 +15,15 @@
                    :next  nil
                    :last  nil}})
 
-(defn handler [route]
-  (fn [req]
-    (let [url       (:uri req)
-          res-type  (-> route :path path/get-res-type keyword)]
-      (-> res-type
-          (store/list)
-          (build-result-set url)
-          (json/write-str)
-          (response)
-          (content-type "application/json")))))
+(defn handler [req route]
+  (let [url       (:uri req)
+        res-type  (-> route :path path/get-res-type keyword)]
+    (-> res-type
+        (store/list)
+        (build-result-set url)
+        (json/write-str)
+        (response)
+        (content-type "application/json"))))
 
 (comment
   ((handler {:name "list-route"

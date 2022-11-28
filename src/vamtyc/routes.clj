@@ -35,13 +35,12 @@
      (build-route "upsert"    :PUT    [res-type id])
      (build-route "delete"    :DELETE [res-type id])]))
 
-(defn meta-handler [route]
-  (fn [req]
-    (let [parsed-req    (select-keys req [:uri :params :form-params :query-params])
-          body          (merge parsed-req {:route route})]
-      {:status 200
-       :headers {"Content-Type" "application/json"}
-       :body (json/write-str body)})))
+(defn meta-handler [req route]
+  (let [parsed-req    (select-keys req [:uri :params :form-params :query-params])
+        body          (merge parsed-req {:route route})]
+    {:status 200
+    :headers {"Content-Type" "application/json"}
+    :body (json/write-str body)}))
 
 (def handlers
   {:core/list   list/handler
@@ -55,7 +54,7 @@
         path    (-> route :path path/stringify)
         code    (-> route :code uri :query query-string->map :code)
         hkey    (-> route :type (keyword code))
-        handler (-> hkey handlers (or meta-handler) (#(% route)))]
+        handler (-> hkey handlers (or meta-handler) ((fn [h] (fn [req] (h req route)))))]
     (make-route method path handler)))
 
 (defn init []
