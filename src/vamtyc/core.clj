@@ -6,11 +6,11 @@
             [compojure.core         :refer  [defroutes GET]]
             [compojure.route        :as     route]
             [vamtyc.config.env      :refer  [env]]
-            [vamtyc.routes          :as     routes])
+            [vamtyc.utils.cpjroutes :as     cpjroutes])
   (:gen-class))
 
 (def app
-  (wrap-params (routes/load-cpj-routes)))
+  (wrap-params (cpjroutes/load-routes)))
 
 (defn start
   [port]
