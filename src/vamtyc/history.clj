@@ -1,19 +1,19 @@
 (ns vamtyc.history
-  (:require [next.jdbc              :as jdbc]
-            [vamtyc.data.store      :as store]
-            [vamtyc.data.datasource :refer  [ds]]
-            [clojure.string :as str]))
+  (:require [clojure.string         :as     str]
+            [next.jdbc              :as     jdbc]
+            [vamtyc.data.store      :as     store]
+            [vamtyc.data.datasource :refer  [ds]]))
 
-(defn history-ddl [name]
+(defn ddl [name]
   (str "CREATE TABLE IF NOT EXISTS public." name "(
-            id          TEXT NOT NULL,
-            resource    JSONB NULL,
+            id          TEXT    NOT NULL,
+            resource    JSONB   NULL,
             CONSTRAINT  " name "_pk PRIMARY KEY (id));"))
 
 (defn init []
   (for [res     (store/list :Resource)
         :let    [hist-type  (-> res :type (str "History"))
-                 ddl        (history-ddl hist-type)
+                 ddl        (ddl hist-type)
                  res-type   (keyword hist-type)
                  desc       (str "Represents a " hist-type " Resource")
                  res        {:type res-type :desc desc}

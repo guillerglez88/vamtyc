@@ -1,16 +1,15 @@
 (ns vamtyc.routes
-  (:require [clojure.data.json      :as     json]
-            [clojure.string         :as     str]
-            [compojure.core         :refer  [make-route routes]]
-            [lambdaisland.uri       :refer  [uri query-string->map]]
-            [vamtyc.data.schema     :as     schema]
+  (:require [clojure.string         :as     str]
+            [next.jdbc              :as     jdbc]
+            [vamtyc.data.datasource :refer  [ds]]
             [vamtyc.data.store      :as     store]
-            [vamtyc.utils.path      :as     path]
-            [vamtyc.handlers.list   :as     list]
-            [vamtyc.handlers.read   :as     read]
-            [vamtyc.handlers.create :as     create]
-            [vamtyc.handlers.delete :as     delete]
-            [vamtyc.handlers.upsert :as upsert]))
+            [vamtyc.utils.path      :as     path]))
+
+(defn ddl [name]
+  (str "CREATE TABLE IF NOT EXISTS public." name "(
+            id          TEXT    NOT NULL,
+            resource    JSONB   NULL,
+            CONSTRAINT  " name "_pk PRIMARY KEY (id));"))
 
 (defn build-route [code method path]
   (let [res-type    (path/get-res-type path)
@@ -35,45 +34,16 @@
      (build-route "upsert"    :PUT    [res-type id])
      (build-route "delete"    :DELETE [res-type id])]))
 
-(defn meta-handler [req route]
-  (let [parsed-req    (select-keys req [:uri :params :form-params :query-params])
-        body          (merge parsed-req {:route route})]
-    {:status 200
-    :headers {"Content-Type" "application/json"}
-    :body (json/write-str body)}))
-
-(def handlers
-  {:core/list   list/handler
-   :core/read   read/handler
-   :core/create create/handler
-   :core/delete delete/handler
-   :core/upsert upsert/handler})
-
-(defn build-cpj-route [route]
-  (let [method  (-> route :method str/lower-case keyword)
-        path    (-> route :path path/stringify)
-        code    (-> route :code uri :query query-string->map :code)
-        hkey    (-> route :type (keyword code))
-        handler (-> hkey handlers (or meta-handler) ((fn [h] (fn [req] (h req route)))))]
-    (make-route method path handler)))
-
 (defn init []
-  (let [resource  {:type :Route
-                   :desc "Represents a REST route"}
-        id         "route"]
-    (schema/provision :Route)
-    (store/create :Resource id resource)
-    (for [resource  (store/list :Resource)
-          route     (-> resource :type keyword build-routes)]
+  (let [res {:type "Route" :desc "Represents a REST route"}
+        id  "route"
+        ddl (ddl "Route")]
+    (jdbc/execute! ds [ddl])
+    (store/create :Resource id res)
+    (for [item  (store/list :Resource)
+          route     (-> item :type keyword build-routes)]
       (store/create :Route route))))
-
-(defn load-cpj-routes []
-  (->> (store/list :Route)
-       (map build-cpj-route)
-       (apply routes)))
 
 (comment
   (init)
-  (load-cpj-routes)
-  (uri "/Coding/core-handlers?code=list")
   )

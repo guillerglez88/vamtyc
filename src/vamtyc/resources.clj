@@ -1,12 +1,20 @@
 (ns vamtyc.resources
-  (:require [vamtyc.data.schema :as schema]
-            [vamtyc.data.store  :as store]))
+  (:require [next.jdbc              :as     jdbc]
+            [vamtyc.data.datasource :refer  [ds]]
+            [vamtyc.data.store      :as     store]))
+
+(defn ddl [name]
+  (str "CREATE TABLE IF NOT EXISTS public." name "(
+            id          TEXT    NOT NULL,
+            resource    JSONB   NULL,
+            CONSTRAINT  " name "_pk PRIMARY KEY (id));"))
 
 (defn init []
-  (let [resource    {:type :Resource
-                     :desc "Represents a REST resource"}
-        id          "resource"]
-    (schema/provision :Resource)
+  (let [resource  {:type "Resource"
+                   :desc "Represents a REST resource"}
+        id        "resource"
+        ddl       (ddl "Resource")]
+    (jdbc/execute! ds [ddl])
     (store/create :Resource id resource)))
 
 (comment
