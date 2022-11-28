@@ -1,6 +1,6 @@
 (ns vamtyc.resources
   (:require [vamtyc.data.schema :as schema]
-            [vamtyc.data.store :as store]))
+            [vamtyc.data.store  :as store]))
 
 (defn init []
   (let [resource    {:type :Resource

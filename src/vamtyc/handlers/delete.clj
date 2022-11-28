@@ -12,8 +12,7 @@
           (store/delete id)
           (json/write-str)
           (response)
-          (status 204)
-          (content-type "application/json")))))
+          (status 204)))))
 
 (comment
   )

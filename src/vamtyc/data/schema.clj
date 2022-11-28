@@ -1,7 +1,6 @@
 (ns vamtyc.data.schema
-  (:require [next.jdbc :as jdbc]
-
-            [vamtyc.data.datasource :refer [ds]]))
+  (:require [next.jdbc              :as     jdbc]
+            [vamtyc.data.datasource :refer  [ds]]))
 
 (defn storage-ddl [name]
   (str "CREATE TABLE IF NOT EXISTS public." name " (

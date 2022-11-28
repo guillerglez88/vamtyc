@@ -1,10 +1,9 @@
 (ns vamtyc.data.datasource
-  (:require [next.jdbc :as jdbc]
-            [next.jdbc.prepare :as prepare]
-            [next.jdbc.result-set :as rs]
-            [clojure.data.json :as json]
-
-            [vamtyc.config.env :refer [env]]))
+  (:require [clojure.data.json    :as     json]
+            [next.jdbc            :as     jdbc]
+            [next.jdbc.prepare    :as     prepare]
+            [next.jdbc.result-set :as     rs]
+            [vamtyc.config.env    :refer  [env]]))
 
 (import '(org.postgresql.util PGobject))
 (import '(java.sql PreparedStatement))
@@ -13,7 +12,7 @@
 
 (defn to-jsonb
   [m]
-  (let [type (or (:pgtype (meta m)) "jsonb")
+  (let [type  (-> m meta :pgtype (or "jsonb"))
         value (json/write-str m)]
     (doto (PGobject.)
       (.setType type)
@@ -21,11 +20,13 @@
 
 (defn from-jsonb
   [^org.postgresql.util.PGobject v]
-  (let [type (.getType v)
+  (let [type  (.getType v)
         value (.getValue v)]
     (if (#{"json" "jsonb"} type)
       (when value
-        (with-meta (json/read-str value :key-fn keyword) {:pgtype type})))))
+        (-> value
+            (json/read-str :key-fn keyword)
+            (with-meta {:pgtype type}))))))
 
 (extend-protocol prepare/SettableParameter
   clojure.lang.IPersistentMap

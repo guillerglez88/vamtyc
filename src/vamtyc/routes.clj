@@ -9,7 +9,7 @@
             [vamtyc.handlers.list   :as     list]
             [vamtyc.handlers.read   :as     read]
             [vamtyc.handlers.create :as     create]
-            [vamtyc.handlers.delete :as delete]))
+            [vamtyc.handlers.delete :as     delete]))
 
 (defn build-route [code method path]
   (let [res-type    (path/get-res-type path)

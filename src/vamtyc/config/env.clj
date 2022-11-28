@@ -1,11 +1,11 @@
 (ns vamtyc.config.env
-  (:require [clojure.java.io :as io]
-            [clojure.string :as str]))
+  (:require [clojure.java.io  :as io]
+            [clojure.string   :as str]))
 
 (defn parse-line [line]
-  (let [[first second] (str/split line #"=" 2)
-        key (keyword first)
-        val (str/replace second "\"" "")]
+  (let [[first second]  (str/split line #"=" 2)
+        key             (keyword first)
+        val             (str/replace second "\"" "")]
     [key val]))
 
 (defn should-ignore? [line]

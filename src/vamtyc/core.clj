@@ -1,27 +1,22 @@
 (ns vamtyc.core
-  (:require [ring.adapter.jetty :refer [run-jetty]]
-            [ring.middleware.params :refer [wrap-params]]
-            [compojure.core :refer [defroutes GET]]
-            [compojure.route :as route]
-            [clojure.pprint :as pp]
-            [clojure.data.json :as json]
-            [vamtyc.config.env :refer [env]]
-            [vamtyc.routes :as routes])
+  (:require [clojure.pprint         :as     pp]
+            [clojure.data.json      :as     json]
+            [ring.adapter.jetty     :refer  [run-jetty]]
+            [ring.middleware.params :refer  [wrap-params]]
+            [compojure.core         :refer  [defroutes GET]]
+            [compojure.route        :as     route]
+            [vamtyc.config.env      :refer  [env]]
+            [vamtyc.routes          :as     routes])
   (:gen-class))
-
-(defn simple-handler [req]
-  (let [parsed-req (select-keys req [:uri :params :form-params :query-params])]
-    {:status 200
-     :headers {"Content-Type" "application/json"}
-     :body (json/write-str parsed-req)}))
 
 (def app
   (wrap-params (routes/load-cpj-routes)))
 
 (defn start
   [port]
-  (run-jetty (var app) {:port port
-                        :join? false}))
+  (-> (var app)
+      (run-jetty {:port port
+                  :join? false})))
 
 (defn -main [& _args]
   (let [port (Integer/parseInt (:PORT env))]
