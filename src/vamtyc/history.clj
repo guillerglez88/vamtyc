@@ -10,17 +10,20 @@
             resource    JSONB   NULL,
             CONSTRAINT  " name "_pk PRIMARY KEY (id));"))
 
-(defn init []
-  (for [res     (store/list :Resource)
-        :let    [hist-type  (-> res :type (str "History"))
-                 ddl        (ddl hist-type)
-                 res-type   (keyword hist-type)
-                 desc       (str "Represents a " hist-type " Resource")
-                 res        {:type res-type :desc desc}
-                 id         (str/lower-case hist-type)]]
+(defn provision [res]
+  (let [hist-type   (-> res :type (str "History"))
+        res-type    (keyword hist-type)
+        id          (str/lower-case hist-type)
+        desc        (str "Represents a " hist-type " Resource")
+        ddl         (ddl hist-type)
+        hist-res    {:type res-type :desc desc}]
     (do
       (jdbc/execute! ds [ddl])
-      (store/create :Resource id res))))
+      (store/create :Resource id hist-res))))
+
+(defn init []
+  (for [res (store/list :Resource)]
+    (provision res)))
 
 (comment
   (init)
