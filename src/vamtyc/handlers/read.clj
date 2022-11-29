@@ -1,8 +1,8 @@
 (ns vamtyc.handlers.read
-  (:require [ring.util.response :refer  [content-type response not-found]]
-            [vamtyc.data.store  :as     store]
-            [vamtyc.utils.path  :as     path]
-            [clojure.data.json  :as     json]))
+  (:require [ring.util.response :refer [content-type response not-found]]
+            [vamtyc.data.store :as store]
+            [vamtyc.utils.path :as path]
+            [clojure.data.json :as json]))
 
 (defn handler [req route]
   (let [res-type  (-> route :path path/get-res-type keyword)

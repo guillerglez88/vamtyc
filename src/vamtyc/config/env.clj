@@ -1,6 +1,6 @@
 (ns vamtyc.config.env
-  (:require [clojure.java.io  :as io]
-            [clojure.string   :as str]))
+  (:require [clojure.java.io :as io]
+            [clojure.string :as str]))
 
 (defn parse-line [line]
   (let [[first second]  (str/split line #"=" 2)

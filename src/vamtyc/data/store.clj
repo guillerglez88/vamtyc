@@ -1,8 +1,8 @@
 (ns vamtyc.data.store
-  (:require [clojure.string         :as     str]
-            [next.jdbc.sql          :as     sql]
-            [next.jdbc.result-set   :as     rs]
-            [vamtyc.data.datasource :refer  [ds]]))
+  (:require [clojure.string :as str]
+            [next.jdbc.sql :as sql]
+            [next.jdbc.result-set :as rs]
+            [vamtyc.data.datasource :refer [ds]]))
 
 (defn process [entity resourceType]
   (when entity

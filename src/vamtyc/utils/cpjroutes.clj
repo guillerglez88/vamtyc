@@ -1,15 +1,15 @@
 (ns vamtyc.utils.cpjroutes
-  (:require [clojure.data.json      :as     json]
-            [clojure.string         :as     str]
-            [compojure.core         :refer  [make-route routes]]
-            [vamtyc.data.store      :as     store]
-            [vamtyc.utils.path      :as     path]
-            [vamtyc.handlers.list   :as     list]
-            [vamtyc.handlers.read   :as     read]
-            [vamtyc.handlers.create :as     create]
-            [vamtyc.handlers.delete :as     delete]
-            [vamtyc.handlers.upsert :as     upsert]
-            [lambdaisland.uri       :refer  [uri query-string->map]]))
+  (:require [clojure.data.json :as json]
+            [clojure.string :as str]
+            [compojure.core :refer [make-route routes]]
+            [vamtyc.data.store :as store]
+            [vamtyc.utils.path :as path]
+            [vamtyc.handlers.list :as list]
+            [vamtyc.handlers.read :as read]
+            [vamtyc.handlers.create :as create]
+            [vamtyc.handlers.delete :as delete]
+            [vamtyc.handlers.upsert :as upsert]
+            [lambdaisland.uri :refer [uri query-string->map]]))
 
 (defn meta-handler [req route]
   (let [parsed-req    (select-keys req [:uri :params :form-params :query-params])
