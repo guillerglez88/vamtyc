@@ -13,7 +13,7 @@
   (let [resource  {:type        "QueryParam"
                    :desc        "Represents a REST query-string parameter resource"
                    :queryParams "/QueryParam"}
-        id        "query-param"]
+        id        "queryparam"]
     (jdbc/execute! ds [ddl])
     (store/create :Resource id resource)))
 
