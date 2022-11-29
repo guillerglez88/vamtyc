@@ -34,15 +34,18 @@
      (build-route "upsert"    :PUT    [res-type id])
      (build-route "delete"    :DELETE [res-type id])]))
 
+(defn provision [res]
+  (for [route (-> res :type keyword build-routes)]
+    (store/create :Route route)))
+
 (defn init []
   (let [res {:type "Route" :desc "Represents a REST route"}
         id  "route"
         ddl (ddl "Route")]
     (jdbc/execute! ds [ddl])
     (store/create :Resource id res)
-    (for [item  (store/list :Resource)
-          route     (-> item :type keyword build-routes)]
-      (store/create :Route route))))
+    (for [item (store/list :Resource)]
+      (provision item))))
 
 (comment
   (init)
