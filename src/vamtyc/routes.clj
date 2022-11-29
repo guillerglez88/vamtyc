@@ -22,7 +22,6 @@
      :path      path
      :name      route-name
      :resource  resource
-     :type      :core
      :code      coding}))
 
 (defn build-routes [resourceType]

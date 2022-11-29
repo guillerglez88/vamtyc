@@ -19,19 +19,18 @@
     :body (json/write-str body)}))
 
 (def handlers
-  {:core/list   list/handler
-   :core/read   read/handler
-   :core/create create/handler
-   :core/delete delete/handler
-   :core/upsert upsert/handler})
+  {:/Coding/core-handlers?code=list   list/handler
+   :/Coding/core-handlers?code=read   read/handler
+   :/Coding/core-handlers?code=create create/handler
+   :/Coding/core-handlers?code=delete delete/handler
+   :/Coding/core-handlers?code=upsert upsert/handler})
 
 (defn build-cpj-route [route]
   (let [method  (-> route :method str/lower-case keyword)
         path    (-> route :path path/stringify)
-        code    (-> route :code uri :query query-string->map :code)
-        hkey    (-> route :type (keyword code))
-        handler (-> hkey handlers (or meta-handler) ((fn [h] (fn [req] (h req route)))))]
-    (make-route method path handler)))
+        code    (-> route :code keyword)
+        handler (or (code handlers) meta-handler)]
+    (make-route method path #(handler % route))))
 
 (defn load-routes []
   (->> (store/list :Route)
