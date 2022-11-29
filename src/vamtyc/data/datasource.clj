@@ -1,9 +1,9 @@
 (ns vamtyc.data.datasource
-  (:require [clojure.data.json    :as     json]
-            [next.jdbc            :as     jdbc]
-            [next.jdbc.prepare    :as     prepare]
-            [next.jdbc.result-set :as     rs]
-            [vamtyc.config.env    :refer  [env]]))
+  (:require [clojure.data.json :as json]
+            [next.jdbc :as jdbc]
+            [next.jdbc.prepare :as prepare]
+            [next.jdbc.result-set :as rs]
+            [vamtyc.config.env :refer [env]]))
 
 (import '(org.postgresql.util PGobject))
 (import '(java.sql PreparedStatement))

@@ -1,8 +1,8 @@
 (ns vamtyc.handlers.list
-  (:require [clojure.data.json  :as     json]
-            [ring.util.response :refer  [content-type response]]
-            [vamtyc.data.store  :as     store]
-            [vamtyc.utils.path  :as     path]))
+  (:require [clojure.data.json :as json]
+            [ring.util.response :refer [content-type response]]
+            [vamtyc.data.store :as store]
+            [vamtyc.utils.path :as path]))
 
 (defn build-result-set [items url]
   {:resourceType  :List

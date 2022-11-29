@@ -1,9 +1,9 @@
 (ns vamtyc.routes
-  (:require [clojure.string         :as     str]
-            [next.jdbc              :as     jdbc]
-            [vamtyc.data.datasource :refer  [ds]]
-            [vamtyc.data.store      :as     store]
-            [vamtyc.utils.path      :as     path]))
+  (:require [clojure.string :as str]
+            [next.jdbc :as jdbc]
+            [vamtyc.data.datasource :refer [ds]]
+            [vamtyc.data.store :as store]
+            [vamtyc.utils.path :as path]))
 
 (defn ddl [name]
   (str "CREATE TABLE IF NOT EXISTS public." name "(
@@ -38,7 +38,9 @@
     (store/create :Route route)))
 
 (defn init []
-  (let [res {:type "Route" :desc "Represents a REST route"}
+  (let [res {:type      "Route"
+             :desc      "Represents a REST route resource"
+             :routes    "/Route"}
         id  "route"
         ddl (ddl "Route")]
     (jdbc/execute! ds [ddl])

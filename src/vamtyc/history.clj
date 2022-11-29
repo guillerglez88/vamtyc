@@ -1,8 +1,8 @@
 (ns vamtyc.history
-  (:require [clojure.string         :as     str]
-            [next.jdbc              :as     jdbc]
-            [vamtyc.data.store      :as     store]
-            [vamtyc.data.datasource :refer  [ds]]))
+  (:require [clojure.string :as str]
+            [next.jdbc :as jdbc]
+            [vamtyc.data.store :as store]
+            [vamtyc.data.datasource :refer [ds]]))
 
 (defn ddl [name]
   (str "CREATE TABLE IF NOT EXISTS public." name "(
