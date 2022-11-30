@@ -44,9 +44,10 @@
     (sql/delete! tx resourceType {:id id})
     entity))
 
-(defn list [tx resourceType]
-  (let [table (name resourceType)
-        limit 128
-        sql-query (str "SELECT * FROM " table " LIMIT ?")]
-    (->> (sql/query tx [sql-query limit])
-         (map (fn [entity] (process entity resourceType ))))))
+(defn list
+  ([tx resourceType]
+   (let [table (name resourceType)
+         limit 128
+         sql-query (str "SELECT * FROM " table " LIMIT ?")]
+     (->> (sql/query tx [sql-query limit])
+          (map (fn [entity] (process entity resourceType )))))))

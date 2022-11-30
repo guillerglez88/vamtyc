@@ -1,4 +1,4 @@
-(ns vamtyc.transactions
+(ns vamtyc.handlers.transaction
   (:require [next.jdbc :as jdbc]
             [vamtyc.data.datasource :refer [ds]]
             [vamtyc.handlers.list :as list]
@@ -22,9 +22,9 @@
     {:request   brief-req
      :response  response}))
 
-(defn commit [trn]
+(defn handler [_ req]
   (jdbc/with-transaction [tx ds]
-    (->> (:items trn)
+    (->> (-> req :body :items)
          (map #(commit tx %))
          (into [])
          #({:resourceType   :List
