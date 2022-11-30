@@ -5,12 +5,11 @@
             [vamtyc.utils.path :as path]
             [clojure.data.json :as json]))
 
-(defn handler [req]
+(defn handler [tx req]
   (let [body        (:body req)
         res-type    (:resourceType body)
         id          (:id body)]
-    (-> res-type
-        (store/upsert id body)
+    (-> (store/upsert tx res-type id body)
         (json/write-str)
         (response)
         (content-type "application/json"))))

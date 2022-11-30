@@ -35,7 +35,7 @@
 
 (defn provision [res]
   (for [route (-> res :type keyword build-routes)]
-    (store/create :Route route)))
+    (store/create ds :Route route)))
 
 (defn init []
   (let [res {:type      "Route"
@@ -44,8 +44,8 @@
         id  "route"
         ddl (ddl "Route")]
     (jdbc/execute! ds [ddl])
-    (store/create :Resource id res)
-    (for [item (store/list :Resource)]
+    (store/create ds :Resource id res)
+    (for [item (store/list ds :Resource)]
       (provision item))))
 
 (comment

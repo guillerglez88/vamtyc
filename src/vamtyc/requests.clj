@@ -16,11 +16,10 @@
                         (json/read-str :key-fn keyword)
                         (assoc :resourceType    res-type
                                :id              id))
-        route-url   (:url route )
         params      (:params req)]
     {:resourceType  :HttpRequest
      :method        method
      :url           req-url
      :body          body
-     :route         route-url
+     :route         route
      :params        params}))

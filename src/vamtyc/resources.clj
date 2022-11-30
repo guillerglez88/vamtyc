@@ -16,7 +16,7 @@
         id        "resource"
         ddl       (ddl "Resource")]
     (jdbc/execute! ds [ddl])
-    (store/create :Resource id resource)))
+    (store/create ds :Resource id resource)))
 
 (comment
   (init)

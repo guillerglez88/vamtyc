@@ -1,8 +1,6 @@
 (ns vamtyc.data.store
   (:require [clojure.string :as str]
-            [next.jdbc.sql :as sql]
-            [next.jdbc.result-set :as rs]
-            [vamtyc.data.datasource :refer [ds]]))
+            [next.jdbc.sql :as sql]))
 
 (defn process [entity resourceType]
   (when entity
@@ -18,37 +16,38 @@
                   :url url}))))
 
 (defn create
-  ([resourceType id res]
+  ([tx resourceType id res]
    (let [entity {:id id :resource res}]
-    (sql/insert! ds resourceType entity)
-    (process  entity resourceType)))
-  ([resourceType, res]
+    (sql/insert! tx resourceType entity)
+    (process entity resourceType)))
+  ([tx resourceType, res]
    (let [id (str (java.util.UUID/randomUUID))]
-     (create resourceType id res))))
+     (create tx resourceType id res))))
 
-(defn read [resourceType id]
-  (-> (sql/get-by-id ds resourceType id :id {})
+(defn read [tx resourceType id]
+  (-> (sql/get-by-id tx resourceType id :id {})
       (process resourceType)))
 
-(defn update [resourceType id res]
-  (sql/update! ds resourceType {:resource res} {:id id})
+(defn update [tx resourceType id res]
+  (sql/update! tx resourceType {:resource res} {:id id})
   (-> {:id id :resource res}
       (process resourceType)))
 
-(defn upsert [resourceType id res]
-  (let [entity (read resourceType id)]
+(defn upsert [tx resourceType id res]
+  (let [entity (read tx resourceType id)]
     (if entity
-      (update resourceType id res)
-      (create resourceType id res))))
+      (update tx resourceType id res)
+      (create tx resourceType id res))))
 
-(defn delete [resourceType id]
+(defn delete [tx resourceType id]
   (let [entity  (read resourceType id)]
-    (sql/delete! ds resourceType {:id id})
+    (sql/delete! tx resourceType {:id id})
     entity))
 
-(defn list [resourceType]
-  (let [table (name resourceType)
-        limit 128
-        sql-query (str "SELECT * FROM " table " LIMIT ?")]
-    (->> (sql/query ds [sql-query limit])
-         (map (fn [entity] (process entity resourceType ))))))
+(defn list
+  ([tx resourceType]
+   (let [table (name resourceType)
+         limit 128
+         sql-query (str "SELECT * FROM " table " LIMIT ?")]
+     (->> (sql/query tx [sql-query limit])
+          (map (fn [entity] (process entity resourceType )))))))

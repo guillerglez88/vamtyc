@@ -4,10 +4,10 @@
             [vamtyc.utils.path :as path]
             [clojure.data.json :as json]))
 
-(defn handler [req]
+(defn handler [tx req]
   (let [res-type  (-> req :body :resourceType)
         id        (-> req :body :id)
-        res       (store/delete res-type id)]
+        res       (store/delete tx res-type id)]
     (if res
       (-> res
           (json/write-str)
