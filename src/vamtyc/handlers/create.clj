@@ -5,9 +5,9 @@
             [vamtyc.utils.path :as path]
             [clojure.data.json :as json]))
 
-(defn handler [req route]
-  (let [res-type  (-> route :path path/get-res-type keyword)
-        body      (-> req body-string (json/read-str :key-fn keyword))]
+(defn handler [req]
+  (let [body        (:body req)
+        res-type    (:resourceType body)]
     (-> res-type
         (store/create body)
         (json/write-str)

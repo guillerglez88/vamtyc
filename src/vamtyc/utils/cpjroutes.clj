@@ -27,11 +27,16 @@
    :/Coding/core-handlers?code=delete delete/handler
    :/Coding/core-handlers?code=upsert upsert/handler})
 
+(defn handler [req route]
+  (let [code    (-> route :code keyword)
+        handle  (or (code handlers) meta-handler)]
+    (-> req
+        (requests/build-request route)
+        handle)))
+
 (defn build-cpj-route [route]
   (let [method  (-> route :method str/lower-case keyword)
-        path    (-> route :path path/stringify)
-        code    (-> route :code keyword)
-        handler (or (code handlers) meta-handler)]
+        path    (-> route :path path/stringify)]
     (make-route method path #(handler % route))))
 
 (defn load-routes []

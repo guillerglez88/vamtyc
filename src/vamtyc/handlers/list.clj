@@ -15,9 +15,9 @@
                    :next  nil
                    :last  nil}})
 
-(defn handler [req route]
-  (let [url       (:uri req)
-        res-type  (-> route :path path/get-res-type keyword)]
+(defn handler [req]
+  (let [url       (:url req)
+        res-type  (-> req :body :resourceType)]
     (-> res-type
         (store/list)
         (build-result-set url)

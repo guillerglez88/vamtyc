@@ -4,9 +4,9 @@
             [vamtyc.utils.path :as path]
             [clojure.data.json :as json]))
 
-(defn handler [req route]
-  (let [res-type  (-> route :path path/get-res-type keyword)
-        id        (-> req :params :id)
+(defn handler [req]
+  (let [res-type  (-> req :body :resourceType)
+        id        (-> req :body :id)
         res       (store/delete res-type id)]
     (if res
       (-> res
