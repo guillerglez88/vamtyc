@@ -19,10 +19,10 @@
         hist-res    {:type res-type :desc desc}]
     (do
       (jdbc/execute! ds [ddl])
-      (store/create :Resource id hist-res))))
+      (store/create ds :Resource id hist-res))))
 
 (defn init []
-  (for [res (store/list :Resource)]
+  (for [res (store/list ds :Resource)]
     (provision res)))
 
 (comment

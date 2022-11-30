@@ -15,7 +15,7 @@
                    :queryParams "/QueryParam"}
         id        "queryparam"]
     (jdbc/execute! ds [ddl])
-    (store/create :Resource id resource)))
+    (store/create ds :Resource id resource)))
 
 (comment
   (init)

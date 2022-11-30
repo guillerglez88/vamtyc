@@ -33,5 +33,3 @@
   (->> (store/list ds :Route)
        (map build-cpj-route)
        (apply routes)))
-
-(load-routes)
