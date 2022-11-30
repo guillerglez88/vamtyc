@@ -5,41 +5,25 @@
             [ring.util.response :refer [content-type response]]
             [vamtyc.data.store :as store]
             [vamtyc.utils.path :as path]
-            [vamtyc.handlers.list :as list]
-            [vamtyc.handlers.read :as read]
-            [vamtyc.handlers.create :as create]
-            [vamtyc.handlers.delete :as delete]
-            [vamtyc.handlers.upsert :as upsert]
-            [lambdaisland.uri :refer [uri query-string->map]]
-            [vamtyc.requests :as requests]))
+            [vamtyc.requests :as requests]
+            [vamtyc.transactions :as transactions]))
 
-(defn meta-handler [req route]
-  (-> req
-      (requests/build-request route)
-      (json/write-str)
-      (response)
-      (content-type "application/json")))
-
-(def handlers
-  {:/Coding/core-handlers?code=list   list/handler
-   :/Coding/core-handlers?code=read   read/handler
-   :/Coding/core-handlers?code=create create/handler
-   :/Coding/core-handlers?code=delete delete/handler
-   :/Coding/core-handlers?code=upsert upsert/handler})
-
-(defn handler [req route]
-  (let [code    (-> route :code keyword)
-        handle  (or (code handlers) meta-handler)]
-    (-> req
-        (requests/build-request route)
-        handle)))
+(defn exec-req-as-trn [req]
+  (let [trn {:resourceType  :List
+             :type          :transaction
+             :items         [req]}]
+    (-> trn transactions/commit :items first)))
 
 (defn build-cpj-route [route]
   (let [method  (-> route :method str/lower-case keyword)
         path    (-> route :path path/stringify)]
-    (make-route method path #(handler % route))))
+    (make-route method path #(-> %
+                                 (requests/build-request route)
+                                 (exec-req-as-trn)))))
 
 (defn load-routes []
-  (->> (store/list :Route)
+  (->> (exec-req-as-trn {:resourceType  :HttpRequest
+                         :url           "/Route"
+                         :body          {:resourceType :Route}})
        (map build-cpj-route)
        (apply routes)))

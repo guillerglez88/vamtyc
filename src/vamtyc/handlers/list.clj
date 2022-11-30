@@ -15,11 +15,10 @@
                    :next  nil
                    :last  nil}})
 
-(defn handler [req]
+(defn handler [tx req]
   (let [url       (:url req)
         res-type  (-> req :body :resourceType)]
-    (-> res-type
-        (store/list)
+    (-> (store/list tx res-type)
         (build-result-set url)
         (json/write-str)
         (response)
