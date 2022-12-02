@@ -6,7 +6,12 @@
             [vamtyc.handlers.create :as create]
             [vamtyc.handlers.delete :as delete]
             [vamtyc.handlers.upsert :as upsert]
-            [vamtyc.data.store :as store]))
+            [vamtyc.data.store :as store]
+            [clj-http.client :as client]
+            [lambdaisland.uri :refer [uri]]
+            [clojure.string :as str]
+            [clojure.data.json :as json]
+            [ring.util.response :refer [response content-type]]))
 
 (def trn-res
   {:type        :Transaction
@@ -33,24 +38,40 @@
    :/Coding/core-handlers?code=delete delete/handler
    :/Coding/core-handlers?code=upsert upsert/handler})
 
-(defn commit [tx req]
-  (let [code        (-> req :route :code keyword)
-        handler     (code handlers)
-        brief-req   (select-keys req [:method :url])
-        response    (handler tx req)]
+(defn inspect-req [item]
+  (let [method  (-> item :method str/lower-case keyword)
+        url     (str (:baseurl item) (:url item))
+        body    (-> item :body json/write-str)]
+    (client/request {:method        method
+                     :url           url
+                     :content-type  :json
+                     :query-params  { "_inspect" "true" }
+                     :body          body})))
+
+(defn commit [tx item]
+  (let [req             (-> item inspect-req :body (json/read-str :key-fn keyword))
+        route-code      (-> req :route :code keyword)
+        route-handler   (route-code handlers)
+        brief-req       (select-keys req [:method :url])
+        response        (route-handler tx req)
+        response-map    (merge response {:body (json/read-str (:body response) :key-fn keyword)})]
     {:request   brief-req
-     :response  response}))
+     :response  response-map}))
 
 (defn handler [_ req]
-  (let [route (:route req)
-        items (-> req :body :items)]
+  (let [route       (:route req)
+        base-url    (:baseurl req)
+        items       (-> req :body :items)]
     (jdbc/with-transaction [tx ds]
       (->> items
-           (map #(commit tx (assoc % :route route)))
+           (map #(->> (assoc % :baseurl base-url)
+                      (commit tx)))
            (into [])
-           (#({:resourceType   :List
-               :type           :transaction-result
-               :items          %}))))))
+           (assoc {:resourceType  :List
+                   :type          :transaction-result } :items )
+           (json/write-str)
+           (response)
+           (#(content-type % "application/json"))))))
 
 (comment
   (init)

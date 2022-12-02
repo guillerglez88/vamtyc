@@ -3,15 +3,16 @@
  {"central" {:url "https://repo1.maven.org/maven2/"}
   "clojars" {:url "https://repo.clojars.org/"}}
  :deps
- {org.clojure/clojure                   {:mvn/version "1.11.1"}
-  org.clojure/data.json                 {:mvn/version "2.4.0"}
-  org.clojure/java.jdbc                 {:mvn/version "0.7.12"}
-  ring/ring-core                        {:mvn/version "1.9.6"}
-  ring/ring-jetty-adapter               {:mvn/version "1.9.6"}
-  compojure/compojure                   {:mvn/version "1.7.0"}
-  com.github.seancorfield/next.jdbc     {:mvn/version "1.3.834"}
-  org.postgresql/postgresql             {:mvn/version "42.5.0"}
-  lambdaisland/uri                      {:mvn/version "1.13.95"}}
+ {org.clojure/clojure               {:mvn/version "1.11.1"}
+  org.clojure/data.json             {:mvn/version "2.4.0"}
+  org.clojure/java.jdbc             {:mvn/version "0.7.12"}
+  ring/ring-core                    {:mvn/version "1.9.6"}
+  ring/ring-jetty-adapter           {:mvn/version "1.9.6"}
+  compojure/compojure               {:mvn/version "1.7.0"}
+  com.github.seancorfield/next.jdbc {:mvn/version "1.3.834"}
+  org.postgresql/postgresql         {:mvn/version "42.5.0"}
+  lambdaisland/uri                  {:mvn/version "1.13.95"}
+  clj-http/clj-http                 {:mvn/version "3.12.3"}}
  :aliases
  {:dev {:extra-paths ["dev"]
         :extra-deps {ring/ring-devel {:mvn/version "1.9.6"}}
