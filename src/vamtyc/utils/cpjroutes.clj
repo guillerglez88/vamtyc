@@ -12,7 +12,8 @@
             [vamtyc.handlers.create :as create]
             [vamtyc.handlers.delete :as delete]
             [vamtyc.handlers.upsert :as upsert]
-            [vamtyc.handlers.transaction :as transaction]))
+            [vamtyc.handlers.transaction :as transaction]
+            [vamtyc.handlers.inspect :as inspect]))
 
 (def handlers
   {:/Coding/core-handlers?code=list         list/handler
@@ -20,14 +21,25 @@
    :/Coding/core-handlers?code=create       create/handler
    :/Coding/core-handlers?code=delete       delete/handler
    :/Coding/core-handlers?code=upsert       upsert/handler
-   :/Coding/core-handlers?code=transaction  transaction/handler})
+   :/Coding/core-handlers?code=transaction  transaction/handler
+   :/Coding/core-handlers?code=inspect      inspect/handler})
+
+(defn resolve-handler-code [req route]
+  (let [inspect-code    :/Coding/core-handlers?code=inspect
+        is-inspect      (-> req :params (contains? "_inspect"))
+        route-code      (-> route :code keyword)]
+    (if is-inspect inspect-code route-code)))
+
+(defn handle [req route]
+  (let [handler-code    (resolve-handler-code req route)
+        handler         (handler-code handlers)]
+    (->> (requests/build-request req route)
+         (handler ds))))
 
 (defn build-cpj-route [route]
   (let [method  (-> route :method str/lower-case keyword)
-        path    (-> route :path path/stringify)
-        handler (-> route :code keyword (-> handlers))]
-    (make-route method path #(->> (requests/build-request % route)
-                                  (handler ds)))))
+        path    (-> route :path path/stringify)]
+    (make-route method path #(handle % route))))
 
 (defn load-routes []
   (->> (store/list ds :Route)
