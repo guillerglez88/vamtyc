@@ -1,10 +1,6 @@
 (ns vamtyc.core
-  (:require [clojure.pprint :as pp]
-            [clojure.data.json :as json]
-            [ring.adapter.jetty :refer [run-jetty]]
+  (:require [ring.adapter.jetty :refer [run-jetty]]
             [ring.middleware.params :refer [wrap-params]]
-            [compojure.core :refer [defroutes GET]]
-            [compojure.route :as route]
             [vamtyc.config.env :refer [env]]
             [vamtyc.utils.cpjroutes :as cpjroutes]
             [vamtyc.modules :as modules])
