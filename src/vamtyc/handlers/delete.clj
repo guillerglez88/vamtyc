@@ -1,16 +1,11 @@
 (ns vamtyc.handlers.delete
-  (:require [ring.util.response :refer [content-type response status not-found]]
-            [vamtyc.data.store :as store]
-            [vamtyc.utils.path :as path]
-            [clojure.data.json :as json]))
+  (:require [ring.util.response :refer [response not-found]]
+            [vamtyc.data.store :as store]))
 
-(defn handler [tx req]
+(defn handler [req tx]
   (let [res-type  (-> req :body :resourceType)
         id        (-> req :body :id)
         res       (store/delete tx res-type id)]
     (if res
-      (-> res
-          (json/write-str)
-          (response)
-          (content-type "application/json"))
+      (response res)
       (not-found "Not found"))))

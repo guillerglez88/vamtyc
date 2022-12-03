@@ -1,10 +1,8 @@
 (ns vamtyc.handlers.list
-  (:require [clojure.data.json :as json]
-            [ring.util.response :refer [content-type response]]
-            [vamtyc.data.store :as store]
-            [vamtyc.utils.path :as path]))
+  (:require [ring.util.response :refer [response]]
+            [vamtyc.data.store :as store]))
 
-(defn build-result-set [items url]
+(defn make-result-set [items url]
   {:resourceType  :List
    :url           url
    :type          :result-set
@@ -15,16 +13,10 @@
                    :next  nil
                    :last  nil}})
 
-(defn handler [tx req]
+(defn handler [req tx]
   (let [url       (:url req)
         res-type  (-> req :body :resourceType)]
     (-> (store/list tx res-type)
-        (build-result-set url)
-        (json/write-str)
-        (response)
-        (content-type "application/json"))))
-
-(comment
-  ((handler {:name "list-route"
-             :path [{:name "resourceType" :value "Route"}]}) {:uri "/Route/9ddf6cbd-1def-4306-8b19-a664bbbdf2ae"})
-  )
+        (#(into [] %))
+        (make-result-set url)
+        (response))))

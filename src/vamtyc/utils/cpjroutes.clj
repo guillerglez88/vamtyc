@@ -2,7 +2,8 @@
   (:require [clojure.data.json :as json]
             [clojure.string :as str]
             [compojure.core :refer [make-route routes]]
-            [ring.util.response :refer [content-type response]]
+            [ring.util.response :refer [content-type response status]]
+            [next.jdbc :as jdbc]
             [vamtyc.data.datasource :refer [ds]]
             [vamtyc.data.store :as store]
             [vamtyc.utils.path :as path]
@@ -30,16 +31,24 @@
         route-code      (-> route :code keyword)]
     (if is-inspect inspect-code route-code)))
 
-(defn handle [req route]
+(defn make-http-response [resp]
+  (-> (json/write-str (:body resp))
+      (response)
+      (status (:status resp))
+      (content-type "application/json")))
+
+(defn handle-req [req route]
   (let [handler-code    (resolve-handler-code req route)
         handler         (handler-code handlers)]
-    (->> (requests/build-request req route)
-         (handler ds))))
+    (jdbc/with-transaction [tx ds]
+      (-> (requests/build-request req route)
+          (handler tx)
+          (make-http-response)))))
 
 (defn build-cpj-route [route]
   (let [method  (-> route :method str/lower-case keyword)
         path    (-> route :path path/stringify)]
-    (make-route method path #(handle % route))))
+    (make-route method path #(handle-req % route))))
 
 (defn load-routes []
   (->> (store/list ds :Route)

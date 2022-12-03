@@ -1,8 +1,5 @@
 (ns vamtyc.handlers.inspect
-  (:require [clojure.data.json :as json]
-            [ring.util.response :refer [content-type response]]))
+  (:require [ring.util.response :refer [response]]))
 
-(defn handler [_tx req]
-  (-> (json/write-str req)
-      (response)
-      (content-type "application/json")))
+(defn handler [req _tx]
+  (response req))

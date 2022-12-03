@@ -13,22 +13,42 @@
             [clojure.data.json :as json]
             [ring.util.response :refer [response content-type]]))
 
-(def trn-res
+(defn make-trn-resource []
   {:type        :Transaction
    :desc        "Represents a Transaction resource"
    :resources   "/Resource"})
 
-(def place-trn-route
+(defn make-trn-result [items]
+  {:resourceType    :List
+   :type            :transaction-result
+   :items           items})
+
+(defn place-trn-route []
   {:code        "/Coding/core-handlers?code=transaction"
    :name        "place-transaction"
    :path        [{:name "resourceType" :value "Transaction"}]
    :method      :POST
    :resource    "/Resource/transaction"})
 
+(defn make-inspect-http-req [req]
+  (let [method  (-> req :method str/lower-case keyword)
+        url     (str (:baseurl req) (:url req))
+        body    (-> req :body json/write-str)]
+    {:method        method
+     :url           url
+     :content-type  :json
+     :query-params  { "_inspect" "true" }
+     :body          body}))
+
+(defn make-trn-item-result [req resp]
+  (let [brief-req   (select-keys req [:method :url])]
+    {:request   brief-req
+     :response  resp}))
+
 (defn init []
   (jdbc/with-transaction [tx ds]
-    (store/create tx :Resource "transaction" trn-res)
-    (store/create tx :Route place-trn-route)
+    (store/create tx :Resource "transaction" (make-trn-resource))
+    (store/create tx :Route (place-trn-route))
     {:ok "success!"}))
 
 (def handlers
@@ -38,41 +58,27 @@
    :/Coding/core-handlers?code=delete delete/handler
    :/Coding/core-handlers?code=upsert upsert/handler})
 
-(defn inspect-req [item]
-  (let [method  (-> item :method str/lower-case keyword)
-        url     (str (:baseurl item) (:url item))
-        body    (-> item :body json/write-str)]
-    (client/request {:method        method
-                     :url           url
-                     :content-type  :json
-                     :query-params  { "_inspect" "true" }
-                     :body          body})))
+(defn inspect-req [req]
+  (-> req
+      (make-inspect-http-req)
+      (client/request)
+      (:body)
+      (json/read-str :key-fn keyword)))
 
-(defn commit [tx item]
-  (let [req             (-> item inspect-req :body (json/read-str :key-fn keyword))
-        route-code      (-> req :route :code keyword)
-        route-handler   (route-code handlers)
-        brief-req       (select-keys req [:method :url])
-        response        (route-handler tx req)
-        response-map    (merge response {:body (json/read-str (:body response) :key-fn keyword)})]
-    {:request   brief-req
-     :response  response-map}))
+(defn handle-req [req tx]
+  (let [code    (-> req :route :code keyword)
+        handler (-> handlers code)]
+    (handler req tx)))
 
-(defn handler [_ req]
-  (let [route       (:route req)
-        base-url    (:baseurl req)
-        items       (-> req :body :items)]
-    (jdbc/with-transaction [tx ds]
-      (->> items
-           (map #(->> (assoc % :baseurl base-url)
-                      (commit tx)))
-           (into [])
-           (assoc {:resourceType  :List
-                   :type          :transaction-result } :items )
-           (json/write-str)
-           (response)
-           (#(content-type % "application/json"))))))
+(defn commit [item req tx]
+  (-> (assoc item :baseurl (:baseurl req))
+      (inspect-req req)
+      (handle-req tx)
+      (->> (make-trn-item-result req))))
 
-(comment
-  (init)
-  )
+(defn handler [req tx]
+  (->> (-> req :body :items)
+       (map #(commit % req tx))
+       (into [])
+       (make-trn-result)
+       (response)))
