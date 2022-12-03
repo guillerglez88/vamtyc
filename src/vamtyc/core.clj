@@ -6,29 +6,26 @@
             [compojure.core :refer [defroutes GET]]
             [compojure.route :as route]
             [vamtyc.config.env :refer [env]]
-            [vamtyc.utils.cpjroutes :as cpjroutes])
+            [vamtyc.utils.cpjroutes :as cpjroutes]
+            [vamtyc.modules :as modules])
   (:gen-class))
 
-(def app
-  (wrap-params (cpjroutes/load-routes)))
+(def mod-init (modules/init))
 
-(defn start
-  [port]
-  (-> (var app)
-      (run-jetty {:port port
-                  :join? false})))
+(def app-routes (wrap-params (cpjroutes/load-routes)))
+
+(defn start []
+  (let [port (-> env :PORT Integer/parseInt)]
+    (run-jetty (var app-routes) {:port port :join? false})))
 
 (defn -main [& _args]
-  (let [port (Integer/parseInt (:PORT env))]
-    (start port)
-    (println (str "Running webserver at http://127.0.0.1:" port "/"))))
+  (start))
 
 (comment
   ;; start service from main
   (-main)
   ;; start service
-  (def server
-    (start (Integer/parseInt (:PORT env))))
+  (def server (start))
   ;; stop service
   (.stop server)
   )

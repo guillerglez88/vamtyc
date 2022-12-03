@@ -65,11 +65,11 @@ POST http://localhost:3000/Transaction
     "resourceType": "Transaction",
     "items": [{
         "resourceType": "HttpRequest",
-        "method": "GET",
-        "url": "/Resource/e35541ae-e821-4cde-80a9-7f3aef98473d"
+        "method": "DELETE",
+        "url": "/Resource/33a7d4be-f33d-44b1-8783-faf2277b6b2f"
     }, {
         "resourceType": "HttpRequest",
-        "method": "GET",
-        "url": "/Resource/304f77c6-c4af-46e4-be4b-1b8853423e74"
+        "method": "DELETE",
+        "url": "/Resource/10bc01cc-7da1-4749-a835-12b308f165c1"
     }]
 }
