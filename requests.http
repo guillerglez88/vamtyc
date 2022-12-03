@@ -1,3 +1,7 @@
+GET http://localhost:3000/Resource
+
+###
+
 # @name create
 POST http://localhost:3000/Resource
 Content-Type: application/json
