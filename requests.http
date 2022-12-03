@@ -1,0 +1,71 @@
+# @name create
+POST http://localhost:3000/Resource
+Content-Type: application/json
+
+{
+    "name": [{
+        "given": ["John"],
+        "family": "Doe"
+    }],
+    "gender": "male"
+}
+
+###
+
+GET http://localhost:3000/Resource/{{create.response.body.id}}
+
+###
+
+DELETE http://localhost:3000/Resource/{{create.response.body.id}}
+
+###
+
+PUT http://localhost:3000/Resource/{{create.response.body.id}}
+Content-Type: application/json
+
+{
+    "name": [{
+        "given": ["John", "Martin"],
+        "family": "Doe"
+    }],
+    "gender": "male"
+}
+
+###
+
+
+POST http://localhost:3000/Transaction
+Content-Type: application/json
+
+{
+    "resouceType": "Transaction",
+    "items": [{
+        "resourceType": "HttpRequest",
+        "method": "POST",
+        "url": "/Resource",
+        "body": {
+            "name": [{
+                "given": ["John"],
+                "family": "Doe"
+            }],
+            "gender": "male"
+        }
+    }]
+}
+
+###
+
+POST http://localhost:3000/Transaction
+
+{
+    "resourceType": "Transaction",
+    "items": [{
+        "resourceType": "HttpRequest",
+        "method": "GET",
+        "url": "/Resource/e35541ae-e821-4cde-80a9-7f3aef98473d"
+    }, {
+        "resourceType": "HttpRequest",
+        "method": "GET",
+        "url": "/Resource/304f77c6-c4af-46e4-be4b-1b8853423e74"
+    }]
+}

@@ -66,15 +66,15 @@
       (json/read-str :key-fn keyword)))
 
 (defn handle-req [req tx]
-  (let [code    (-> req :route :code keyword)
-        handler (-> handlers code)]
-    (handler req tx)))
+  (let [code        (-> req :route :code keyword)
+        req-handler (-> handlers code)]
+    (req-handler req tx)))
 
 (defn commit [item req tx]
   (-> (assoc item :baseurl (:baseurl req))
-      (inspect-req req)
+      (inspect-req)
       (handle-req tx)
-      (->> (make-trn-item-result req))))
+      (->> (make-trn-item-result item))))
 
 (defn handler [req tx]
   (->> (-> req :body :items)

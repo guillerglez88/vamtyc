@@ -40,7 +40,7 @@
       (create tx resourceType id res))))
 
 (defn delete [tx resourceType id]
-  (let [entity  (read resourceType id)]
+  (let [entity  (read tx resourceType id)]
     (sql/delete! tx resourceType {:id id})
     entity))
 
