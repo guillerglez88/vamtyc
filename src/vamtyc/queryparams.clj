@@ -9,14 +9,13 @@
     resource    JSONB   NULL,
     CONSTRAINT  queryparam_pk PRIMARY KEY (id))")
 
-(defn init []
-  (let [resource  {:type        "QueryParam"
-                   :desc        "Represents a REST query-string parameter resource"
-                   :queryParams "/QueryParam"}
-        id        "queryparam"]
-    (jdbc/execute! ds [ddl])
-    (store/create ds :Resource id resource)))
+(defn make-queryparam-resource []
+  {:type        "QueryParam"
+   :desc        "Represents a REST query-string parameter resource"
+   :queryParams "/QueryParam"})
 
-(comment
-  (init)
-  )
+(defn init [tx]
+  (let [resource  (make-queryparam-resource)]
+    (jdbc/execute! tx [ddl])
+    (store/create tx :Resource "queryparam" resource)
+    {:ok "success!"}))

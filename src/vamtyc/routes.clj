@@ -1,17 +1,21 @@
 (ns vamtyc.routes
   (:require [clojure.string :as str]
             [next.jdbc :as jdbc]
-            [vamtyc.data.datasource :refer [ds]]
             [vamtyc.data.store :as store]
             [vamtyc.utils.path :as path]))
 
-(defn ddl [name]
-  (str "CREATE TABLE IF NOT EXISTS public." name "(
-            id          TEXT    NOT NULL,
-            resource    JSONB   NULL,
-            CONSTRAINT  " name "_pk PRIMARY KEY (id));"))
+(def ddl
+  "CREATE TABLE IF NOT EXISTS public.route(
+       id          TEXT    NOT NULL,
+       resource    JSONB   NULL,
+       CONSTRAINT  route_pk PRIMARY KEY (id));")
 
-(defn build-route [code method path]
+(defn make-route-resource []
+  {:type    "Route"
+   :desc    "Represents a REST route resource"
+   :routes  "/Route"})
+
+(defn make-route [code method path]
   (let [res-type    (path/get-res-type path)
         res-name    (name res-type)
         res-name-lc (str/lower-case res-name)
@@ -24,30 +28,23 @@
      :resource  resource
      :code      coding}))
 
-(defn build-routes [resourceType]
+(defn make-routes [resourceType]
   (let [res-type    {:name "resourceType" :value resourceType}
         id          {:name "id"}]
-    [(build-route "list"      :GET    [res-type   ])
-     (build-route "read"      :GET    [res-type id])
-     (build-route "create"    :POST   [res-type   ])
-     (build-route "upsert"    :PUT    [res-type id])
-     (build-route "delete"    :DELETE [res-type id])]))
+    [(make-route "list"      :GET    [res-type   ])
+     (make-route "read"      :GET    [res-type id])
+     (make-route "create"    :POST   [res-type   ])
+     (make-route "upsert"    :PUT    [res-type id])
+     (make-route "delete"    :DELETE [res-type id])]))
 
-(defn provision [res]
-  (for [route (-> res :type keyword build-routes)]
-    (store/create ds :Route route)))
+(defn provision [res tx]
+  (doseq [route (-> res :type keyword make-routes)]
+    (store/create tx :Route route)))
 
-(defn init []
-  (let [res {:type      "Route"
-             :desc      "Represents a REST route resource"
-             :routes    "/Route"}
-        id  "route"
-        ddl (ddl "Route")]
-    (jdbc/execute! ds [ddl])
-    (store/create ds :Resource id res)
-    (for [item (store/list ds :Resource)]
-      (provision item))))
-
-(comment
-  (init)
-  )
+(defn init [tx]
+  (let [res (make-route-resource)]
+    (jdbc/execute! tx [ddl])
+    (store/create tx :Resource "route" res)
+    (doseq [item (store/list tx :Resource)]
+      (provision item tx))
+    {:ok "success!"}))

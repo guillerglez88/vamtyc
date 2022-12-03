@@ -1,7 +1,5 @@
 (ns vamtyc.transactions
-  (:require [next.jdbc :as jdbc]
-            [vamtyc.data.store :as store]
-            [vamtyc.data.datasource :refer [ds]]))
+  (:require [vamtyc.data.store :as store]))
 
 (defn make-trn-resource []
   {:type        :Transaction
@@ -15,8 +13,7 @@
    :method      :POST
    :resource    "/Resource/transaction"})
 
-(defn init []
-  (jdbc/with-transaction [tx ds]
-    (store/create tx :Resource "transaction" (make-trn-resource))
-    (store/create tx :Route (place-trn-route))
-    {:ok "success!"}))
+(defn init [tx]
+  (store/create tx :Resource "transaction" (make-trn-resource))
+  (store/create tx :Route (place-trn-route))
+  {:ok "success!"})
