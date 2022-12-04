@@ -1,4 +1,4 @@
-(ns vamtyc.requests
+(ns vamtyc.utils.requests
   (:require [clojure.data.json :as json]
             [ring.util.request :refer [body-string]]
             [vamtyc.utils.path :as path]

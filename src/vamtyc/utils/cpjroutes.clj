@@ -7,7 +7,7 @@
             [vamtyc.data.datasource :refer [ds]]
             [vamtyc.data.store :as store]
             [vamtyc.utils.path :as path]
-            [vamtyc.requests :as requests]
+            [vamtyc.utils.requests :as requests]
             [vamtyc.handlers.list :as list]
             [vamtyc.handlers.read :as read]
             [vamtyc.handlers.create :as create]

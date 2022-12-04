@@ -1,8 +1,8 @@
-(ns vamtyc.queryparams
+(ns vamtyc.modules.queryparams
   (:require [next.jdbc :as jdbc]
             [vamtyc.data.datasource :refer [ds]]
             [vamtyc.data.store :as store]
-            [vamtyc.routes :as routes]))
+            [vamtyc.modules.routes :as routes]))
 
 (def ddl
   "CREATE TABLE IF NOT EXISTS public.queryparam (

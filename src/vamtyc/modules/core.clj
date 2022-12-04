@@ -1,13 +1,12 @@
-(ns vamtyc.modules
+(ns vamtyc.modules.core
   (:require [next.jdbc :as jdbc]
             [vamtyc.data.datasource :refer [ds]]
-            [vamtyc.resources :as resources]
-            [vamtyc.routes :as routes]
-            [vamtyc.queryparams :as queryparams]
-            [vamtyc.history :as history]
-            [vamtyc.transactions :as transactions]
             [vamtyc.data.store :as store]
-            [vamtyc.queries.limit :as limit]))
+            [vamtyc.modules.resources :as resources]
+            [vamtyc.modules.routes :as routes]
+            [vamtyc.modules.queryparams :as queryparams]
+            [vamtyc.modules.history :as history]
+            [vamtyc.modules.transactions :as transactions]))
 
 (defn is-already-init? []
   (try

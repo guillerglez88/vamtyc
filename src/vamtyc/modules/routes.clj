@@ -1,4 +1,4 @@
-(ns vamtyc.routes
+(ns vamtyc.modules.routes
   (:require [clojure.string :as str]
             [next.jdbc :as jdbc]
             [vamtyc.data.store :as store]

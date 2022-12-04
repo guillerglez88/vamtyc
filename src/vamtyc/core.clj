@@ -3,7 +3,7 @@
             [ring.middleware.params :refer [wrap-params]]
             [vamtyc.config.env :refer [env]]
             [vamtyc.utils.cpjroutes :as cpjroutes]
-            [vamtyc.modules :as modules])
+            [vamtyc.modules.core :as modules])
   (:gen-class))
 
 (def mod-init (modules/init))
