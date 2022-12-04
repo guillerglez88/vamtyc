@@ -6,7 +6,8 @@
             [vamtyc.queryparams :as queryparams]
             [vamtyc.history :as history]
             [vamtyc.transactions :as transactions]
-            [vamtyc.data.store :as store]))
+            [vamtyc.data.store :as store]
+            [vamtyc.queries.limit :as limit]))
 
 (defn is-already-init? []
   (try

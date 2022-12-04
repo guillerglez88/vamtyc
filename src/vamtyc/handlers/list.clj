@@ -1,6 +1,8 @@
 (ns vamtyc.handlers.list
   (:require [ring.util.response :refer [response]]
-            [vamtyc.data.store :as store]))
+            [vamtyc.data.store :as store]
+            [vamtyc.routes :as routes]
+            [vamtyc.utils.path :as path]))
 
 (defn make-result-set [items url]
   {:resourceType  :List
