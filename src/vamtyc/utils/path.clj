@@ -14,18 +14,8 @@
        (str/join "/")
        (str "/")))
 
-(comment
-  (is-res-type? {:name "resourceType"})
-  (is-res-type? {:name "id"})
-  ;;
-  (get-res-type [{:name "resourceType" :value "Resource"}
-                 {:name "id"}])
-  (get-res-type [{:name "tenant"        :value "instance1"}
-                 {:name "resourceType"  :value "Resource"}
-                 {:name "id"}])
-  ;;
-  (stringify [{:name "resourceType"  :value "Resource"}])
-  (stringify [{:name "tenant"        :value "instance1"}
-              {:name "resourceType"  :value "Resource"}
-              {:name "id"}])
-  )
+(defn res-type [resourceType]
+  {:name "resourceType" :value resourceType})
+
+(defn id []
+  {:name "id"})

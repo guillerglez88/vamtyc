@@ -1,4 +1,4 @@
-(ns vamtyc.transactions
+(ns vamtyc.modules.transactions
   (:require [vamtyc.data.store :as store]))
 
 (defn make-trn-resource []

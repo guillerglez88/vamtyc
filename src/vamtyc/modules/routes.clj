@@ -1,4 +1,4 @@
-(ns vamtyc.routes
+(ns vamtyc.modules.routes
   (:require [clojure.string :as str]
             [next.jdbc :as jdbc]
             [vamtyc.data.store :as store]
@@ -29,8 +29,8 @@
      :code      coding}))
 
 (defn make-routes [resourceType]
-  (let [res-type    {:name "resourceType" :value resourceType}
-        id          {:name "id"}]
+  (let [res-type    (path/res-type resourceType)
+        id          (path/id)]
     [(make-route "list"      :GET    [res-type   ])
      (make-route "read"      :GET    [res-type id])
      (make-route "create"    :POST   [res-type   ])

@@ -1,4 +1,4 @@
-(ns vamtyc.history
+(ns vamtyc.modules.history
   (:require [clojure.string :as str]
             [next.jdbc :as jdbc]
             [vamtyc.data.store :as store]))

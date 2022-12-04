@@ -1,4 +1,4 @@
-(ns vamtyc.resources
+(ns vamtyc.modules.resources
   (:require [next.jdbc :as jdbc]
             [vamtyc.data.store :as store]))
 

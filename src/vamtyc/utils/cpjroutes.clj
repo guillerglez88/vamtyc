@@ -7,14 +7,15 @@
             [vamtyc.data.datasource :refer [ds]]
             [vamtyc.data.store :as store]
             [vamtyc.utils.path :as path]
-            [vamtyc.requests :as requests]
+            [vamtyc.utils.requests :as requests]
             [vamtyc.handlers.list :as list]
             [vamtyc.handlers.read :as read]
             [vamtyc.handlers.create :as create]
             [vamtyc.handlers.delete :as delete]
             [vamtyc.handlers.upsert :as upsert]
             [vamtyc.handlers.transaction :as transaction]
-            [vamtyc.handlers.inspect :as inspect]))
+            [vamtyc.handlers.inspect :as inspect]
+            [vamtyc.queries.core :as queries]))
 
 (def handlers
   {:/Coding/core-handlers?code=list         list/handler
@@ -42,6 +43,7 @@
         handler         (handler-code handlers)]
     (jdbc/with-transaction [tx ds]
       (-> (requests/build-request req route)
+          (queries/process-query-params tx)
           (handler tx)
           (make-http-response)))))
 
