@@ -19,7 +19,7 @@
   {:name          "_limit"
    :desc          "_limit=128 query-string, used for limiting result items count"
    :type          resourceType
-   :code          :/Coding/core-query-params?code=limit
+   :code          "/Coding/core-query-params?code=limit"
    :queryparams   "/QueryParam"})
 
 (defn init [tx]

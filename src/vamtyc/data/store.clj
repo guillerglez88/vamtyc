@@ -2,7 +2,8 @@
   (:require [clojure.string :as str]
             [next.jdbc.sql :as sql]
             [honey.sql :as hsql]
-            [honey.sql.helpers :refer [select from where limit] :as h]))
+            [honey.sql.helpers :refer [select from where limit] :as h]
+            [vamtyc.config.env :refer [env]]))
 
 (defn process [entity resourceType]
   (when entity
@@ -47,9 +48,12 @@
     entity))
 
 (defn list
-  ([tx resourceType sql-map]
-   (let [sql-query (-> sql-map (from resourceType) (limit 128) (hsql/format))]
-     (->> (sql/query tx sql-query)
-          (map #(process % resourceType )))))
+  ([tx resourceType sql]
+   (->> (sql/query tx sql)
+        (map #(process % resourceType))))
   ([tx resourceType]
-   (list tx resourceType (select :*))))
+   (-> (select :*)
+       (from resourceType)
+       (limit (-> env :LIMIT Integer/parseInt))
+       (hsql/format)
+       (#(list tx resourceType %)))))

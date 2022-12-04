@@ -16,9 +16,10 @@
                    :last  nil}})
 
 (defn handler [req tx]
-  (let [url       (:url req)
-        res-type  (-> req :body :resourceType)]
-    (-> (store/list tx res-type)
+  (let [url         (:url req)
+        res-type    (-> req :body :resourceType)
+        sql         (:sql req)]
+    (-> (store/list tx res-type sql)
         (#(into [] %))
         (make-result-set url)
         (response))))
