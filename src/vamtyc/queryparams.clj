@@ -1,7 +1,8 @@
 (ns vamtyc.queryparams
   (:require [next.jdbc :as jdbc]
             [vamtyc.data.datasource :refer [ds]]
-            [vamtyc.data.store :as store]))
+            [vamtyc.data.store :as store]
+            [vamtyc.routes :as routes]))
 
 (def ddl
   "CREATE TABLE IF NOT EXISTS public.queryparam (
@@ -25,6 +26,7 @@
   (let [resource  (make-queryparam-resource)]
     (jdbc/execute! tx [ddl])
     (store/create tx :Resource "queryparam" resource)
+    (routes/provision resource tx)
     (doseq [res (store/list tx :Resource)]
       (-> (:type res)
           (make-queryparam)
