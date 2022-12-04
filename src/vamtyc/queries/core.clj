@@ -8,7 +8,9 @@
   {:/Coding/core-query-params?code=limit    limit/filter})
 
 (defn load-queryparams [params res-type tx]
-  (let [param-names (-> params keys (into []) (or []))]
+  (let [param-names (->> (or (keys params) '())
+                         (map name)
+                         (into []))]
     (if (empty? param-names) []
         (-> (select :*)
             (from :QueryParam)
