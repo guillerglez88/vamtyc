@@ -1,6 +1,8 @@
 (ns vamtyc.data.store
   (:require [clojure.string :as str]
-            [next.jdbc.sql :as sql]))
+            [next.jdbc.sql :as sql]
+            [honey.sql :as hsql]
+            [honey.sql.helpers :refer [select from where limit] :as h]))
 
 (defn process [entity resourceType]
   (when entity
@@ -45,9 +47,9 @@
     entity))
 
 (defn list
+  ([tx resourceType sql-map]
+   (let [sql-query (-> sql-map (from resourceType) (limit 128) (hsql/format))]
+     (->> (sql/query tx sql-query)
+          (map #(process % resourceType )))))
   ([tx resourceType]
-   (let [table (name resourceType)
-         limit 128
-         sql-query (str "SELECT * FROM " table " LIMIT ?")]
-     (->> (sql/query tx [sql-query limit])
-          (map (fn [entity] (process entity resourceType )))))))
+   (list tx resourceType (select :*))))
