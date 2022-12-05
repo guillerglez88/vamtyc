@@ -2,15 +2,14 @@
   (:require [vamtyc.data.store :as store]
             [honey.sql :as hsql]
             [honey.sql.helpers :refer [select from where] :as h]
-            [vamtyc.queries.limit :as limit]))
+            [vamtyc.queries.limit :as limit]
+            [vamtyc.utils.requests :refer [extract-param-names]]))
 
 (def filters
   {:/Coding/core-query-params?code=limit    limit/filter})
 
-(defn load-queryparams [params res-type tx]
-  (let [param-names (->> (or (keys params) '())
-                         (map name)
-                         (into []))]
+(defn load-queryparams [param-names res-type tx]
+  (let []
     (if (empty? param-names) []
         (-> (select :*)
             (from :QueryParam)
@@ -25,10 +24,10 @@
 
 (defn process-query-params [req tx]
   (let [res-type    (-> req :body :resourceType)
-        params      (:params req)
+        param-names (extract-param-names req)
         sql-map     (make-sql-map res-type)
         seed        (assoc req :sql-map sql-map)]
-    (->> (load-queryparams params res-type tx)
+    (->> (load-queryparams param-names res-type tx)
          (reduce (fn [acc curr]
                    (->> (keyword (:code curr))
                         (get filters)
