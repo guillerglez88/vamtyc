@@ -85,9 +85,9 @@ Content-Type: application/json
 
 {
     "code": "/Coding/core-query-params?code=text",
-    "desc": "Filter by Resource name",
+    "desc": "Filter Route by name",
     "name": "name",
-    "type": "Resource",
+    "type": "Route",
     "path": [{ "name": "name" }],
     "queryparams": "/QueryParam"
 }

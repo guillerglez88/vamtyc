@@ -8,7 +8,9 @@
 
 (def mod-init (modules/init))
 
-(def app-routes (wrap-params (cpjroutes/load-routes)))
+(def app-routes
+  (-> (cpjroutes/load-routes)
+      (wrap-params)))
 
 (defn start []
   (let [port (-> env :PORT Integer/parseInt)]
