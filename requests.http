@@ -1,9 +1,13 @@
-GET http://localhost:3000/Resource
+@base-url=http://localhost:3000
+
+###
+
+GET {{base-url}}/Resource
 
 ###
 
 # @name create
-POST http://localhost:3000/Resource
+POST {{base-url}}/Resource
 Content-Type: application/json
 
 {
@@ -16,15 +20,15 @@ Content-Type: application/json
 
 ###
 
-GET http://localhost:3000/Resource/{{create.response.body.id}}
+GET {{base-url}}/Resource/{{create.response.body.id}}
 
 ###
 
-DELETE http://localhost:3000/Resource/{{create.response.body.id}}
+DELETE {{base-url}}/Resource/{{create.response.body.id}}
 
 ###
 
-PUT http://localhost:3000/Resource/{{create.response.body.id}}
+PUT {{base-url}}/Resource/{{create.response.body.id}}
 Content-Type: application/json
 
 {
@@ -38,7 +42,7 @@ Content-Type: application/json
 ###
 
 
-POST http://localhost:3000/Transaction
+POST {{base-url}}/Transaction
 Content-Type: application/json
 
 {
@@ -59,7 +63,7 @@ Content-Type: application/json
 
 ###
 
-POST http://localhost:3000/Transaction
+POST {{base-url}}/Transaction
 
 {
     "resourceType": "Transaction",
@@ -73,3 +77,21 @@ POST http://localhost:3000/Transaction
         "url": "/Resource/10bc01cc-7da1-4749-a835-12b308f165c1"
     }]
 }
+
+###
+
+POST {{base-url}}/QueryParam
+Content-Type: application/json
+
+{
+    "code": "/Coding/core-query-params?code=text",
+    "desc": "Filter by Resource name",
+    "name": "name",
+    "type": "Resource",
+    "path": [{ "name": "name" }],
+    "queryparams": "/QueryParam"
+}
+
+###
+
+GET {{base-url}}/QueryParam/b8b34356-f18d-4486-b48b-58a3aab40772
