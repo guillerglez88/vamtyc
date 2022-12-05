@@ -25,4 +25,4 @@
     (if (empty? queryparams) req
         (->> (reduce #(refine-query req %1 %2) sql-map queryparams)
              (hsql/format)
-             (assoc req :sql)))))
+             (assoc req :queryparams queryparams :sql)))))
