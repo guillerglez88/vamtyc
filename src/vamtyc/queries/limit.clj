@@ -4,8 +4,8 @@
             [honey.sql.helpers :refer [limit]]
             [vamtyc.data.store :as store]))
 
-(defn filter [req]
-  (let [env-limit   (:LIMIT env)
-        limit-val   (-> req :params (get "_limit") (or env-limit) Integer/parseInt)
-        sql-map     (-> req :sql-map (limit limit-val))]
-    (merge req {:sql-map sql-map})))
+(defn filter [req sql-map]
+  (-> req :params
+      (get "_limit")
+      (Integer/parseInt)
+      (->> (limit sql-map))))
