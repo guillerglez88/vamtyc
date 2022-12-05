@@ -78,6 +78,7 @@ Content-Type: application/json
 }
 ```
 
-## Standard query-strings
+## Core query-params
 
 - `_inspect=true`: inspect request without causing any side effect
+- `_limit=16`: limit results count
