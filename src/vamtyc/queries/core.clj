@@ -16,7 +16,7 @@
       (#(% req query-param sql-map))))
 
 (defn make-sql-map [res-type]
-    (-> (select :*)
+    (-> (select :id :resource)
         (from res-type)))
 
 (defn process-query-params [req tx]
@@ -26,6 +26,6 @@
         sql-map     (make-sql-map res-type)]
     (if (empty? queryparams)
       (assoc req :sql (hsql/format sql-map))
-      (->> (reduce #(refine-query req %1 %2) sql-map queryparams)
-           (hsql/format)
-           (assoc req :queryparams queryparams :sql)))))
+      (-> (reduce #(refine-query req %1 %2) sql-map queryparams)
+          (hsql/format {:pretty true})
+          (->> (assoc req :queryparams queryparams :sql))))))

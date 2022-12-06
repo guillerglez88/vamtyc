@@ -80,15 +80,18 @@ POST {{base-url}}/Transaction
 
 ###
 
-POST {{base-url}}/QueryParam
+PUT {{base-url}}/QueryParam/e985388c-da0a-4409-bf52-e1f4c08374a9
 Content-Type: application/json
 
 {
     "code": "/Coding/core-query-params?code=text",
-    "desc": "Filter Route by name",
-    "name": "name",
+    "desc": "Filter Route by res-type",
+    "name": "res-type",
     "type": "Route",
-    "path": [{ "name": "name" }],
+    "path": [
+        { "name": "path", "collection": true },
+        { "name": "value" }
+    ],
     "queryparams": "/QueryParam"
 }
 
