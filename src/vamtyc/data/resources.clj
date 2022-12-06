@@ -1,0 +1,2 @@
+(ns vamtyc.data.resources)
+
