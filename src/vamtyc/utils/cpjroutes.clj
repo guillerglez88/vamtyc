@@ -6,7 +6,6 @@
             [next.jdbc :as jdbc]
             [vamtyc.data.datasource :refer [ds]]
             [vamtyc.data.store :as store]
-            [vamtyc.data.routes :as routes-store]
             [vamtyc.utils.path :as path]
             [vamtyc.utils.requests :as requests]
             [vamtyc.handlers.list :as list]
@@ -57,6 +56,3 @@
   (->> (store/list ds :Route)
        (map build-cpj-route)
        (apply routes)))
-
-(comment
-  (routes-store/get-all ds))
