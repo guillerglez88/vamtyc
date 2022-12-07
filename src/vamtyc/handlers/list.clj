@@ -6,15 +6,16 @@
             [vamtyc.utils.fields :as fields]))
 
 (defn make-result-set [items url]
-  {:resourceType  :List
-   :url           url
-   :type          :result-set
-   :items         items
-   :nav           {:first nil
-                   :prev  nil
-                   :self  url
-                   :next  nil
-                   :last  nil}})
+  (let [id (str (java.util.UUID/randomUUID))]
+    {:resourceType  :List
+     :id            id
+     :url           url
+     :type          :result-set
+     :items         items
+     :nav           {:first nil
+                     :prev  nil
+                     :next  nil
+                     :last  nil}}))
 
 (defn handler [req tx]
   (let [url         (:url req)
