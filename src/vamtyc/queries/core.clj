@@ -31,7 +31,9 @@
         queryparams (load-queryparams param-names res-type tx)
         sql-map     (make-sql-map res-type)]
     (if (empty? queryparams)
-      (assoc req :sql (sql/format sql-map {:pretty true}))
+      (merge req {:sql-map sql-map
+                  :sql (sql/format sql-map {:pretty true})})
       (-> (reduce #(refine-query req %1 %2) sql-map queryparams)
-          (sql/format {:pretty true})
-          (->> (assoc req :queryparams queryparams :sql))))))
+          (#(merge req {:queryparams queryparams
+                        :sql-map %
+                        :sql (sql/format % {:pretty true})}))))))

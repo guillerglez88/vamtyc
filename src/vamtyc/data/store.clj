@@ -57,3 +57,10 @@
        (limit (-> env :LIMIT Integer/parseInt))
        (hsql/format)
        (#(list tx resourceType %)))))
+
+(defn count [tx sql-map]
+  (-> sql-map
+      (dissoc :select)
+      (select [[:count :*] :count])
+      (hsql/format)
+      (->> (sql/query tx))))
