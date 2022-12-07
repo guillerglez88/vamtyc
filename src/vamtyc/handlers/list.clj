@@ -2,7 +2,8 @@
   (:require [ring.util.response :refer [response]]
             [vamtyc.data.store :as store]
             [vamtyc.modules.routes :as routes]
-            [vamtyc.utils.path :as path]))
+            [vamtyc.utils.path :as path]
+            [vamtyc.utils.fields :as fields]))
 
 (defn make-result-set [items url]
   {:resourceType  :List
@@ -18,8 +19,10 @@
 (defn handler [req tx]
   (let [url         (:url req)
         res-type    (-> req :body :resourceType)
-        sql         (:sql req)]
-    (-> (store/list tx res-type sql)
-        (#(into [] %))
-        (make-result-set url)
-        (response))))
+        sql         (:sql req)
+        fields      (-> req :params (get "_fields") (or []))]
+    (->> (store/list tx res-type sql)
+         (map #(fields/select-fields % fields))
+         (into [])
+         (#(make-result-set % url))
+         (response))))

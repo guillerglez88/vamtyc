@@ -1,11 +1,14 @@
 (ns vamtyc.handlers.delete
   (:require [ring.util.response :refer [response not-found]]
-            [vamtyc.data.store :as store]))
+            [vamtyc.data.store :as store]
+            [vamtyc.utils.fields :as fields]))
 
 (defn handler [req tx]
   (let [res-type  (-> req :body :resourceType)
         id        (-> req :body :id)
-        res       (store/delete tx res-type id)]
+        res       (store/delete tx res-type id)
+        fields    (-> req :params (get "_fields") (or []))]
     (if res
-      (response res)
+      (-> (fields/select-fields res fields)
+          (response ))
       (not-found "Not found"))))
