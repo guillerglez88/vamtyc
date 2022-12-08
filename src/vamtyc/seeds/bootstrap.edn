@@ -300,6 +300,52 @@
              :name          :delete-query-param
              :code          "/Coding/nerves?code=delete"
              :resource      "/Resource/query-param"}}
+  ;; Creation of :Coding REST routes
+  ;;
+  ;; ["create"  :POST   "/Coding"
+  ;;  "read"    :GET    "/Coding/:id"
+  ;;  "upsert"  :PUT    "/Coding/:id"
+  ;;  "delete"  :DELETE "/Coding/:id"]
+  ;;
+  {:method  :POST
+   :url     "/Route"
+   :body    {:resourceType  :Route
+             :method        :POST
+             :path          [{:name     "resourceType"
+                              :value    "Coding"}]
+             :name          :create-coding
+             :code          "/Coding/nerves?code=create"
+             :resource      "/Resource/coding"}}
+  {:method  :POST
+   :url     "/Route"
+   :body    {:resourceType  :Route
+             :method        :GET
+             :path          [{:name     "resourceType"
+                              :value    "Coding"}
+                             {:name     "id"}]
+             :name          :read-coding
+             :code          "/Coding/nerves?code=read"
+             :resource      "/Resource/coding"}}
+  {:method  :POST
+   :url     "/Route"
+   :body    {:resourceType  :Route
+             :method        :PUT
+             :path          [{:name     "resourceType"
+                              :value    "Coding"}
+                             {:name     "id"}]
+             :name          :upsert-coding
+             :code          "/Coding/nerves?code=upsert"
+             :resource      "/Resource/coding"}}
+  {:method  :POST
+   :url     "/Route"
+   :body    {:resourceType  :Route
+             :method        :DELETE
+             :path          [{:name     "resourceType"
+                              :value    "Coding"}
+                             {:name     "id"}]
+             :name          :delete-coding
+             :code          "/Coding/nerves?code=delete"
+             :resource      "/Resource/coding"}}
   ;; Creation of :Resource REST query-params
   ;;
   ;; ["?type=:keyword"]
