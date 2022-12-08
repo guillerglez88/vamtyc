@@ -1,0 +1,52 @@
+{:resourceType :Transaction
+ :items
+ [{:method  :PUT
+   :url     "/Resource"
+   :body    {:resourceType  :Resource
+             :id            "resource"
+             :desc          "REST resource"
+             :type          "Resource"
+             :resources     "/List?of=Resource"}}
+  {:method  :POST
+   :url     "/Route"
+   :body    {:resourceType  :Route
+             :method        :POST
+             :path          [{:name     "resourceType"
+                              :value    "Resource"}]
+             :name          "create-resource"
+             :code          "/Coding/core-handlers?code=create"
+             :resource      "/Resource/resource"
+             :routes        "/List?of=Route"}}
+  {:method  :POST
+   :url     "/Route"
+   :body    {:resourceType  :Route
+             :method        :GET
+             :path          [{:name     "resourceType"
+                              :value    "Resource"}
+                             {:name     "id"}]
+             :name          "read-resource"
+             :code          "/Coding/core-handlers?code=read"
+             :resource      "/Resource/resource"
+             :routes        "/List?of=Route"}}
+  {:method  :POST
+   :url     "/Route"
+   :body    {:resourceType  :Route
+             :method        :PUT
+             :path          [{:name     "resourceType"
+                              :value    "Resource"}
+                             {:name     "id"}]
+             :name          "upsert-resource"
+             :code          "/Coding/core-handlers?code=upsert"
+             :resource      "/Resource/resource"
+             :routes        "/List?of=Route"}}
+  {:method  :POST
+   :url     "/Route"
+   :body    {:resourceType  :Route
+             :method        :DELETE
+             :path          [{:name     "resourceType"
+                              :value    "Resource"}
+                             {:name     "id"}]
+             :name          "delete-resource"
+             :code          "/Coding/core-handlers?code=delete"
+             :resource      "/Resource/resource"
+             :routes        "/List?of=Route"}}]}
