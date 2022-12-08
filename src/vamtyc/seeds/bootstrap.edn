@@ -1,5 +1,5 @@
 {:resourceType :Transaction
- :status :/Coding/transaction-statuses?code=active
+ :status "/Coding/transaction-statuses?code=active"
  :items
  ;; Initial provisioning of storage for base resources
  ;;
@@ -15,7 +15,7 @@
    :body    {:resourceType  :Resource
              :id            "resource"
              :desc          "REST resource"
-             :status        :/Coding/resource-statuses?code=pending
+             :status        "/Coding/resource-statuses?code=pending"
              :type          :Resource
              :routes        "/List/_search?_on=Route&res-type=Resource"}}
   {:method  :PUT
@@ -23,7 +23,7 @@
    :body    {:resourceType  :Resource
              :id            "route"
              :desc          "REST route"
-             :status        :/Coding/resource-statuses?code=pending
+             :status        "/Coding/resource-statuses?code=pending"
              :type          :Route
              :routes        "/List/_search?_on=Route&res-type=Route"}}
   {:method  :PUT
@@ -31,7 +31,7 @@
    :body    {:resourceType  :Resource
              :id            "list"
              :desc          "Collection of data"
-             :status        :/Coding/resource-statuses?code=pending
+             :status        "/Coding/resource-statuses?code=pending"
              :type          :List
              :routes        "/List/_search?_on=Route&res-type=List"}}
   {:method  :PUT
@@ -39,7 +39,7 @@
    :body    {:resourceType  :Resource
              :id            "transaction"
              :desc          "Transaction of multiple http requests"
-             :status        :/Coding/resource-statuses?code=pending
+             :status        "/Coding/resource-statuses?code=pending"
              :type          :Transaction
              :routes        "/List/_search?_on=Route&res-type=Transaction"}}
   {:method  :PUT
@@ -47,7 +47,7 @@
    :body    {:resourceType  :Resource
              :id            "query-param"
              :desc          "REST query-param"
-             :status        :/Coding/resource-statuses?code=pending
+             :status        "/Coding/resource-statuses?code=pending"
              :type          :QueryParam
              :routes        "/List/_search?_on=Route&res-type=QueryParam"}}
   {:method  :PUT
@@ -55,7 +55,7 @@
    :body    {:resourceType  :Resource
              :id            "coding"
              :desc          "Set of codes"
-             :status        :/Coding/resource-statuses?code=pending
+             :status        "/Coding/resource-statuses?code=pending"
              :type          :Coding
              :routes        "/List/_search?_on=Route&res-type=Coding"}}
   ;; Creation of :Resource REST routes
@@ -72,7 +72,7 @@
              :path          [{:name     "resourceType"
                               :value    "Resource"}]
              :name          :create-resource
-             :code          :/Coding/nerves?code=create
+             :code          "/Coding/nerves?code=create"
              :resource      "/Resource/resource"}}
   {:method  :POST
    :url     "/Route"
@@ -82,7 +82,7 @@
                               :value    "Resource"}
                              {:name     "id"}]
              :name          :read-resource
-             :code          :/Coding/nerves?code=read
+             :code          "/Coding/nerves?code=read"
              :resource      "/Resource/resource"}}
   {:method  :POST
    :url     "/Route"
@@ -92,7 +92,7 @@
                               :value    "Resource"}
                              {:name     "id"}]
              :name          "upsert-resource"
-             :code          :/Coding/nerves?code=upsert
+             :code          "/Coding/nerves?code=upsert"
              :resource      "/Resource/resource"}}
   {:method  :POST
    :url     "/Route"
@@ -102,7 +102,7 @@
                               :value    "Resource"}
                              {:name     "id"}]
              :name          :delete-resource
-             :code          :/Coding/nerves?code=delete
+             :code          "/Coding/nerves?code=delete"
              :resource      "/Resource/resource"}}
   ;; Creation of :Route REST routes
   ;;
@@ -118,7 +118,7 @@
              :path          [{:name     "resourceType"
                               :value    "Route"}]
              :name          :create-route
-             :code          :/Coding/nerves?code=create
+             :code          "/Coding/nerves?code=create"
              :resource      "/Resource/route"}}
   {:method  :POST
    :url     "/Route"
@@ -128,7 +128,7 @@
                               :value    "Route"}
                              {:name     "id"}]
              :name          :read-route
-             :code          :/Coding/nerves?code=read
+             :code          "/Coding/nerves?code=read"
              :resource      "/Resource/route"}}
   {:method  :POST
    :url     "/Route"
@@ -138,7 +138,7 @@
                               :value    "Route"}
                              {:name     "id"}]
              :name          :upsert-route
-             :code          :/Coding/nerves?code=upsert
+             :code          "/Coding/nerves?code=upsert"
              :resource      "/Resource/route"}}
   {:method  :POST
    :url     "/Route"
@@ -148,7 +148,7 @@
                               :value    "Route"}
                              {:name     "id"}]
              :name          :delete-route
-             :code          :/Coding/nerves?code=delete
+             :code          "/Coding/nerves?code=delete"
              :resource      "/Resource/route"}}
   ;; Creation of :List REST routes
   ;;
@@ -165,7 +165,7 @@
              :path          [{:name     "resourceType"
                               :value    "List"}]
              :name          :create-list
-             :code          :/Coding/nerves?code=create
+             :code          "/Coding/nerves?code=create"
              :resource      "/Resource/list"}}
   {:method  :POST
    :url     "/Route"
@@ -175,7 +175,7 @@
                               :value    "List"}
                              {:name     "id"}]
              :name          :read-list
-             :code          :/Coding/nerves?code=read
+             :code          "/Coding/nerves?code=read"
              :resource      "/Resource/list"}}
   {:method  :POST
    :url     "/Route"
@@ -185,7 +185,7 @@
                               :value    "List"}
                              {:name     "id"}]
              :name          :upsert-list
-             :code          :/Coding/nerves?code=upsert
+             :code          "/Coding/nerves?code=upsert"
              :resource      "/Resource/list"}}
   {:method  :POST
    :url     "/Route"
@@ -195,7 +195,7 @@
                               :value    "List"}
                              {:name     "id"}]
              :name          :delete-list
-             :code          :/Coding/nerves?code=delete
+             :code          "/Coding/nerves?code=delete"
              :resource      "/Resource/list"}}
   {:method  :POST
    :url     "/Route"
@@ -206,7 +206,7 @@
                              {:name     "id"
                               :value    "_search"}]
              :name          :search-resource
-             :code          :/Coding/nerves?code=search
+             :code          "/Coding/nerves?code=search"
              :resource      "/Resource/list"}}
   ;; Creation of :Transaction REST routes
   ;;
@@ -222,7 +222,7 @@
              :path          [{:name     "resourceType"
                               :value    "Transaction"}]
              :name          :create-transaction
-             :code          :/Coding/nerves?code=create
+             :code          "/Coding/nerves?code=create"
              :resource      "/Resource/transaction"}}
   {:method  :POST
    :url     "/Route"
@@ -232,7 +232,7 @@
                               :value    "Transaction"}
                              {:name     "id"}]
              :name          :read-transaction
-             :code          :/Coding/nerves?code=read
+             :code          "/Coding/nerves?code=read"
              :resource      "/Resource/transaction"}}
   {:method  :POST
    :url     "/Route"
@@ -242,7 +242,7 @@
                               :value    "Transaction"}
                              {:name     "id"}]
              :name          :upsert-transaction
-             :code          :/Coding/nerves?code=upsert
+             :code          "/Coding/nerves?code=upsert"
              :resource      "/Resource/transaction"}}
   {:method  :POST
    :url     "/Route"
@@ -252,7 +252,7 @@
                               :value    "Transaction"}
                              {:name     "id"}]
              :name          :delete-transaction
-             :code          :/Coding/nerves?code=delete
+             :code          "/Coding/nerves?code=delete"
              :resource      "/Resource/transaction"}}
   ;; Creation of :QueryParam REST routes
   ;;
@@ -268,7 +268,7 @@
              :path          [{:name     "resourceType"
                               :value    "QueryParam"}]
              :name          :create-query-param
-             :code          :/Coding/nerves?code=create
+             :code          "/Coding/nerves?code=create"
              :resource      "/Resource/query-param"}}
   {:method  :POST
    :url     "/Route"
@@ -278,7 +278,7 @@
                               :value    "QueryParam"}
                              {:name     "id"}]
              :name          :read-query-param
-             :code          :/Coding/nerves?code=read
+             :code          "/Coding/nerves?code=read"
              :resource      "/Resource/query-param"}}
   {:method  :POST
    :url     "/Route"
@@ -288,7 +288,7 @@
                               :value    "QueryParam"}
                              {:name     "id"}]
              :name          :upsert-query-param
-             :code          :/Coding/nerves?code=upsert
+             :code          "/Coding/nerves?code=upsert"
              :resource      "/Resource/query-param"}}
   {:method  :POST
    :url     "/Route"
@@ -298,7 +298,7 @@
                               :value    "QueryParam"}
                              {:name     "id"}]
              :name          :delete-query-param
-             :code          :/Coding/nerves?code=delete
+             :code          "/Coding/nerves?code=delete"
              :resource      "/Resource/query-param"}}
   ;; Creation of :Resource REST query-params
   ;;
@@ -307,7 +307,7 @@
   {:method  :POST
    :url     "/QueryParam"
    :body    {:resourceType  :QueryParam
-             :code          :/Coding/filters?code=keyword
+             :code          "/Coding/filters?code=keyword"
              :desc          "Filter Resource by type"
              :name          :type
              :path          [{:name     "type"}]
@@ -321,7 +321,7 @@
   {:method  :POST
    :url     "/QueryParam"
    :body    {:resourceType  :QueryParam
-             :code          :/Coding/filters?code=keyword
+             :code          "/Coding/filters?code=keyword"
              :desc          "Filter Route by method"
              :name          :method
              :path          [{:name     "method"}]
@@ -329,7 +329,7 @@
   {:method  :POST
    :url     "/QueryParam"
    :body    {:resourceType  :QueryParam
-             :code          :/Coding/filters?code=keyword
+             :code          "/Coding/filters?code=keyword"
              :desc          "Filter Route by name"
              :name          :name
              :path          [{:name     "name"}]
@@ -337,7 +337,7 @@
   {:method  :POST
    :url     "/QueryParam"
    :body    {:resourceType  :QueryParam
-             :code          :/Coding/filters?code=keyword
+             :code          "/Coding/filters?code=keyword"
              :desc          "Filter Route by the resourceType part of the route"
              :name          :res-type
              :path          [{:name         "path"
@@ -352,7 +352,7 @@
   {:method  :POST
    :url     "/QueryParam"
    :body    {:resourceType  :QueryParam
-             :code          :/Coding/filters?code=keyword
+             :code          "/Coding/filters?code=keyword"
              :desc          "When used on GET /List/_search?_on=Resource, determines the resourceType to search for, otherwise is ignored"
              :name          :res-type
              :path          [{:name     "_on"}]
@@ -364,7 +364,7 @@
   {:method  :POST
    :url     "/QueryParam"
    :body    {:resourceType  :QueryParam
-             :code          :/Coding/filters?code=url
+             :code          "/Coding/filters?code=url"
              :desc          "Filter Transactions by status"
              :name          :status
              :path          [{:name     "status"}]
@@ -377,7 +377,7 @@
   {:method  :POST
    :url     "/QueryParam"
    :body    {:resourceType  :QueryParam
-             :code          :/Coding/filters?code=keyword
+             :code          "/Coding/filters?code=keyword"
              :desc          "Filter QueryParams by name"
              :name          :name
              :path          [{:name     "name"}]
@@ -385,7 +385,7 @@
   {:method  :POST
    :url     "/QueryParam"
    :body    {:resourceType  :QueryParam
-             :code          :/Coding/filters?code=keyword
+             :code          "/Coding/filters?code=keyword"
              :desc          "Filter QueryParams by type"
              :name          :type
              :path          [{:name     "type"}]
@@ -397,7 +397,7 @@
   {:method  :POST
    :url     "/QueryParam"
    :body    {:resourceType  :QueryParam
-             :code          :/Coding/filters?code=keyword
+             :code          "/Coding/filters?code=keyword"
              :desc          "Filter Coding by code"
              :name          :code
              :path          [{:name         "codes"
@@ -406,9 +406,9 @@
              :type          :Coding}}
   ;; Creation of core :Coding list
   ;;
-  ;; [:/Coding/resource-statuses
-  ;;  :/Coding/nerves
-  ;;  :/Coding/filters ]
+  ;; ["/Coding/resource-statuses
+  ;;  "/Coding/nerves
+  ;;  "/Coding/filters ]
   ;;
   {:method  :PUT
    :url     "/Coding/resource-statuses"

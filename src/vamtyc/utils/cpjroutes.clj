@@ -18,13 +18,13 @@
             [vamtyc.queries.core :as queries]))
 
 (def handlers
-  {:/Coding/core-handlers?code=list         list/handler
-   :/Coding/core-handlers?code=read         read/handler
-   :/Coding/core-handlers?code=create       create/handler
-   :/Coding/core-handlers?code=delete       delete/handler
-   :/Coding/core-handlers?code=upsert       upsert/handler
-   :/Coding/core-handlers?code=transaction  transaction/handler
-   :/Coding/core-handlers?code=inspect      inspect/handler})
+  {:/Coding/nerves?code=search       list/handler
+   :/Coding/nerves?code=read         read/handler
+   :/Coding/nerves?code=create       create/handler
+   :/Coding/nerves?code=delete       delete/handler
+   :/Coding/nerves?code=upsert       upsert/handler
+   :/Coding/nerves?code=transaction  transaction/handler
+   :/Coding/nerves?code=inspect      inspect/handler})
 
 (defn resolve-handler-code [req route]
   (let [inspect-code    :/Coding/core-handlers?code=inspect
