@@ -3,46 +3,46 @@
  [{:method  :PUT
    :url     "/Resource"
    :body    {:resourceType  :Resource
-             :id            "resource"
-             :desc          "REST resource"
-             :type          "Resource"
-             :routes        "/List?of=Route&_id=resource"}}
+             :id            "route"
+             :desc          "REST route"
+             :type          "Route"
+             :routes        "/List?of=Route&_id=route"}}
   {:method  :POST
    :url     "/Route"
    :body    {:resourceType  :Route
              :method        :POST
              :path          [{:name     "resourceType"
-                              :value    "Resource"}]
-             :name          "create-resource"
+                              :value    "Route"}]
+             :name          "create-route"
              :code          "/Coding/core-handlers?code=create"
-             :resource      "/Resource/resource"}}
+             :resource      "/Resource/route"}}
   {:method  :POST
    :url     "/Route"
    :body    {:resourceType  :Route
              :method        :GET
              :path          [{:name     "resourceType"
-                              :value    "Resource"}
+                              :value    "Route"}
                              {:name     "id"}]
-             :name          "read-resource"
+             :name          "read-route"
              :code          "/Coding/core-handlers?code=read"
-             :resource      "/Resource/resource"}}
+             :resource      "/Resource/route"}}
   {:method  :POST
    :url     "/Route"
    :body    {:resourceType  :Route
              :method        :PUT
              :path          [{:name     "resourceType"
-                              :value    "Resource"}
+                              :value    "Route"}
                              {:name     "id"}]
-             :name          "upsert-resource"
+             :name          "upsert-route"
              :code          "/Coding/core-handlers?code=upsert"
-             :resource      "/Resource/resource"}}
+             :resource      "/Resource/route"}}
   {:method  :POST
    :url     "/Route"
    :body    {:resourceType  :Route
              :method        :DELETE
              :path          [{:name     "resourceType"
-                              :value    "Resource"}
+                              :value    "Route"}
                              {:name     "id"}]
-             :name          "delete-resource"
+             :name          "delete-route"
              :code          "/Coding/core-handlers?code=delete"
-             :resource      "/Resource/resource"}}]}
+             :resource      "/Resource/route"}}]}
