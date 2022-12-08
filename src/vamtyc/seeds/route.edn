@@ -1,20 +1,13 @@
 {:resourceType :Transaction
  :items
- [{:method  :PUT
-   :url     "/Resource"
-   :body    {:resourceType  :Resource
-             :id            "route"
-             :desc          "REST route"
-             :type          "Route"
-             :routes        "/List?of=Route&_id=route"}}
-  {:method  :POST
+ [{:method  :POST
    :url     "/Route"
    :body    {:resourceType  :Route
              :method        :POST
              :path          [{:name     "resourceType"
                               :value    "Route"}]
-             :name          "create-route"
-             :code          "/Coding/core-handlers?code=create"
+             :name          :create-route
+             :code          :/Coding/core-handlers?code=create
              :resource      "/Resource/route"}}
   {:method  :POST
    :url     "/Route"
@@ -23,8 +16,8 @@
              :path          [{:name     "resourceType"
                               :value    "Route"}
                              {:name     "id"}]
-             :name          "read-route"
-             :code          "/Coding/core-handlers?code=read"
+             :name          :read-route
+             :code          /Coding/core-handlers?code=read
              :resource      "/Resource/route"}}
   {:method  :POST
    :url     "/Route"
@@ -33,8 +26,8 @@
              :path          [{:name     "resourceType"
                               :value    "Route"}
                              {:name     "id"}]
-             :name          "upsert-route"
-             :code          "/Coding/core-handlers?code=upsert"
+             :name          :upsert-route
+             :code          :/Coding/core-handlers?code=upsert
              :resource      "/Resource/route"}}
   {:method  :POST
    :url     "/Route"
@@ -43,6 +36,33 @@
              :path          [{:name     "resourceType"
                               :value    "Route"}
                              {:name     "id"}]
-             :name          "delete-route"
-             :code          "/Coding/core-handlers?code=delete"
-             :resource      "/Resource/route"}}]}
+             :name          :delete-route
+             :code          :/Coding/core-handlers?code=delete
+             :resource      "/Resource/route"}}
+  {:method  :POST
+   :url     "/QueryParam"
+   :body    {:resourceType  :QueryParam
+             :code          :/Coding/core-query-params?code=keyword
+             :desc          "Filter Route by method"
+             :name          :method
+             :path          [{:name     "method"}]
+             :type          :Route}}
+  {:method  :POST
+   :url     "/QueryParam"
+   :body    {:resourceType  :QueryParam
+             :code          :/Coding/core-query-params?code=keyword
+             :desc          "Filter Route by name"
+             :name          :name
+             :path          [{:name     "name"}]
+             :type          :Route}}
+  {:method  :POST
+   :url     "/QueryParam"
+   :body    {:resourceType  :QueryParam
+             :code          :/Coding/core-query-params?code=keyword
+             :desc          "Filter Route by res-type"
+             :name          :res-type
+             :path          [{:name         "path"
+                              :collection   true
+                              :filter       {:name  "resourceType"}}
+                             {:name         "value"}]
+             :type          :Route}}]}

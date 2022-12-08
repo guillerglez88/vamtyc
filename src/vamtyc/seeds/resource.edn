@@ -30,7 +30,7 @@
              :method        :POST
              :path          [{:name     "resourceType"
                               :value    "Resource"}]
-             :name          "create-resource"
+             :name          :create-resource
              :code          :/Coding/core-handlers?code=create
              :resource      "/Resource/resource"}}
   {:method  :POST
@@ -40,7 +40,7 @@
              :path          [{:name     "resourceType"
                               :value    "Resource"}
                              {:name     "id"}]
-             :name          "read-resource"
+             :name          :read-resource
              :code          :/Coding/core-handlers?code=read
              :resource      "/Resource/resource"}}
   {:method  :POST
@@ -60,7 +60,7 @@
              :path          [{:name     "resourceType"
                               :value    "Resource"}
                              {:name     "id"}]
-             :name          "delete-resource"
+             :name          :delete-resource
              :code          :/Coding/core-handlers?code=delete
              :resource      "/Resource/resource"}}
   {:method  :POST
