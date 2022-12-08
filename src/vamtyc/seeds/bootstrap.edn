@@ -460,45 +460,45 @@
    :url     "/Coding/resource-statuses"
    :body    {:resourceType  :Coding
              :id            "resource-statuses"
-             :codes         [{:code :pending
+             :codes         [{:code "/Coding/resource-statuses?code=pending"
                               :desc "Pending storage allocation"}
-                             {:code :active
+                             {:code "/Coding/resource-statuses?code=active"
                               :desc "Storage allocated"}]}}
   {:method  :PUT
    :url     "/Coding/nerves"
    :body    {:resourceType  :Coding
              :id            "nerves"
-             :codes         [{:code :create
+             :codes         [{:code "/Coding/nerves?code=create"
                               :desc "Triggers the creation of resource"}
-                             {:code :read
+                             {:code "/Coding/nerves?code=read"
                               :desc "Triggers the retrieval of resource matching by id"}
-                             {:code :upsert
+                             {:code "/Coding/nerves?code=upsert"
                               :desc "Triggers the creation of resource or update matching by id"}
-                             {:code :delete
+                             {:code "/Coding/nerves?code=delete"
                               :desc "Triggers the removal of resource matching by id"}
-                             {:code :search
+                             {:code "/Coding/nerves?code=search"
                               :desc "Triggers the search of resources"}]}}
   {:method  :PUT
    :url     "/Coding/filters"
    :body    {:resourceType  :Coding
              :id            "filters"
-             :codes         [{:code :keyword
+             :codes         [{:code "/Coding/filters?code=keyword"
                               :desc "Filter results by matching exact"}
-                             {:code :text
+                             {:code "/Coding/filters?code=text"
                               :desc "Filter results by matching substring/contains"}
-                             {:code :url
+                             {:code "/Coding/filters?code=url"
                               :desc "Filter results by matching url path and querie-strings"}]}}
   {:method  :PUT
    :url     "/Coding/transaction-statuses"
    :body    {:resourceType  :Coding
              :id            "transaction-statuses"
-             :codes         [{:code :draft
+             :codes         [{:code "/Coding/transaction-statuses?code=draft"
                               :desc "Transaction beign constructed, DO NOT try commit"}
-                             {:code :active
+                             {:code "/Coding/transaction-statuses?code=active"
                               :desc "Transaction ready to be commited"}
-                             {:code :in-progress
+                             {:code "/Coding/transaction-statuses?code=in-progress"
                               :desc "Transaction beign commited"}
-                             {:code :completed
+                             {:code "/Coding/transaction-statuses?code=completed"
                               :desc "Transaction successfully commited"}
-                             {:code :failed
+                             {:code "/Coding/transaction-statuses?code=failed"
                               :desc "Transaction failed"}]}}]}
