@@ -1,12 +1,29 @@
 {:resourceType :Transaction
  :items
  [{:method  :PUT
-   :url     "/Resource"
+   :url     "/Resource/resource"
    :body    {:resourceType  :Resource
              :id            "resource"
              :desc          "REST resource"
-             :type          "Resource"
-             :routes        "/List?of=Route&_id=resource"}}
+             :status        :/Coding/resource-status?code=pending
+             :type          :Resource
+             :routes        "/List?of=Route&res-type=Resource"}}
+  {:method  :PUT
+   :url     "/Resource/route"
+   :body    {:resourceType  :Resource
+             :id            "route"
+             :desc          "REST route"
+             :status        :/Coding/resource-status?code=pending
+             :type          :Route
+             :routes        "/List?of=Route&res-type=Route"}}
+  {:method  :PUT
+   :url     "/Resource/queryparam"
+   :body    {:resourceType  :Resource
+             :id            "queryparam"
+             :desc          "REST query-param"
+             :status        :/Coding/resource-status?code=pending
+             :type          :QueryParam
+             :routes        "/List?of=Route&res-type=QueryParam"}}
   {:method  :POST
    :url     "/Route"
    :body    {:resourceType  :Route
@@ -14,7 +31,7 @@
              :path          [{:name     "resourceType"
                               :value    "Resource"}]
              :name          "create-resource"
-             :code          "/Coding/core-handlers?code=create"
+             :code          :/Coding/core-handlers?code=create
              :resource      "/Resource/resource"}}
   {:method  :POST
    :url     "/Route"
@@ -24,7 +41,7 @@
                               :value    "Resource"}
                              {:name     "id"}]
              :name          "read-resource"
-             :code          "/Coding/core-handlers?code=read"
+             :code          :/Coding/core-handlers?code=read
              :resource      "/Resource/resource"}}
   {:method  :POST
    :url     "/Route"
@@ -34,7 +51,7 @@
                               :value    "Resource"}
                              {:name     "id"}]
              :name          "upsert-resource"
-             :code          "/Coding/core-handlers?code=upsert"
+             :code          :/Coding/core-handlers?code=upsert
              :resource      "/Resource/resource"}}
   {:method  :POST
    :url     "/Route"
@@ -44,5 +61,13 @@
                               :value    "Resource"}
                              {:name     "id"}]
              :name          "delete-resource"
-             :code          "/Coding/core-handlers?code=delete"
-             :resource      "/Resource/resource"}}]}
+             :code          :/Coding/core-handlers?code=delete
+             :resource      "/Resource/resource"}}
+  {:method  :POST
+   :url     "/QueryParam"
+   :body    {:resourceType  :QueryParam
+             :code          :/Coding/core-query-params?code=keyword
+             :desc          "Filter Resource by type"
+             :name          :type
+             :path          [{:name     "type"}]
+             :type          :Route}}]}
