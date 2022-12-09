@@ -9,7 +9,7 @@
             [vamtyc.data.store :as store]
             [vamtyc.utils.path :as path]
             [vamtyc.utils.requests :as requests]
-            [vamtyc.nerves.list :as list]
+            [vamtyc.nerves.search :as search]
             [vamtyc.nerves.read :as read]
             [vamtyc.nerves.create :as create]
             [vamtyc.nerves.delete :as delete]
@@ -17,7 +17,7 @@
             [vamtyc.nerves.inspect :as inspect]))
 
 (def nerves
-  {:/Coding/nerves?code=search       list/handler
+  {:/Coding/nerves?code=search       search/handler
    :/Coding/nerves?code=read         read/handler
    :/Coding/nerves?code=create       create/handler
    :/Coding/nerves?code=delete       delete/handler

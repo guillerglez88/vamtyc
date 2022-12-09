@@ -1,21 +1,27 @@
 (ns vamtyc.queries.core
   (:require [honey.sql :as sql]
             [vamtyc.queries.limit :as limit]
+            [vamtyc.queries.of :as of]
             [vamtyc.utils.requests :refer [extract-param-names]]
-            [vamtyc.utils.queries :refer [make-sql-map make-prop-alias
-                                          jsonb-extract-prop jsonb-extract-coll]]
+            [vamtyc.utils.queries :refer [make-sql-map make-prop-alias jsonb-extract-prop jsonb-extract-coll]]
             [vamtyc.data.queryparams :refer [load-queryparams]]
-            [vamtyc.queries.text :as text]))
+            [vamtyc.queries.text :as text]
+            [vamtyc.queries.offset :as offset]))
 
 (def filters
-  {:/Coding/core-query-params?code=limit  limit/filter
-   :/Coding/core-query-params?code=text   text/filter})
+  {:_limit                    limit/filter
+   :_offset                   offset/filter
+   :_of                       of/filter
+   :/Coding/filters?code=text text/filter})
 
 (defn refine-query [req sql-map query-param]
-  (let [filter (-> query-param :code keyword filters)]
+  (let [code    (-> query-param :code keyword)
+        path    (-> query-param :path (or []))
+        name    (-> query-param :name keyword)
+        filter  (or (name filters) (code filters))]
     (loop [acc            sql-map
            col            :resource
-           [curr & rest]  (:path query-param)]
+           [curr & rest]  path]
       (cond
         (nil? curr)
           (filter req query-param acc col)
@@ -28,15 +34,10 @@
             (-> (jsonb-extract-prop acc col curr alias)
                 (recur alias rest)))))))
 
-(defn process-query-params [req tx]
+(defn make-search-query [req tx]
   (let [res-type    (-> req :body :resourceType)
         param-names (extract-param-names req)
         queryparams (load-queryparams param-names res-type tx)
         sql-map     (make-sql-map res-type)]
-    (if (empty? queryparams)
-      (merge req {:sql-map sql-map
-                  :sql (sql/format sql-map {:pretty true})})
-      (-> (reduce #(refine-query req %1 %2) sql-map queryparams)
-          (#(merge req {:queryparams queryparams
-                        :sql-map %
-                        :sql (sql/format % {:pretty true})}))))))
+    (-> (reduce #(refine-query req %1 %2) sql-map queryparams)
+        (sql/format {:pretty true}))))
