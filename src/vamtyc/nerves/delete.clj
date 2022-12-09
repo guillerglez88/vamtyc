@@ -1,4 +1,4 @@
-(ns vamtyc.handlers.delete
+(ns vamtyc.nerves.delete
   (:require [ring.util.response :refer [response not-found]]
             [vamtyc.data.store :as store]
             [vamtyc.utils.fields :as fields]))

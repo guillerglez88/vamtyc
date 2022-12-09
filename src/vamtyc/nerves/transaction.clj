@@ -1,4 +1,4 @@
-(ns vamtyc.handlers.transaction
+(ns vamtyc.nerves.transaction
   (:require [clj-http.client :as client]
             [clojure.string :as str]
             [clojure.data.json :as json]
@@ -24,12 +24,7 @@
     {:request   brief-req
      :response  resp}))
 
-(def handlers
-  {:/Coding/core-handlers?code=list   list/handler
-   :/Coding/core-handlers?code=read   read/handler
-   :/Coding/core-handlers?code=create create/handler
-   :/Coding/core-handlers?code=delete delete/handler
-   :/Coding/core-handlers?code=upsert upsert/handler})
+(def handlers {})
 
 (defn inspect-req [req]
   (-> req

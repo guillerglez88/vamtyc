@@ -1,4 +1,4 @@
-(ns vamtyc.handlers.list
+(ns vamtyc.nerves.list
   (:require [ring.util.response :refer [response]]
             [vamtyc.data.store :as store]
             [vamtyc.utils.path :as path]

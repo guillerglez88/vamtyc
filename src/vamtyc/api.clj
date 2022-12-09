@@ -9,12 +9,12 @@
             [vamtyc.data.store :as store]
             [vamtyc.utils.path :as path]
             [vamtyc.utils.requests :as requests]
-            [vamtyc.handlers.list :as list]
-            [vamtyc.handlers.read :as read]
-            [vamtyc.handlers.create :as create]
-            [vamtyc.handlers.delete :as delete]
-            [vamtyc.handlers.upsert :as upsert]
-            [vamtyc.handlers.inspect :as inspect]
+            [vamtyc.nerves.list :as list]
+            [vamtyc.nerves.read :as read]
+            [vamtyc.nerves.create :as create]
+            [vamtyc.nerves.delete :as delete]
+            [vamtyc.nerves.upsert :as upsert]
+            [vamtyc.nerves.inspect :as inspect]
             [vamtyc.queries.core :as queries]))
 
 (def handlers
