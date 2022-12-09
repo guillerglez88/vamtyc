@@ -17,7 +17,7 @@
             [vamtyc.nerves.inspect :as inspect]
             [vamtyc.queries.core :as queries]))
 
-(def handlers
+(def nerves
   {:/Coding/nerves?code=search       list/handler
    :/Coding/nerves?code=read         read/handler
    :/Coding/nerves?code=create       create/handler
@@ -26,7 +26,7 @@
    :/Coding/nerves?code=inspect      inspect/handler})
 
 (defn resolve-handler-code [req route]
-  (let [inspect-code    :/Coding/core-handlers?code=inspect
+  (let [inspect-code    :/Coding/core-nerves?code=inspect
         is-inspect      (-> req :params (contains? "_inspect"))
         route-code      (-> route :code keyword)]
     (if is-inspect inspect-code route-code)))
@@ -39,7 +39,7 @@
 
 (defn handle-req [req route app]
   (let [handler-code    (resolve-handler-code req route)
-        handler         (handler-code handlers)]
+        handler         (handler-code nerves)]
     (jdbc/with-transaction [tx ds]
       (-> (requests/build-request req route)
           (queries/process-query-params tx)

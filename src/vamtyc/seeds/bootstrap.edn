@@ -347,32 +347,15 @@
              :resource      "/Resource/coding"}}
   ;; Creation of REST query-params valid of any resource type
   ;;
-  ;; ["?_fields=:path-array-expr"
-  ;;  "?_created=:date"
-  ;;  "?_modified=:date"]
+  ;; ["?_fields=:path-array-expr"]
   ;;
   {:method  :POST
    :url     "/QueryParam"
    :body    {:resourceType  :QueryParam
-             :code          "/Coding/filters?code=fields"
+             :code          "/Coding/filters?code=text"
              :desc          "Reduce response payload by filtering properties"
-             :name          :_fields}}
-  {:method  :POST
-   :url     "/QueryParam"
-   :body    {:resourceType  :QueryParam
-             :code          "/Coding/filters?code=date"
-             :desc          "Filter results by creation date"
-             :name          :_created
-             :path          [{:name     "meta"}
-                             {:name     "created"}]}}
-  {:method  :POST
-   :url     "/QueryParam"
-   :body    {:resourceType  :QueryParam
-             :code          "/Coding/filters?code=date"
-             :desc          "Filter result by last modified date"
-             :name          :_modified
-             :path          [{:name     "meta"}
-                             {:name     "modified"}]}}
+             :name          :_fields
+             :type          :*}}
   ;; Creation of :Resource REST query-params
   ;;
   ;; ["?type=:keyword"]
@@ -422,7 +405,9 @@
   ;;
   ;; ["?_of=:keyword"
   ;;  "?_limit=:number"
-  ;;  "?_offset=:number"]
+  ;;  "?_offset=:number"
+  ;;  "?_created=:date"
+  ;;  "?_modified=:date"]
   ;;
   {:method  :POST
    :url     "/QueryParam"
@@ -447,6 +432,24 @@
              :desc          "Used in combination with _limit to paginate"
              :name          :_offset
              :default       0
+             :type          :List}}
+  {:method  :POST
+   :url     "/QueryParam"
+   :body    {:resourceType  :QueryParam
+             :code          "/Coding/filters?code=date"
+             :desc          "Filter results by creation date"
+             :name          :_created
+             :path          [{:name     "meta"}
+                             {:name     "created"}]
+             :type          :List}}
+  {:method  :POST
+   :url     "/QueryParam"
+   :body    {:resourceType  :QueryParam
+             :code          "/Coding/filters?code=date"
+             :desc          "Filter result by last modified date"
+             :name          :_modified
+             :path          [{:name     "meta"}
+                             {:name     "modified"}]
              :type          :List}}
   ;; Creation of :Transaction REST query-params
   ;;
