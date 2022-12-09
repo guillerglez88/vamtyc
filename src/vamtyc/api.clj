@@ -63,6 +63,4 @@
        (wrap-params)
        (reset! app)))
 
-(comment
-  (init)
-  )
+(init)
