@@ -31,10 +31,9 @@
     (if is-inspect inspect-code route-code)))
 
 (defn make-http-response [resp]
-  (-> (json/write-str (:body resp))
-      (response)
-      (status (:status resp))
-      (content-type "application/json")))
+  (let [body (-> resp :body json/write-str)]
+    (-> (merge resp {:body body})
+        (content-type "application/json"))))
 
 (defn handle-req [req route app]
   (let [handler-code    (resolve-handler-code req route)
