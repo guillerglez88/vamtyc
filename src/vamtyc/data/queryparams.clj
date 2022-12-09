@@ -6,7 +6,7 @@
 
 (defn load-queryparams [param-names res-type tx]
   (let [types (map name [res-type :*])
-        names (or param-names [])]
+        names (-> param-names (or []) (conj "__"))]
     (-> (select :*)
         (from :QueryParam)
         (where
