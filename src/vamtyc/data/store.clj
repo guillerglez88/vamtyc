@@ -5,9 +5,9 @@
             [honey.sql.helpers :refer [select from where limit] :as h]
             [vamtyc.config.env :refer [env]]))
 
-(defn process [entity resourceType]
+(defn process [entity res-type]
   (when entity
-    (let [res-name    (name resourceType)
+    (let [res-name    (name res-type)
           res-name-lc (str/lower-case res-name)
           id-key      (keyword res-name-lc "id")
           res-key     (keyword res-name-lc "resource")
@@ -19,44 +19,44 @@
                   :url url}))))
 
 (defn create
-  ([tx resourceType id res]
+  ([tx res-type id res]
    (let [entity {:id id :resource res}]
-    (sql/insert! tx resourceType entity)
-    (process entity resourceType)))
-  ([tx resourceType, res]
+    (sql/insert! tx res-type entity)
+    (process entity res-type)))
+  ([tx res-type, res]
    (let [id (str (java.util.UUID/randomUUID))]
-     (create tx resourceType id res))))
+     (create tx res-type id res))))
 
-(defn read [tx resourceType id]
-  (-> (sql/get-by-id tx resourceType id :id {})
-      (process resourceType)))
+(defn read [tx res-type id]
+  (-> (sql/get-by-id tx res-type id :id {})
+      (process res-type)))
 
-(defn update [tx resourceType id res]
-  (sql/update! tx resourceType {:resource res} {:id id})
+(defn update [tx res-type id res]
+  (sql/update! tx res-type {:resource res} {:id id})
   (-> {:id id :resource res}
-      (process resourceType)))
+      (process res-type)))
 
-(defn upsert [tx resourceType id res]
-  (let [entity (read tx resourceType id)]
+(defn upsert [tx res-type id res]
+  (let [entity (read tx res-type id)]
     (if entity
-      (update tx resourceType id res)
-      (create tx resourceType id res))))
+      (update tx res-type id res)
+      (create tx res-type id res))))
 
-(defn delete [tx resourceType id]
-  (let [entity  (read tx resourceType id)]
-    (sql/delete! tx resourceType {:id id})
+(defn delete [tx res-type id]
+  (let [entity  (read tx res-type id)]
+    (sql/delete! tx res-type {:id id})
     entity))
 
 (defn list
-  ([tx resourceType sql]
+  ([tx res-type sql]
    (->> (sql/query tx sql)
-        (map #(process % resourceType))))
-  ([tx resourceType]
+        (map #(process % res-type))))
+  ([tx res-type]
    (-> (select :*)
-       (from resourceType)
+       (from res-type)
        (limit (-> env :LIMIT Integer/parseInt))
        (hsql/format)
-       (#(list tx resourceType %)))))
+       (#(list tx res-type %)))))
 
 (defn count [tx sql-map]
   (-> sql-map
