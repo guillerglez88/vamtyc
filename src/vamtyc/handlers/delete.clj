@@ -3,7 +3,7 @@
             [vamtyc.data.store :as store]
             [vamtyc.utils.fields :as fields]))
 
-(defn handler [req tx]
+(defn handler [req tx _app]
   (let [res-type  (-> req :body :resourceType)
         id        (-> req :body :id)
         res       (store/delete tx res-type id)

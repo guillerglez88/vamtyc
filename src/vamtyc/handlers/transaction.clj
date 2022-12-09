@@ -54,7 +54,7 @@
       (handle-req tx)
       (->> (make-trn-item-result item))))
 
-(defn handler [req tx]
+(defn handler [req tx _app]
   (->> (-> req :body :items)
        (map #(commit % req tx))
        (into [])

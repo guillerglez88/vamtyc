@@ -17,13 +17,16 @@
            col            :resource
            [curr & rest]  (:path query-param)]
       (cond
-        (nil? curr)         (filter req query-param acc col)
-        (:collection curr)  (let [alias (make-prop-alias col curr "_elem")]
-                              (-> (jsonb-extract-coll acc col curr alias)
-                                  (recur alias rest)))
-        :else               (let [alias (make-prop-alias col curr)]
-                              (-> (jsonb-extract-prop acc col curr alias)
-                                  (recur alias rest)))))))
+        (nil? curr)
+          (filter req query-param acc col)
+        (:collection curr)
+          (let [alias (make-prop-alias col curr "_elem")]
+            (-> (jsonb-extract-coll acc col curr alias)
+              (recur alias rest)))
+        :else
+          (let [alias (make-prop-alias col curr)]
+            (-> (jsonb-extract-prop acc col curr alias)
+                (recur alias rest)))))))
 
 (defn process-query-params [req tx]
   (let [res-type    (-> req :body :resourceType)

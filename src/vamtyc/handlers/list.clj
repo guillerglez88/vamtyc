@@ -16,7 +16,7 @@
                      :next  nil
                      :last  nil}}))
 
-(defn handler [req tx]
+(defn handler [req tx _app]
   (let [url         (:url req)
         res-type    (-> req :body :resourceType)
         sql         (:sql req)
