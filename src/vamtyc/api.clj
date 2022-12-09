@@ -14,8 +14,7 @@
             [vamtyc.nerves.create :as create]
             [vamtyc.nerves.delete :as delete]
             [vamtyc.nerves.upsert :as upsert]
-            [vamtyc.nerves.inspect :as inspect]
-            [vamtyc.queries.core :as queries]))
+            [vamtyc.nerves.inspect :as inspect]))
 
 (def nerves
   {:/Coding/nerves?code=search       list/handler
@@ -42,7 +41,6 @@
         handler         (handler-code nerves)]
     (jdbc/with-transaction [tx ds]
       (-> (requests/build-request req route)
-          (queries/process-query-params tx)
           (handler tx app)
           (make-http-response)))))
 

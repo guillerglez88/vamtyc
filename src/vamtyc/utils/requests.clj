@@ -17,9 +17,9 @@
       (json/read-str :key-fn keyword)))
 
 (defn extract-param-names [req]
-  (-> req :params keys (or [])
-      (->> (map name))
-      (->> (into []))))
+  (->> (-> req :params keys (or []))
+       (map name)
+       (into [])))
 
 (defn build-request [req route]
   (let [method      (:request-method req)

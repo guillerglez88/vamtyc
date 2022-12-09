@@ -5,10 +5,13 @@
             [honey.sql.helpers :refer [select from where]]))
 
 (defn load-queryparams [param-names res-type tx]
-  (if (empty? param-names) []
-      (-> (select :*)
-          (from :QueryParam)
-          (where [:= [:jsonb_extract_path_text :resource "type"] (name res-type)])
-          (where [:in [:jsonb_extract_path_text :resource "name"] param-names])
-          (hsql/format)
-          (#(store/list tx :QueryParam %)))))
+  (let [types (map name [res-type :*])
+        names (or param-names [])]
+    (-> (select :*)
+        (from :QueryParam)
+        (where
+          [:and [:in [:jsonb_extract_path_text :resource "type"] types]]
+                [:or [:<> [:jsonb_extract_path_text :resource "default"] nil]
+                     [:in [:jsonb_extract_path_text :resource "name"] names]])
+        (hsql/format)
+        (#(store/list tx :QueryParam %)))))
