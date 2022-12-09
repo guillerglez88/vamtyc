@@ -14,7 +14,6 @@
             [vamtyc.handlers.create :as create]
             [vamtyc.handlers.delete :as delete]
             [vamtyc.handlers.upsert :as upsert]
-            [vamtyc.handlers.transaction :as transaction]
             [vamtyc.handlers.inspect :as inspect]
             [vamtyc.queries.core :as queries]))
 
@@ -24,7 +23,6 @@
    :/Coding/nerves?code=create       create/handler
    :/Coding/nerves?code=delete       delete/handler
    :/Coding/nerves?code=upsert       upsert/handler
-   :/Coding/nerves?code=transaction  transaction/handler
    :/Coding/nerves?code=inspect      inspect/handler})
 
 (defn resolve-handler-code [req route]
@@ -55,6 +53,7 @@
 
 (defn load-routes [app]
   (->> (store/list ds :Route)
+       (sort-by #(-> % :path path/calc-match-index) >)
        (map #(make-cpj-route app %))
        (apply routes)))
 

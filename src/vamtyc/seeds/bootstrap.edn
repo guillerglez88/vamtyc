@@ -1,5 +1,6 @@
 {:resourceType :Transaction
  :status "/Coding/transaction-statuses?code=active"
+ :mode "/Coding/transaction-modes?code=sync"
  :items
  ;; Initial provisioning of storage for base resources
  ;;
@@ -17,7 +18,7 @@
              :desc          "REST resource"
              :status        "/Coding/resource-statuses?code=pending"
              :type          :Resource
-             :routes        "/List/_search?_on=Route&res-type=Resource"}}
+             :routes        "/List?_of=Route&res-type=Resource"}}
   {:method  :PUT
    :url     "/Resource/route"
    :body    {:resourceType  :Resource
@@ -25,7 +26,7 @@
              :desc          "REST route"
              :status        "/Coding/resource-statuses?code=pending"
              :type          :Route
-             :routes        "/List/_search?_on=Route&res-type=Route"}}
+             :routes        "/List?_of=Route&res-type=Route"}}
   {:method  :PUT
    :url     "/Resource/list"
    :body    {:resourceType  :Resource
@@ -33,7 +34,7 @@
              :desc          "Collection of data"
              :status        "/Coding/resource-statuses?code=pending"
              :type          :List
-             :routes        "/List/_search?_on=Route&res-type=List"}}
+             :routes        "/List?_of=Route&res-type=List"}}
   {:method  :PUT
    :url     "/Resource/transaction"
    :body    {:resourceType  :Resource
@@ -41,7 +42,7 @@
              :desc          "Transaction of multiple http requests"
              :status        "/Coding/resource-statuses?code=pending"
              :type          :Transaction
-             :routes        "/List/_search?_on=Route&res-type=Transaction"}}
+             :routes        "/List?_of=Route&res-type=Transaction"}}
   {:method  :PUT
    :url     "/Resource/query-param"
    :body    {:resourceType  :Resource
@@ -49,7 +50,7 @@
              :desc          "REST query-param"
              :status        "/Coding/resource-statuses?code=pending"
              :type          :QueryParam
-             :routes        "/List/_search?_on=Route&res-type=QueryParam"}}
+             :routes        "/List?_of=Route&res-type=QueryParam"}}
   {:method  :PUT
    :url     "/Resource/coding"
    :body    {:resourceType  :Resource
@@ -57,7 +58,7 @@
              :desc          "Set of codes"
              :status        "/Coding/resource-statuses?code=pending"
              :type          :Coding
-             :routes        "/List/_search?_on=Route&res-type=Coding"}}
+             :routes        "/List?_of=Route&res-type=Coding"}}
   ;; Creation of :Resource REST routes
   ;;
   ;; ["create"  :POST   "/Resource"
@@ -156,7 +157,7 @@
   ;;  "read"    :GET    "/List/:id"
   ;;  "upsert"  :PUT    "/List/:id"
   ;;  "delete"  :DELETE "/List/:id"
-  ;;  "search"  :GET    "/List/_search"]
+  ;;  "search"  :GET    "/List"]
   ;;
   {:method  :POST
    :url     "/Route"
@@ -202,10 +203,8 @@
    :body    {:resourceType  :Route
              :method        :GET
              :path          [{:name     "resourceType"
-                              :value    "List"}
-                             {:name     "id"
-                              :value    "_search"}]
-             :name          :search-resource
+                              :value    "List"}]
+             :name          :search-list
              :code          "/Coding/nerves?code=search"
              :resource      "/Resource/list"}}
   ;; Creation of :Transaction REST routes
@@ -346,6 +345,34 @@
              :name          :delete-coding
              :code          "/Coding/nerves?code=delete"
              :resource      "/Resource/coding"}}
+  ;; Creation of REST query-params valid of any resource type
+  ;;
+  ;; ["?_fields=:path-array-expr"
+  ;;  "?_created=:date"
+  ;;  "?_modified=:date"]
+  ;;
+  {:method  :POST
+   :url     "/QueryParam"
+   :body    {:resourceType  :QueryParam
+             :code          "/Coding/filters?code=fields"
+             :desc          "Reduce response payload by filtering properties"
+             :name          :_fields}}
+  {:method  :POST
+   :url     "/QueryParam"
+   :body    {:resourceType  :QueryParam
+             :code          "/Coding/filters?code=date"
+             :desc          "Filter results by creation date"
+             :name          :_created
+             :path          [{:name     "meta"}
+                             {:name     "created"}]}}
+  {:method  :POST
+   :url     "/QueryParam"
+   :body    {:resourceType  :QueryParam
+             :code          "/Coding/filters?code=date"
+             :desc          "Filter result by last modified date"
+             :name          :_modified
+             :path          [{:name     "meta"}
+                             {:name     "modified"}]}}
   ;; Creation of :Resource REST query-params
   ;;
   ;; ["?type=:keyword"]
@@ -393,15 +420,33 @@
              :type          :Route}}
   ;; Creation of :List REST query-params
   ;;
-  ;; ["?_on=:keyword"]
+  ;; ["?_of=:keyword"
+  ;;  "?_limit=:number"
+  ;;  "?_offset=:number"]
   ;;
   {:method  :POST
    :url     "/QueryParam"
    :body    {:resourceType  :QueryParam
              :code          "/Coding/filters?code=keyword"
-             :desc          "When used on GET /List/_search?_on=Resource, determines the resourceType to search for, otherwise is ignored"
-             :name          :res-type
-             :path          [{:name     "_on"}]
+             :desc          "Type of resource to search for"
+             :name          :_of
+             :default       :List
+             :type          :List}}
+  {:method  :POST
+   :url     "/QueryParam"
+   :body    {:resourceType  :QueryParam
+             :code          "/Coding/filters?code=number"
+             :desc          "Limit items count in the result"
+             :name          :_limit
+             :default       128
+             :type          :List}}
+  {:method  :POST
+   :url     "/QueryParam"
+   :body    {:resourceType  :QueryParam
+             :code          "/Coding/filters?code=number"
+             :desc          "Used in combination with _limit to paginate"
+             :name          :_offset
+             :default       0
              :type          :List}}
   ;; Creation of :Transaction REST query-params
   ;;
@@ -487,7 +532,11 @@
                              {:code "/Coding/filters?code=text"
                               :desc "Filter results by matching substring/contains"}
                              {:code "/Coding/filters?code=url"
-                              :desc "Filter results by matching url path and querie-strings"}]}}
+                              :desc "Filter results by matching url path and querie-strings"}
+                             {:code "/Coding/filters?code=number"
+                              :desc "Filter results by comparing numbers"}
+                             {:code "/Coding/filters?code=date"
+                              :desc "Filter results by comparing dates"}]}}
   {:method  :PUT
    :url     "/Coding/transaction-statuses"
    :body    {:resourceType  :Coding
@@ -501,4 +550,16 @@
                              {:code "/Coding/transaction-statuses?code=completed"
                               :desc "Transaction successfully commited"}
                              {:code "/Coding/transaction-statuses?code=failed"
-                              :desc "Transaction failed"}]}}]}
+                              :desc "Transaction failed"}]}}
+  {:method  :PUT
+   :url     "/Coding/transaction-modes"
+   :body    {:resourceType  :Coding
+             :id            "transaction-modes"
+             :codes         [{:code "/Coding/transaction-modes?code=sync"
+                              :desc "Execute transaction immediately and wait for completion before responding"}
+                             {:code "/Coding/transaction-modes?code=async"
+                              :desc "Place transaction and don't wait for completion before responding"}
+                             {:code "/Coding/transaction-modes?code=scheduled"
+                              :desc "Along with schedule cron expression, dalays execution of transaction"}
+                             {:code "/Coding/transaction-modes?code=recurring"
+                              :desc "Along with schedule cron expression, defines recurring execution of transaction"}]}}]}

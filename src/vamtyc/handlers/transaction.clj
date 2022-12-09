@@ -1,10 +1,5 @@
 (ns vamtyc.handlers.transaction
-  (:require [vamtyc.handlers.list :as list]
-            [vamtyc.handlers.read :as read]
-            [vamtyc.handlers.create :as create]
-            [vamtyc.handlers.delete :as delete]
-            [vamtyc.handlers.upsert :as upsert]
-            [clj-http.client :as client]
+  (:require [clj-http.client :as client]
             [clojure.string :as str]
             [clojure.data.json :as json]
             [ring.util.response :refer [response content-type]]))

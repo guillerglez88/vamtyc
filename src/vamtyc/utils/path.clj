@@ -19,3 +19,7 @@
 
 (defn id []
   {:name "id"})
+
+(defn calc-match-index [path]
+  (->> (filter #(contains? % :value) path)
+       (count)))
