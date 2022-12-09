@@ -1,5 +1,5 @@
 (ns vamtyc.nerves.upsert
-  (:require [ring.util.response :refer [created]]
+  (:require [ring.util.response :refer [response created]]
             [vamtyc.data.store :as store]))
 
 (defn handler [req tx _app]

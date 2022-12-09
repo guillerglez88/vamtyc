@@ -20,7 +20,7 @@
         fields      (-> req :params (get "_fields") (or []))]
     (->> (queries/make-search-query req tx)
          (store/list tx res-type)
-         (map #(fields/select-fields % fields))
          (into [])
          (#(make-result-set % url))
+         (#(fields/select-fields % fields))
          (response))))

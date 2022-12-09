@@ -6,12 +6,14 @@
             [vamtyc.utils.queries :refer [make-sql-map make-prop-alias jsonb-extract-prop jsonb-extract-coll]]
             [vamtyc.data.queryparams :refer [load-queryparams]]
             [vamtyc.queries.text :as text]
-            [vamtyc.queries.offset :as offset]))
+            [vamtyc.queries.offset :as offset]
+            [vamtyc.queries.fields :as fields]))
 
 (def filters
   {:_limit                    limit/filter
    :_offset                   offset/filter
    :_of                       of/filter
+   :_fields                   fields/filter
    :/Coding/filters?code=text text/filter})
 
 (defn refine-query [req sql-map query-param]
