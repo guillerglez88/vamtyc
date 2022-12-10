@@ -39,8 +39,9 @@
                 (recur alias rest)))))))
 
 (defn make-search-query [req res-type tx]
-  (let [param-names (extract-param-names req)
-        queryparams (load-queryparams param-names res-type tx)
-        sql-map     (make-sql-map res-type)]
+  (let [param-names   (extract-param-names req)
+        orig-res-type (-> req :body :resourceType)
+        queryparams   (load-queryparams param-names [orig-res-type res-type] tx)
+        sql-map       (make-sql-map res-type)]
     (-> (reduce #(refine-query req %1 %2) sql-map queryparams)
         (sql/format {:pretty true}))))
