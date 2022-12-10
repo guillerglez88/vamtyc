@@ -3,24 +3,32 @@
             [next.jdbc.sql :as sql]
             [honey.sql :as hsql]
             [honey.sql.helpers :refer [select from where limit] :as h]
-            [vamtyc.config.env :refer [env]]))
+            [vamtyc.config.env :refer [env]])
+  (:import [java.time Instant]))
 
 (defn process [entity res-type]
   (when entity
-    (let [res-name    (name res-type)
-          res-name-lc (str/lower-case res-name)
-          id-key      (keyword res-name-lc "id")
-          res-key     (keyword res-name-lc "resource")
-          id          (or (id-key entity) (:id entity))
-          res         (or (res-key entity) (:resource entity))
-          url         (str "/" res-name "/" id)]
+    (let [res-name      (name res-type)
+          res-name-lc   (str/lower-case res-name)
+          id-key        (keyword res-name-lc "id")
+          res-key       (keyword res-name-lc "resource")
+          created-key   (keyword res-name-lc "created")
+          modified-key  (keyword res-name-lc "modified")
+          id            (or (id-key entity) (:id entity))
+          res           (or (res-key entity) (:resource entity))
+          created       (or (created-key entity) (:created entity))
+          modified      (or (modified-key entity) (:modified entity))
+          url           (str "/" res-name "/" id)]
       (merge res {:resourceType res-name
-                  :id id
-                  :url url}))))
+                  :id           id
+                  :url          url
+                  :meta         {:created   (.toString created)
+                                 :modified  (.toString modified)}}))))
 
 (defn create
   ([tx res-type id res]
-   (let [entity {:id id :resource res}]
+   (let [now    (Instant/now)
+         entity {:id id :resource res :created now :modified now}]
     (sql/insert! tx res-type entity)
     (process entity res-type)))
   ([tx res-type, res]
@@ -32,9 +40,12 @@
       (process res-type)))
 
 (defn update [tx res-type id res]
-  (sql/update! tx res-type {:resource res} {:id id})
-  (-> {:id id :resource res}
-      (process res-type)))
+  (let [stored  (read tx res-type id)
+        created (-> stored :meta :created)
+        now     (Instant/now)]
+    (sql/update! tx res-type {:resource res :modified now} {:id id})
+    (-> {:id id :resource res :modified now :created created}
+        (process res-type))))
 
 (defn upsert [tx res-type id res]
   (let [entity (read tx res-type id)]

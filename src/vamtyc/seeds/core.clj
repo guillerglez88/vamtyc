@@ -14,8 +14,10 @@
 (defn make-storage-ddl [type]
   (let [type-name (-> type name str/lower-case)]
     [(str "CREATE TABLE IF NOT EXISTS public." type-name " (
-       id          TEXT    NOT NULL,
-       resource    JSONB   NULL,
+       id          TEXT             NOT NULL,
+       resource    JSONB            NOT NULL,
+       created     timestamptz      NOT NULL,
+       modified    timestamptz      NOT NULL,
        CONSTRAINT  " type-name "_pk PRIMARY KEY (id));")]))
 
 (defn allocate-storage [tx type]
@@ -46,7 +48,3 @@
       (-> (slurp boot-file)
           (edn/read-string)
           (commit-boot-trn)))))
-
-(comment
-  (init)
-  )

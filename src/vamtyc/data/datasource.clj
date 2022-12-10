@@ -3,6 +3,7 @@
             [next.jdbc :as jdbc]
             [next.jdbc.prepare :as prepare]
             [next.jdbc.result-set :as rs]
+            [next.jdbc.date-time] ;; import-only, side effect!
             [vamtyc.config.env :refer [env]]))
 
 (import '(org.postgresql.util PGobject))

@@ -2,7 +2,7 @@
   (:require [honey.sql.helpers :refer [select from inner-join]]))
 
 (defn make-sql-map [res-type]
-    (-> (select :id :resource)
+    (-> (select :id :resource :created :modified)
         (from res-type)))
 
 (defn make-prop-alias

@@ -49,5 +49,3 @@
        (load-routes)
        (wrap-params)
        (reset! app)))
-
-(init)
