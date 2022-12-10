@@ -17,11 +17,11 @@
             [vamtyc.nerves.inspect :as inspect]))
 
 (def nerves
-  {:/Coding/nerves?code=search       search/handler
+  {:/Coding/nerves?code=create       create/handler
    :/Coding/nerves?code=read         read/handler
-   :/Coding/nerves?code=create       create/handler
-   :/Coding/nerves?code=delete       delete/handler
    :/Coding/nerves?code=upsert       upsert/handler
+   :/Coding/nerves?code=delete       delete/handler
+   :/Coding/nerves?code=search       search/handler
    :/Coding/nerves?code=inspect      inspect/handler})
 
 (defn resolve-handler-code [req route]

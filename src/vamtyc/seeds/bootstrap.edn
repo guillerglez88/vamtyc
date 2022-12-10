@@ -429,7 +429,7 @@
    :url     "/QueryParam"
    :body    {:resourceType  :QueryParam
              :code          "/Coding/filters?code=number"
-             :desc          "Used in combination with _limit to paginate"
+             :desc          "Skip that many items before starting to count result items"
              :name          :_offset
              :default       0
              :type          :List}}
