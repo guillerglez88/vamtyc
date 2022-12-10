@@ -59,6 +59,16 @@
              :status        "/Coding/resource-statuses?code=pending"
              :type          :Coding
              :routes        "/List?_of=Route&res-type=Coding"}}
+  ;; Creation of default REST routes
+  ;;
+  ;; ["not-found"]
+  ;;
+  {:method  :POST
+   :url     "/Route"
+   :body    {:resourceType  :Route
+             :name          :not-found
+             :code          "/Coding/nerves?code=not-found"
+             :routes        "/List?_of=Route"}}
   ;; Creation of :Resource REST routes
   ;;
   ;; ["create"  :POST   "/Resource"
@@ -525,7 +535,9 @@
                              {:code "/Coding/nerves?code=delete"
                               :desc "Triggers the removal of resource matching by id"}
                              {:code "/Coding/nerves?code=search"
-                              :desc "Triggers the search of resources"}]}}
+                              :desc "Triggers the search of resources"}
+                             {:code "/Coding/nerves?code=not-found"
+                              :desc "Produces a not-found HTTP response"}]}}
   {:method  :PUT
    :url     "/Coding/filters"
    :body    {:resourceType  :Coding

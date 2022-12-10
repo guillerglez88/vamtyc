@@ -2,6 +2,7 @@
   (:require [clojure.data.json :as json]
             [clojure.string :as str]
             [compojure.core :refer [make-route routes]]
+            [compojure.route :as route]
             [ring.util.response :refer [content-type response status]]
             [ring.middleware.params :refer [wrap-params]]
             [next.jdbc :as jdbc]
@@ -14,7 +15,8 @@
             [vamtyc.nerves.create :as create]
             [vamtyc.nerves.delete :as delete]
             [vamtyc.nerves.upsert :as upsert]
-            [vamtyc.nerves.inspect :as inspect]))
+            [vamtyc.nerves.inspect :as inspect]
+            [vamtyc.nerves.notfound :as notfound]))
 
 (def nerves
   {:/Coding/nerves?code=create       create/handler
@@ -22,6 +24,7 @@
    :/Coding/nerves?code=upsert       upsert/handler
    :/Coding/nerves?code=delete       delete/handler
    :/Coding/nerves?code=search       search/handler
+   :/Coding/nerves?code=not-found    notfound/handler
    :/Coding/nerves?code=inspect      inspect/handler})
 
 (defn resolve-handler-code [req route]
@@ -44,9 +47,14 @@
           (make-http-response)))))
 
 (defn make-cpj-route [app route]
-  (let [method  (-> route :method str/lower-case keyword)
-        path    (-> route :path path/stringify)]
-    (make-route method path #(handle-req % route app))))
+  (let [method      (-> route :method)
+        method-kw   (when method (-> method str/lower-case keyword))
+        path        (:path route)
+        path-str    (path/stringify path)
+        handler     #(handle-req % route app)]
+    (if path
+      (make-route method-kw path-str handler)
+      handler)))
 
 (defn load-routes [app]
   (->> (store/list ds :Route)
