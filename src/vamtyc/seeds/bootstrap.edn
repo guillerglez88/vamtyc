@@ -357,7 +357,7 @@
              :resource      "/Resource/coding"}}
   ;; Creation of REST query-params valid of any resource type
   ;;
-  ;; ["?_fields=:path-array-expr"]
+  ;; ["?_fields=:path-array-expr"
   ;;
   {:method  :POST
    :url     "/QueryParam"
@@ -417,7 +417,8 @@
   ;;  "?_limit=:number"
   ;;  "?_offset=:number"
   ;;  "?_created=:date"
-  ;;  "?_modified=:date"]
+  ;;  "?_modified=:date"
+  ;;  "?_sort=:keyword"]
   ;;
   {:method  :POST
    :url     "/QueryParam"
@@ -460,6 +461,13 @@
              :name          :_modified
              :path          [{:name     "meta"}
                              {:name     "modified"}]
+             :type          :List}}
+  {:method  :POST
+   :url     "/QueryParam"
+   :body    {:resourceType  :QueryParam
+             :code          "/Coding/filters?code=keyword"
+             :desc          "Order results by specified query-param"
+             :name          :_sort
              :type          :List}}
   ;; Creation of :Transaction REST query-params
   ;;
