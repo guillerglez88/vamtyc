@@ -8,13 +8,15 @@
             [vamtyc.queries.text :as text]
             [vamtyc.queries.offset :as offset]
             [vamtyc.queries.fields :as fields]
-            [vamtyc.queries.keyword :as keyw]))
+            [vamtyc.queries.keyword :as keyw]
+            [vamtyc.queries.sort :as sort]))
 
 (def filters
   {:_limit                        limit/filter
    :_offset                       offset/filter
    :_of                           of/filter
    :_fields                       fields/filter
+   :_sort                         sort/filter
    :/Coding/filters?code=text     text/filter
    :/Coding/filters?code=keyword  keyw/filter})
 
@@ -29,10 +31,12 @@
       (cond
         (nil? curr)
           (filter req query-param acc col)
+        (:meta curr)
+          sql-map
         (:collection curr)
           (let [alias (make-prop-alias col curr "_elem")]
             (-> (jsonb-extract-coll acc col curr alias)
-              (recur alias rest)))
+                (recur alias rest)))
         :else
           (let [alias (make-prop-alias col curr)]
             (-> (jsonb-extract-prop acc col curr alias)

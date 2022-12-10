@@ -450,8 +450,8 @@
              :code          "/Coding/filters?code=date"
              :desc          "Filter results by creation date"
              :name          :_created
-             :path          [{:name     "meta"}
-                             {:name     "created"}]
+             :path          [{:name     "created"
+                              :meta     true}]
              :type          :List}}
   {:method  :POST
    :url     "/QueryParam"
@@ -459,8 +459,8 @@
              :code          "/Coding/filters?code=date"
              :desc          "Filter result by last modified date"
              :name          :_modified
-             :path          [{:name     "meta"}
-                             {:name     "modified"}]
+             :path          [{:name     "modified"
+                              :meta     true}]
              :type          :List}}
   {:method  :POST
    :url     "/QueryParam"
@@ -468,6 +468,7 @@
              :code          "/Coding/filters?code=keyword"
              :desc          "Order results by specified query-param"
              :name          :_sort
+             :default       :_created
              :type          :List}}
   ;; Creation of :Transaction REST query-params
   ;;

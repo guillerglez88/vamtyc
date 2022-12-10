@@ -22,8 +22,8 @@
       (merge res {:resourceType res-name
                   :id           id
                   :url          url
-                  :meta         {:created   (.toString created)
-                                 :modified  (.toString modified)}}))))
+                  :created      (.toString created)
+                  :modified     (.toString modified)}))))
 
 (defn create
   ([tx res-type id res]
