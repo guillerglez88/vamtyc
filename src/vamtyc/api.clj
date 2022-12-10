@@ -15,7 +15,6 @@
             [vamtyc.nerves.create :as create]
             [vamtyc.nerves.delete :as delete]
             [vamtyc.nerves.upsert :as upsert]
-            [vamtyc.nerves.inspect :as inspect]
             [vamtyc.nerves.notfound :as notfound]))
 
 (def nerves
@@ -24,14 +23,7 @@
    :/Coding/nerves?code=upsert       upsert/handler
    :/Coding/nerves?code=delete       delete/handler
    :/Coding/nerves?code=search       search/handler
-   :/Coding/nerves?code=not-found    notfound/handler
-   :/Coding/nerves?code=inspect      inspect/handler})
-
-(defn resolve-handler-code [req route]
-  (let [inspect-code    :/Coding/core-nerves?code=inspect
-        is-inspect      (-> req :params (contains? "_inspect"))
-        route-code      (-> route :code keyword)]
-    (if is-inspect inspect-code route-code)))
+   :/Coding/nerves?code=not-found    notfound/handler})
 
 (defn make-http-response [resp]
   (let [body (-> resp :body json/write-str)]
@@ -39,7 +31,7 @@
         (content-type "application/json"))))
 
 (defn handle-req [req route app]
-  (let [handler-code    (resolve-handler-code req route)
+  (let [handler-code    (-> route :code keyword)
         handler         (handler-code nerves)]
     (jdbc/with-transaction [tx ds]
       (-> (requests/build-request req route)
