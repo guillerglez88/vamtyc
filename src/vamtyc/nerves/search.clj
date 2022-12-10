@@ -18,7 +18,7 @@
   (let [url         (-> req :url)
         res-type    (-> req :params (get "_of") (or "List") keyword)
         fields      (-> req :params (get "_fields") (or []))]
-    (->> (queries/make-search-query req tx)
+    (->> (queries/make-search-query req res-type tx)
          (store/list tx res-type)
          (into [])
          (#(make-result-set % url))

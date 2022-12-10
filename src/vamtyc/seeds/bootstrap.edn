@@ -385,7 +385,7 @@
   {:method  :POST
    :url     "/QueryParam"
    :body    {:resourceType  :QueryParam
-             :code          "/Coding/filters?code=keyword"
+             :code          "/Coding/filters?code=text"
              :desc          "Filter Route by name"
              :name          :name
              :path          [{:name     "name"}]

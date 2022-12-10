@@ -7,14 +7,16 @@
             [vamtyc.data.queryparams :refer [load-queryparams]]
             [vamtyc.queries.text :as text]
             [vamtyc.queries.offset :as offset]
-            [vamtyc.queries.fields :as fields]))
+            [vamtyc.queries.fields :as fields]
+            [vamtyc.queries.keyword :as keyw]))
 
 (def filters
-  {:_limit                    limit/filter
-   :_offset                   offset/filter
-   :_of                       of/filter
-   :_fields                   fields/filter
-   :/Coding/filters?code=text text/filter})
+  {:_limit                        limit/filter
+   :_offset                       offset/filter
+   :_of                           of/filter
+   :_fields                       fields/filter
+   :/Coding/filters?code=text     text/filter
+   :/Coding/filters?code=keyword  keyw/filter})
 
 (defn refine-query [req sql-map query-param]
   (let [code    (-> query-param :code keyword)
@@ -36,9 +38,8 @@
             (-> (jsonb-extract-prop acc col curr alias)
                 (recur alias rest)))))))
 
-(defn make-search-query [req tx]
-  (let [res-type    (-> req :body :resourceType)
-        param-names (extract-param-names req)
+(defn make-search-query [req res-type tx]
+  (let [param-names (extract-param-names req)
         queryparams (load-queryparams param-names res-type tx)
         sql-map     (make-sql-map res-type)]
     (-> (reduce #(refine-query req %1 %2) sql-map queryparams)
