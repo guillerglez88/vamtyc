@@ -4,5 +4,5 @@
 
 (defn filter [req query-param sql-map _col]
   (let [name    (:name query-param)
-        default (-> query-param :default)]
+        default (:default query-param)]
     sql-map))
