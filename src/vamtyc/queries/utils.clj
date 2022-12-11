@@ -1,4 +1,4 @@
-(ns vamtyc.utils.queries
+(ns vamtyc.queries.utils
   (:require [honey.sql.helpers :refer [select from inner-join]]))
 
 (defn make-sql-map [res-type]

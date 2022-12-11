@@ -3,7 +3,7 @@
             [vamtyc.queries.limit :as limit]
             [vamtyc.queries.of :as of]
             [vamtyc.utils.requests :refer [extract-param-names]]
-            [vamtyc.utils.queries :refer [make-sql-map make-prop-alias jsonb-extract-prop jsonb-extract-coll]]
+            [vamtyc.queries.utils :as utils]
             [vamtyc.data.queryparams :refer [load-queryparams]]
             [vamtyc.queries.text :as text]
             [vamtyc.queries.offset :as offset]
@@ -34,18 +34,18 @@
         (:meta curr)
           sql-map
         (:collection curr)
-          (let [alias (make-prop-alias col curr "_elem")]
-            (-> (jsonb-extract-coll acc col curr alias)
+          (let [alias (utils/make-prop-alias col curr "_elem")]
+            (-> (utils/jsonb-extract-coll acc col curr alias)
                 (recur alias rest)))
         :else
-          (let [alias (make-prop-alias col curr)]
-            (-> (jsonb-extract-prop acc col curr alias)
+          (let [alias (utils/make-prop-alias col curr)]
+            (-> (utils/jsonb-extract-prop acc col curr alias)
                 (recur alias rest)))))))
 
 (defn make-search-query [req res-type tx]
   (let [param-names   (extract-param-names req)
         orig-res-type (-> req :body :resourceType)
         queryparams   (load-queryparams param-names [orig-res-type res-type] tx)
-        sql-map       (make-sql-map res-type)]
+        sql-map       (utils/make-sql-map res-type)]
     (-> (reduce #(refine-query req %1 %2) sql-map queryparams)
         (sql/format {:pretty true}))))
