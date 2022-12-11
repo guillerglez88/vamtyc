@@ -1,7 +1,6 @@
 (ns vamtyc.nerves.search
   (:require [ring.util.response :refer [response]]
             [vamtyc.data.store :as store]
-            [vamtyc.utils.path :as path]
             [vamtyc.utils.fields :as fields]
             [vamtyc.queries.core :as queries]))
 

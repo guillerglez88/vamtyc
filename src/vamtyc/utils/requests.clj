@@ -1,7 +1,7 @@
 (ns vamtyc.utils.requests
   (:require [clojure.data.json :as json]
             [ring.util.request :refer [body-string]]
-            [vamtyc.utils.path :as path]
+            [vamtyc.utils.routes :as routes]
             [clojure.string :as str]))
 
 (defn extract-base-url [req]
@@ -27,7 +27,7 @@
         req-url     (-> :uri req (str (when query-str (str "?" query-str))))
         req-port    (:server-port req)
         base-url    (extract-base-url req)
-        res-type    (-> route :path path/get-res-type keyword)
+        res-type    (-> route :path routes/get-res-type keyword)
         id          (-> req :params :id)
         body        (-> req extract-body (assoc :resourceType    res-type
                                                 :id              id))

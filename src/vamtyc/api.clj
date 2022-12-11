@@ -8,7 +8,7 @@
             [next.jdbc :as jdbc]
             [vamtyc.data.datasource :refer [ds]]
             [vamtyc.data.store :as store]
-            [vamtyc.utils.path :as path]
+            [vamtyc.utils.routes :as routes]
             [vamtyc.utils.requests :as requests]
             [vamtyc.nerves.core :refer [nerves]]))
 
@@ -29,7 +29,7 @@
   (let [method      (-> route :method)
         method-kw   (when method (-> method str/lower-case keyword))
         path        (:path route)
-        path-str    (path/stringify path)
+        path-str    (routes/str-path path)
         handler     #(handle-req % route app)]
     (if path
       (make-route method-kw path-str handler)
@@ -37,7 +37,7 @@
 
 (defn load-routes [app]
   (->> (store/list ds :Route)
-       (sort-by #(-> % :path path/calc-match-index) >)
+       (sort-by #(-> % :path routes/calc-match-index) >)
        (map #(make-cpj-route app %))
        (apply routes)))
 

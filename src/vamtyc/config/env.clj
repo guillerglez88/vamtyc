@@ -25,7 +25,7 @@
 
 (def def-env {:DB_CNX_STR "jdbc:postgresql://localhost:5432/vamtyc"
               :PORT       "3000"
-              :LIMIT      128})
+              :LIMIT      "128"})
 
 (def env
   (let [keys (keys def-env)
