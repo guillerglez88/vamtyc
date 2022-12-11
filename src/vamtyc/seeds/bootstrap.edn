@@ -80,7 +80,7 @@
    :url     "/Route"
    :body    {:resourceType  :Route
              :method        :POST
-             :path          [{:name     "resourceType"
+             :path          [{:name     "_type"
                               :value    "Resource"}]
              :name          :create-resource
              :code          "/Coding/nerves?code=create"
@@ -89,9 +89,9 @@
    :url     "/Route"
    :body    {:resourceType  :Route
              :method        :GET
-             :path          [{:name     "resourceType"
+             :path          [{:name     "_type"
                               :value    "Resource"}
-                             {:name     "id"}]
+                             {:name     "_id"}]
              :name          :read-resource
              :code          "/Coding/nerves?code=read"
              :resource      "/Resource/resource"}}
@@ -99,9 +99,9 @@
    :url     "/Route"
    :body    {:resourceType  :Route
              :method        :PUT
-             :path          [{:name     "resourceType"
+             :path          [{:name     "_type"
                               :value    "Resource"}
-                             {:name     "id"}]
+                             {:name     "_id"}]
              :name          "upsert-resource"
              :code          "/Coding/nerves?code=upsert"
              :resource      "/Resource/resource"}}
@@ -109,9 +109,9 @@
    :url     "/Route"
    :body    {:resourceType  :Route
              :method        :DELETE
-             :path          [{:name     "resourceType"
+             :path          [{:name     "_type"
                               :value    "Resource"}
-                             {:name     "id"}]
+                             {:name     "_id"}]
              :name          :delete-resource
              :code          "/Coding/nerves?code=delete"
              :resource      "/Resource/resource"}}
@@ -126,7 +126,7 @@
    :url     "/Route"
    :body    {:resourceType  :Route
              :method        :POST
-             :path          [{:name     "resourceType"
+             :path          [{:name     "_type"
                               :value    "Route"}]
              :name          :create-route
              :code          "/Coding/nerves?code=create"
@@ -135,9 +135,9 @@
    :url     "/Route"
    :body    {:resourceType  :Route
              :method        :GET
-             :path          [{:name     "resourceType"
+             :path          [{:name     "_type"
                               :value    "Route"}
-                             {:name     "id"}]
+                             {:name     "_id"}]
              :name          :read-route
              :code          "/Coding/nerves?code=read"
              :resource      "/Resource/route"}}
@@ -145,9 +145,9 @@
    :url     "/Route"
    :body    {:resourceType  :Route
              :method        :PUT
-             :path          [{:name     "resourceType"
+             :path          [{:name     "_type"
                               :value    "Route"}
-                             {:name     "id"}]
+                             {:name     "_id"}]
              :name          :upsert-route
              :code          "/Coding/nerves?code=upsert"
              :resource      "/Resource/route"}}
@@ -155,9 +155,9 @@
    :url     "/Route"
    :body    {:resourceType  :Route
              :method        :DELETE
-             :path          [{:name     "resourceType"
+             :path          [{:name     "_type"
                               :value    "Route"}
-                             {:name     "id"}]
+                             {:name     "_id"}]
              :name          :delete-route
              :code          "/Coding/nerves?code=delete"
              :resource      "/Resource/route"}}
@@ -173,7 +173,7 @@
    :url     "/Route"
    :body    {:resourceType  :Route
              :method        :POST
-             :path          [{:name     "resourceType"
+             :path          [{:name     "_type"
                               :value    "List"}]
              :name          :create-list
              :code          "/Coding/nerves?code=create"
@@ -182,9 +182,9 @@
    :url     "/Route"
    :body    {:resourceType  :Route
              :method        :GET
-             :path          [{:name     "resourceType"
+             :path          [{:name     "_type"
                               :value    "List"}
-                             {:name     "id"}]
+                             {:name     "_id"}]
              :name          :read-list
              :code          "/Coding/nerves?code=read"
              :resource      "/Resource/list"}}
@@ -192,9 +192,9 @@
    :url     "/Route"
    :body    {:resourceType  :Route
              :method        :PUT
-             :path          [{:name     "resourceType"
+             :path          [{:name     "_type"
                               :value    "List"}
-                             {:name     "id"}]
+                             {:name     "_id"}]
              :name          :upsert-list
              :code          "/Coding/nerves?code=upsert"
              :resource      "/Resource/list"}}
@@ -202,9 +202,9 @@
    :url     "/Route"
    :body    {:resourceType  :Route
              :method        :DELETE
-             :path          [{:name     "resourceType"
+             :path          [{:name     "_type"
                               :value    "List"}
-                             {:name     "id"}]
+                             {:name     "_id"}]
              :name          :delete-list
              :code          "/Coding/nerves?code=delete"
              :resource      "/Resource/list"}}
@@ -212,7 +212,7 @@
    :url     "/Route"
    :body    {:resourceType  :Route
              :method        :GET
-             :path          [{:name     "resourceType"
+             :path          [{:name     "_type"
                               :value    "List"}]
              :name          :search-list
              :code          "/Coding/nerves?code=search"
@@ -228,7 +228,7 @@
    :url     "/Route"
    :body    {:resourceType  :Route
              :method        :POST
-             :path          [{:name     "resourceType"
+             :path          [{:name     "_type"
                               :value    "Transaction"}]
              :name          :create-transaction
              :code          "/Coding/nerves?code=create"
@@ -237,9 +237,9 @@
    :url     "/Route"
    :body    {:resourceType  :Route
              :method        :GET
-             :path          [{:name     "resourceType"
+             :path          [{:name     "_type"
                               :value    "Transaction"}
-                             {:name     "id"}]
+                             {:name     "_id"}]
              :name          :read-transaction
              :code          "/Coding/nerves?code=read"
              :resource      "/Resource/transaction"}}
@@ -247,9 +247,9 @@
    :url     "/Route"
    :body    {:resourceType  :Route
              :method        :PUT
-             :path          [{:name     "resourceType"
+             :path          [{:name     "_type"
                               :value    "Transaction"}
-                             {:name     "id"}]
+                             {:name     "_id"}]
              :name          :upsert-transaction
              :code          "/Coding/nerves?code=upsert"
              :resource      "/Resource/transaction"}}
@@ -257,9 +257,9 @@
    :url     "/Route"
    :body    {:resourceType  :Route
              :method        :DELETE
-             :path          [{:name     "resourceType"
+             :path          [{:name     "_type"
                               :value    "Transaction"}
-                             {:name     "id"}]
+                             {:name     "_id"}]
              :name          :delete-transaction
              :code          "/Coding/nerves?code=delete"
              :resource      "/Resource/transaction"}}
@@ -274,7 +274,7 @@
    :url     "/Route"
    :body    {:resourceType  :Route
              :method        :POST
-             :path          [{:name     "resourceType"
+             :path          [{:name     "_type"
                               :value    "QueryParam"}]
              :name          :create-query-param
              :code          "/Coding/nerves?code=create"
@@ -283,9 +283,9 @@
    :url     "/Route"
    :body    {:resourceType  :Route
              :method        :GET
-             :path          [{:name     "resourceType"
+             :path          [{:name     "_type"
                               :value    "QueryParam"}
-                             {:name     "id"}]
+                             {:name     "_id"}]
              :name          :read-query-param
              :code          "/Coding/nerves?code=read"
              :resource      "/Resource/query-param"}}
@@ -293,9 +293,9 @@
    :url     "/Route"
    :body    {:resourceType  :Route
              :method        :PUT
-             :path          [{:name     "resourceType"
+             :path          [{:name     "_type"
                               :value    "QueryParam"}
-                             {:name     "id"}]
+                             {:name     "_id"}]
              :name          :upsert-query-param
              :code          "/Coding/nerves?code=upsert"
              :resource      "/Resource/query-param"}}
@@ -303,9 +303,9 @@
    :url     "/Route"
    :body    {:resourceType  :Route
              :method        :DELETE
-             :path          [{:name     "resourceType"
+             :path          [{:name     "_type"
                               :value    "QueryParam"}
-                             {:name     "id"}]
+                             {:name     "_id"}]
              :name          :delete-query-param
              :code          "/Coding/nerves?code=delete"
              :resource      "/Resource/query-param"}}
@@ -320,7 +320,7 @@
    :url     "/Route"
    :body    {:resourceType  :Route
              :method        :POST
-             :path          [{:name     "resourceType"
+             :path          [{:name     "_type"
                               :value    "Coding"}]
              :name          :create-coding
              :code          "/Coding/nerves?code=create"
@@ -329,9 +329,9 @@
    :url     "/Route"
    :body    {:resourceType  :Route
              :method        :GET
-             :path          [{:name     "resourceType"
+             :path          [{:name     "_type"
                               :value    "Coding"}
-                             {:name     "id"}]
+                             {:name     "_id"}]
              :name          :read-coding
              :code          "/Coding/nerves?code=read"
              :resource      "/Resource/coding"}}
@@ -339,9 +339,9 @@
    :url     "/Route"
    :body    {:resourceType  :Route
              :method        :PUT
-             :path          [{:name     "resourceType"
+             :path          [{:name     "_type"
                               :value    "Coding"}
-                             {:name     "id"}]
+                             {:name     "_id"}]
              :name          :upsert-coding
              :code          "/Coding/nerves?code=upsert"
              :resource      "/Resource/coding"}}
@@ -349,9 +349,9 @@
    :url     "/Route"
    :body    {:resourceType  :Route
              :method        :DELETE
-             :path          [{:name     "resourceType"
+             :path          [{:name     "_type"
                               :value    "Coding"}
-                             {:name     "id"}]
+                             {:name     "_id"}]
              :name          :delete-coding
              :code          "/Coding/nerves?code=delete"
              :resource      "/Resource/coding"}}
@@ -404,11 +404,11 @@
    :url     "/QueryParam"
    :body    {:resourceType  :QueryParam
              :code          "/Coding/filters?code=keyword"
-             :desc          "Filter Route by the resourceType part of the route"
+             :desc          "Filter Route by the _type part of the route"
              :name          :res-type
              :path          [{:name         "path"
                               :collection   true
-                              :filter       {:name  "resourceType"}}
+                              :filter       {:name  "_type"}}
                              {:name         "value"}]
              :type          :Route}}
   ;; Creation of :List REST query-params
