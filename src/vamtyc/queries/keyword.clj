@@ -1,8 +1,5 @@
 (ns vamtyc.queries.keyword
-  (:require [honey.sql.helpers :refer [where]]
-            [vamtyc.utils.queries :refer [make-prop-alias
-                                          jsonb-extract-coll
-                                          jsonb-extract-prop]]))
+  (:require [honey.sql.helpers :refer [where]]))
 
 (defn filter [req query-param sql-map col]
   (let [name  (:name query-param)

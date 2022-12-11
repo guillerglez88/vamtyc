@@ -2,14 +2,15 @@
   (:require [honey.sql :as sql]
             [vamtyc.queries.limit :as limit]
             [vamtyc.queries.of :as of]
-            [vamtyc.utils.requests :refer [extract-param-names]]
+            [vamtyc.utils.requests :as req-utils]
             [vamtyc.queries.utils :as utils]
-            [vamtyc.data.queryparams :refer [load-queryparams]]
+            [vamtyc.data.queryparams :as queryp-store]
             [vamtyc.queries.text :as text]
             [vamtyc.queries.offset :as offset]
             [vamtyc.queries.fields :as fields]
             [vamtyc.queries.keyword :as keyw]
-            [vamtyc.queries.sort :as sort]))
+            [vamtyc.queries.sort :as sort]
+            [vamtyc.utils.requests :as req-utils]))
 
 (def filters
   {:_limit                        limit/filter
@@ -43,9 +44,9 @@
                 (recur alias rest)))))))
 
 (defn make-search-query [req res-type tx]
-  (let [param-names   (extract-param-names req)
+  (let [param-names   (req-utils/extract-param-names req)
         orig-res-type (-> req :body :resourceType)
-        queryparams   (load-queryparams param-names [orig-res-type res-type] tx)
+        queryparams   (queryp-store/load-queryparams param-names [orig-res-type res-type] tx)
         sql-map       (utils/make-sql-map res-type)]
     (-> (reduce #(refine-query req %1 %2) sql-map queryparams)
         (sql/format {:pretty true}))))
