@@ -9,17 +9,8 @@
   (let [port (-> env :PORT Integer/parseInt)]
     (seeds/init)
     (-> (api/init)
-        (run-jetty {:port port
-                    :join? false}))))
+        (run-jetty {:port port}))
+    (println (str "Server running at: http://localhost:" port "/"))))
 
 (defn -main [& _args]
   (start))
-
-(comment
-  ;; start service from main
-  (-main)
-  ;; start service
-  (def server (start))
-  ;; stop service
-  (.stop server)
-  )
