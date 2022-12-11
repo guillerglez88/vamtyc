@@ -1,6 +1,5 @@
 (ns vamtyc.queries.utils
   (:require [honey.sql.helpers :refer [select from inner-join]]
-            [vamtyc.utils.routes :as routes]
             [compojure.route :as route]))
 
 (defn make-sql-map [res-type]
@@ -43,9 +42,14 @@
                      (get-queryp-default-str %)) query-params)
        (into {})))
 
+(defn make-route-params [route]
+  (let [path (:path route)]
+    (->> (map #(vector (:name %) (:value %)) path)
+         (into {}))))
+
 (defn make-params [req route query-params env]
   (let [req-params    (:params req)
-        route-params  (-> route :path routes/make-params)
+        route-params  (make-route-params route)
         queryp-params (make-queryp-params query-params)]
     (-> (make-env-params env)
         (merge queryp-params)

@@ -17,6 +17,3 @@
 (defn calc-match-index [path]
   (->> (filter #(contains? % :value) path)
        (count)))
-
-(defn make-params [path]
-  (reduce #(assoc %1 (:name %2) (:value %2)) {} path))

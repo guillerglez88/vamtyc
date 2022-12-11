@@ -72,6 +72,19 @@
               "_sort" "_created"}
              (sut/make-queryp-params (make-query-param))))))
 
+(t/deftest can-make-route-params
+  (t/testing "Can convert a route path into a hash-map"
+    (t/is (= {"_type" "List"}
+             (sut/make-route-params {:path [{:name "_type" :value "List"}]})))
+    (t/is (= {"_type" "Resource"
+              "_id" nil}
+             (sut/make-route-params {:path [{:name "_type" :value "Resource"}
+                                            {:name "_id" }]})))
+    (t/is (= {"_type" "Resource"
+              "_id" "route"}
+             (sut/make-route-params {:path [{:name "_type" :value "Resource"}
+                                            {:name "_id" :value "route"}]})))))
+
 (t/deftest can-make-params
   (t/testing "Can make filter-params from: req, route, query-params, env"
     (t/is (= (make-params)
