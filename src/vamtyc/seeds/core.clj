@@ -25,9 +25,9 @@
        (jdbc/execute! tx)))
 
 (defn commit-boot-trn-item [tx res]
-  (let [res-type    (:resourceType res)
+  (let [res-type    (:type res)
         id          (:id res)
-        type        (:type res)]
+        type        (:of res)]
     (when (= :Resource res-type)
       (allocate-storage tx type))
     (if (nil? id)

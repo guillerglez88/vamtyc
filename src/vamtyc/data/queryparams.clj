@@ -4,8 +4,10 @@
             [honey.sql :as hsql]
             [honey.sql.helpers :refer [select from where]]))
 
-(defn load-queryparams [param-names res-types tx]
-  (let [types (-> res-types (conj :*) (->> (map name)))
+(defn load-queryparams [tx res-types param-names]
+  (let [types (->> (conj res-types :*)
+                   (filter #(not (nil? %)))
+                   (map name))
         names (-> param-names (or []) (conj "__"))]
     (-> (select :*)
         (from :QueryParam)

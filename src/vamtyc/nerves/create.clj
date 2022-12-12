@@ -3,7 +3,7 @@
             [vamtyc.data.store :as store]))
 
 (defn handler [req tx _app]
-  (let [body        (:body req)
-        res-type    (:resourceType body)]
-    (-> (store/create tx res-type body)
-        (#(created (:url %) %)))))
+  (let [res-type    (-> req :params (get "_type") keyword)]
+    (->> (:body req)
+         (store/create tx res-type)
+         (#(created (:url %) %)))))

@@ -19,11 +19,11 @@
           created       (or (created-key entity) (:created entity))
           modified      (or (modified-key entity) (:modified entity))
           url           (str "/" res-name "/" id)]
-      (merge res {:resourceType res-name
-                  :id           id
-                  :url          url
-                  :created      (.toString created)
-                  :modified     (.toString modified)}))))
+      (merge res {:type     res-name
+                  :id       id
+                  :url      url
+                  :created  (.toString created)
+                  :modified (.toString modified)}))))
 
 (defn create
   ([tx res-type id res]
@@ -41,7 +41,7 @@
 
 (defn update [tx res-type id res]
   (let [stored  (read tx res-type id)
-        created (-> stored :meta :created)
+        created (-> stored :created)
         now     (Instant/now)]
     (sql/update! tx res-type {:resource res :modified now} {:id id})
     (-> {:id id :resource res :modified now :created created}

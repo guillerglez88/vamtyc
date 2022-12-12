@@ -5,9 +5,9 @@
             [ring.util.response :refer [response content-type]]))
 
 (defn make-trn-result [items]
-  {:resourceType    :List
-   :type            :transaction-result
-   :items           items})
+  {:type    :List
+   :type    :transaction-result
+   :items   items})
 
 (defn make-inspect-http-req [req]
   (let [method  (-> req :method str/lower-case keyword)

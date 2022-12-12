@@ -4,8 +4,8 @@
             [vamtyc.utils.fields :as fields]))
 
 (defn handler [req tx _app]
-  (let [res-type  (-> req :body :resourceType)
-        id        (-> req :body :id)
+  (let [res-type  (-> req :params (get "_type") keyword)
+        id        (-> req :params (get "_id"))
         fields    (-> req :params (get "_fields") (or []))
         res       (store/read tx res-type id)]
     (if res

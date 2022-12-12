@@ -4,8 +4,8 @@
 
 (defn handler [req tx _app]
   (let [body        (:body req)
-        res-type    (:resourceType body)
-        id          (:id body)]
+        res-type    (-> req :params (get "_type") keyword)
+        id          (-> req :params (get "_id"))]
     (if (store/read tx res-type id)
       (-> (store/update tx res-type id body)
           (response))

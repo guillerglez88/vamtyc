@@ -4,9 +4,8 @@
             [vamtyc.utils.fields :as fields]))
 
 (defn handler [req tx _app]
-  (let [res-type  (-> req :body :resourceType)
-        id        (-> req :body :id)
-        res       (store/delete tx res-type id)]
-    (if res
+  (let [res-type  (-> req :params (get "_type") keyword)
+        id        (-> req :params (get "_id"))]
+    (if (store/delete tx res-type id)
       (status 204)
       (not-found "Not found"))))
