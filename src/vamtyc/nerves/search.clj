@@ -3,7 +3,8 @@
             [ring.util.request :refer [request-url]]
             [vamtyc.data.store :as store]
             [vamtyc.utils.fields :as fields]
-            [vamtyc.queries.core :as queries]))
+            [vamtyc.queries.core :as queries]
+            [clojure.string :as str]))
 
 (defn make-result-set [items url]
   {:type    :List
@@ -16,7 +17,7 @@
 
 (defn handler [req tx _app]
   (let [url         (request-url req)
-        fields      (-> req :params (get "_fields") (or []))
+        fields      (-> req :params (get "_fields") (fields/flat-expr))
         res-type    (-> req :params (get "_of") keyword)]
     (->> (queries/make-search-query req tx)
          (store/list tx res-type)
