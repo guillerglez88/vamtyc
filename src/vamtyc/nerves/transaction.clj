@@ -5,8 +5,8 @@
             [ring.util.response :refer [response content-type]]))
 
 (defn make-trn-result [items]
-  {:type    :List
-   :type    :transaction-result
+  {:type    :Transaction
+   :status "/Coding/transaction-statuses?code=completed"
    :items   items})
 
 (defn make-inspect-http-req [req]

@@ -13,7 +13,7 @@
             [vamtyc.nerves.core :as nerves]
             [vamtyc.utils.params :as params]
             [vamtyc.config.env :refer [sec-env]]
-            [vamtyc.data.queryparams :as queryp]))
+            [vamtyc.data.queryp :as queryp]))
 
 (defn make-http-response [resp]
   (let [body (-> resp :body json/write-str)]
@@ -36,7 +36,7 @@
       (let [of-type (-> req :params (get "_of") keyword)]
         (jdbc/with-transaction [tx ds]
           (->> (params/extract-param-names req)
-               (queryp/load-queryparams tx [res-type of-type])
+               (queryp/load-queryps tx [res-type of-type])
                (hydrate req route sec-env)
                (#(handler % tx app ))
                (make-http-response)))))))

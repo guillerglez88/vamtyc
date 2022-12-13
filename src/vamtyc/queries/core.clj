@@ -3,7 +3,6 @@
             [vamtyc.queries.limit :as limit]
             [vamtyc.queries.of :as of]
             [vamtyc.queries.utils :as utils]
-            [vamtyc.data.queryparams :as queryp-store]
             [vamtyc.queries.text :as text]
             [vamtyc.queries.offset :as offset]
             [vamtyc.queries.fields :as fields]
