@@ -6,7 +6,7 @@
 (defn handler [req tx _app]
   (let [res-type  (-> req :params (get "_type") keyword)
         id        (-> req :params (get "_id"))
-        fields    (-> req :params (get "_fields") (or []))
+        fields    (-> req :params (get "_fields") fields/flat-expr)
         res       (store/read tx res-type id)]
     (if res
       (-> (fields/select-fields res fields)
