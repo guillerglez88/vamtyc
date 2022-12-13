@@ -5,17 +5,24 @@
             [honey.sql.helpers :refer [select from where]]))
 
 (defn queryps-sql [types names]
-  (-> (select :*)
-      (from :QueryParam)
-      (where [:and [:in [:jsonb_extract_path_text :resource "of"] types]]
-                   [:or [:<> [:jsonb_extract_path_text :resource "default"] nil]
-                        [:in [:jsonb_extract_path_text :resource "name"] names]])
-        (hsql/format)))
+  (let [of-list (into [] (filter #(not (nil? %)) types))]
+    (-> (select :*)
+        (from :QueryParam)
+        (where [:and [:in [:jsonb_extract_path_text :resource "of"] of-list]]
+                     [:or [:<> [:jsonb_extract_path_text :resource "default"] nil]
+                          [:in [:jsonb_extract_path_text :resource "name"] names]])
+          (hsql/format))))
+
+(defn or-something [param-names]
+  (if (or (nil? param-names)
+          (empty? param-names))
+    ["__0f610cba__"]
+    param-names))
 
 (defn load-queryps [tx res-types param-names]
   (let [types (->> (conj res-types :*)
                    (filter #(not (nil? %)))
                    (map name))
-        names (-> param-names (or ["__0f610cba__"]))]
+        names (or-something param-names)]
     (->> (queryps-sql types names)
          (store/list tx :QueryParam))))
