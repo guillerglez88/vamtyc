@@ -1,4 +1,4 @@
-(ns vamtyc.queries.core-test
+(ns vamtyc.sanity-test
   (:require  [clojure.test :refer [deftest testing is]]))
 
 (deftest can-test
