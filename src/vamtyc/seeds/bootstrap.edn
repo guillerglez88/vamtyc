@@ -81,6 +81,7 @@
    :body    {:type      :Route
              :method    :POST
              :path      [{:name     "_type"
+                          :code     "/Coding/wellknown-params?code=type"
                           :value    "Resource"}]
              :name      :create-resource
              :code      "/Coding/nerves?code=create"
@@ -90,8 +91,10 @@
    :body    {:type      :Route
              :method    :GET
              :path      [{:name     "_type"
+                          :code     "/Coding/wellknown-params?code=type"
                           :value    "Resource"}
-                         {:name     "_id"}]
+                         {:name     "_id"
+                          :code     "/Coding/wellknown-params?code=id"}]
              :name      :read-resource
              :code      "/Coding/nerves?code=read"
              :resource  "/Resource/resource"}}
@@ -100,8 +103,10 @@
    :body    {:type      :Route
              :method    :PUT
              :path      [{:name     "_type"
+                          :code     "/Coding/wellknown-params?code=type"
                           :value    "Resource"}
-                         {:name     "_id"}]
+                         {:name     "_id"
+                          :code     "/Coding/wellknown-params?code=id"}]
              :name      "upsert-resource"
              :code      "/Coding/nerves?code=upsert"
              :resource  "/Resource/resource"}}
@@ -110,8 +115,10 @@
    :body    {:type      :Route
              :method    :DELETE
              :path      [{:name     "_type"
+                          :code     "/Coding/wellknown-params?code=type"
                           :value    "Resource"}
-                         {:name     "_id"}]
+                         {:name     "_id"
+                          :code     "/Coding/wellknown-params?code=id"}]
              :name      :delete-resource
              :code      "/Coding/nerves?code=delete"
              :resource  "/Resource/resource"}}
@@ -127,6 +134,7 @@
    :body    {:type      :Route
              :method    :POST
              :path      [{:name     "_type"
+                          :code     "/Coding/wellknown-params?code=type"
                           :value    "Route"}]
              :name      :create-route
              :code      "/Coding/nerves?code=create"
@@ -136,8 +144,10 @@
    :body    {:type      :Route
              :method    :GET
              :path      [{:name     "_type"
+                          :code     "/Coding/wellknown-params?code=type"
                           :value    "Route"}
-                         {:name     "_id"}]
+                         {:name     "_id"
+                          :code     "/Coding/wellknown-params?code=id"}]
              :name      :read-route
              :code      "/Coding/nerves?code=read"
              :resource  "/Resource/route"}}
@@ -146,8 +156,10 @@
    :body    {:type      :Route
              :method    :PUT
              :path      [{:name     "_type"
+                          :code     "/Coding/wellknown-params?code=type"
                           :value    "Route"}
-                         {:name     "_id"}]
+                         {:name     "_id"
+                          :code     "/Coding/wellknown-params?code=id"}]
              :name      :upsert-route
              :code      "/Coding/nerves?code=upsert"
              :resource  "/Resource/route"}}
@@ -156,8 +168,10 @@
    :body    {:type      :Route
              :method    :DELETE
              :path      [{:name     "_type"
+                          :code     "/Coding/wellknown-params?code=type"
                           :value    "Route"}
-                         {:name     "_id"}]
+                         {:name     "_id"
+                          :code     "/Coding/wellknown-params?code=id"}]
              :name      :delete-route
              :code      "/Coding/nerves?code=delete"
              :resource  "/Resource/route"}}
@@ -174,6 +188,7 @@
    :body    {:type      :Route
              :method    :POST
              :path      [{:name     "_type"
+                          :code     "/Coding/wellknown-params?code=type"
                           :value    "List"}]
              :name      :create-list
              :code      "/Coding/nerves?code=create"
@@ -183,8 +198,10 @@
    :body    {:type      :Route
              :method    :GET
              :path      [{:name     "_type"
+                          :code     "/Coding/wellknown-params?code=type"
                           :value    "List"}
-                         {:name     "_id"}]
+                         {:name     "_id"
+                          :code     "/Coding/wellknown-params?code=id"}]
              :name      :read-list
              :code      "/Coding/nerves?code=read"
              :resource  "/Resource/list"}}
@@ -193,8 +210,10 @@
    :body    {:type      :Route
              :method    :PUT
              :path      [{:name     "_type"
+                          :code     "/Coding/wellknown-params?code=type"
                           :value    "List"}
-                         {:name     "_id"}]
+                         {:name     "_id"
+                          :code     "/Coding/wellknown-params?code=id"}]
              :name      :upsert-list
              :code      "/Coding/nerves?code=upsert"
              :resource  "/Resource/list"}}
@@ -203,8 +222,10 @@
    :body    {:type      :Route
              :method    :DELETE
              :path      [{:name     "_type"
+                          :code     "/Coding/wellknown-params?code=type"
                           :value    "List"}
-                         {:name     "_id"}]
+                         {:name     "_id"
+                          :code     "/Coding/wellknown-params?code=id"}]
              :name      :delete-list
              :code      "/Coding/nerves?code=delete"
              :resource  "/Resource/list"}}
@@ -213,6 +234,7 @@
    :body    {:type      :Route
              :method    :GET
              :path      [{:name     "_type"
+                          :code     "/Coding/wellknown-params?code=type"
                           :value    "List"}]
              :name      :search-list
              :code      "/Coding/nerves?code=search"
@@ -229,6 +251,7 @@
    :body    {:type      :Route
              :method    :POST
              :path      [{:name     "_type"
+                          :code     "/Coding/wellknown-params?code=type"
                           :value    "Transaction"}]
              :name      :create-transaction
              :code      "/Coding/nerves?code=create"
@@ -238,8 +261,10 @@
    :body    {:type      :Route
              :method    :GET
              :path      [{:name     "_type"
+                          :code     "/Coding/wellknown-params?code=type"
                           :value    "Transaction"}
-                         {:name     "_id"}]
+                         {:name     "_id"
+                          :code     "/Coding/wellknown-params?code=id"}]
              :name      :read-transaction
              :code      "/Coding/nerves?code=read"
              :resource  "/Resource/transaction"}}
@@ -248,8 +273,10 @@
    :body    {:type      :Route
              :method    :PUT
              :path      [{:name     "_type"
+                          :code     "/Coding/wellknown-params?code=type"
                           :value    "Transaction"}
-                         {:name     "_id"}]
+                         {:name     "_id"
+                          :code     "/Coding/wellknown-params?code=id"}]
              :name      :upsert-transaction
              :code      "/Coding/nerves?code=upsert"
              :resource  "/Resource/transaction"}}
@@ -258,8 +285,10 @@
    :body    {:type      :Route
              :method    :DELETE
              :path      [{:name     "_type"
+                          :code     "/Coding/wellknown-params?code=type"
                           :value    "Transaction"}
-                         {:name     "_id"}]
+                         {:name     "_id"
+                          :code     "/Coding/wellknown-params?code=id"}]
              :name      :delete-transaction
              :code      "/Coding/nerves?code=delete"
              :resource  "/Resource/transaction"}}
@@ -275,6 +304,7 @@
    :body    {:type      :Route
              :method    :POST
              :path      [{:name     "_type"
+                          :code     "/Coding/wellknown-params?code=type"
                           :value    "QueryParam"}]
              :name      :create-query-param
              :code      "/Coding/nerves?code=create"
@@ -284,8 +314,10 @@
    :body    {:type      :Route
              :method    :GET
              :path      [{:name     "_type"
+                          :code     "/Coding/wellknown-params?code=type"
                           :value    "QueryParam"}
-                         {:name     "_id"}]
+                         {:name     "_id"
+                          :code     "/Coding/wellknown-params?code=id"}]
              :name      :read-query-param
              :code      "/Coding/nerves?code=read"
              :resource  "/Resource/query-param"}}
@@ -294,8 +326,10 @@
    :body    {:type      :Route
              :method    :PUT
              :path      [{:name     "_type"
+                          :code     "/Coding/wellknown-params?code=type"
                           :value    "QueryParam"}
-                         {:name     "_id"}]
+                         {:name     "_id"
+                          :code     "/Coding/wellknown-params?code=id"}]
              :name      :upsert-query-param
              :code      "/Coding/nerves?code=upsert"
              :resource  "/Resource/query-param"}}
@@ -304,8 +338,10 @@
    :body    {:type      :Route
              :method    :DELETE
              :path      [{:name     "_type"
+                          :code     "/Coding/wellknown-params?code=type"
                           :value    "QueryParam"}
-                         {:name     "_id"}]
+                         {:name     "_id"
+                          :code     "/Coding/wellknown-params?code=id"}]
              :name      :delete-query-param
              :code      "/Coding/nerves?code=delete"
              :resource  "/Resource/query-param"}}
@@ -321,6 +357,7 @@
    :body    {:type      :Route
              :method    :POST
              :path      [{:name     "_type"
+                          :code     "/Coding/wellknown-params?code=type"
                           :value    "Coding"}]
              :name      :create-coding
              :code      "/Coding/nerves?code=create"
@@ -330,8 +367,10 @@
    :body    {:type      :Route
              :method    :GET
              :path      [{:name     "_type"
+                          :code     "/Coding/wellknown-params?code=type"
                           :value    "Coding"}
-                         {:name     "_id"}]
+                         {:name     "_id"
+                          :code     "/Coding/wellknown-params?code=id"}]
              :name      :read-coding
              :code      "/Coding/nerves?code=read"
              :resource  "/Resource/coding"}}
@@ -340,8 +379,10 @@
    :body    {:type      :Route
              :method    :PUT
              :path      [{:name     "_type"
+                          :code     "/Coding/wellknown-params?code=type"
                           :value    "Coding"}
-                         {:name     "_id"}]
+                         {:name     "_id"
+                          :code     "/Coding/wellknown-params?code=id"}]
              :name      :upsert-coding
              :code      "/Coding/nerves?code=upsert"
              :resource  "/Resource/coding"}}
@@ -350,8 +391,10 @@
    :body    {:type      :Route
              :method    :DELETE
              :path      [{:name     "_type"
+                          :code     "/Coding/wellknown-params?code=type"
                           :value    "Coding"}
-                         {:name     "_id"}]
+                         {:name     "_id"
+                          :code     "/Coding/wellknown-params?code=id"}]
              :name      :delete-coding
              :code      "/Coding/nerves?code=delete"
              :resource  "/Resource/coding"}}
@@ -362,7 +405,7 @@
   {:method  :POST
    :url     "/QueryParam"
    :body    {:type  :QueryParam
-             :code  "/Coding/filters?code=text"
+             :code  "/Coding/wellknown-params?code=fields"
              :desc  "Reduce response payload by filtering properties"
              :name  :_fields
              :of    :*}}
@@ -408,7 +451,7 @@
              :name  :res-type
              :path  [{:name         "path"
                       :collection   true
-                      :filter       {:name  "_type"}}
+                      :filter       {:code "/Coding/wellknown-params?code=type"}}
                      {:name         "value"}]
              :of    :Route}}
   ;; Creation of :List REST query-params
@@ -423,7 +466,7 @@
   {:method  :POST
    :url     "/QueryParam"
    :body    {:type      :QueryParam
-             :code      "/Coding/filters?code=keyword"
+             :code      "/Coding/wellknown-params?code=of"
              :desc      "Type of resource to search for"
              :name      :_of
              :default   :List
@@ -431,7 +474,7 @@
   {:method  :POST
    :url     "/QueryParam"
    :body    {:type      :QueryParam
-             :code      "/Coding/filters?code=number"
+             :code      "/Coding/wellknown-params?code=limit"
              :desc      "Limit items count in the result"
              :name      :_limit
              :default   128
@@ -439,7 +482,7 @@
   {:method  :POST
    :url     "/QueryParam"
    :body    {:type      :QueryParam
-             :code      "/Coding/filters?code=number"
+             :code      "/Coding/wellknown-params?code=offset"
              :desc      "Skip that many items before starting to count result items"
              :name      :_offset
              :default   0
@@ -465,7 +508,7 @@
   {:method  :POST
    :url     "/QueryParam"
    :body    {:type      :QueryParam
-             :code      "/Coding/filters?code=keyword"
+             :code      "/Coding/wellknown-params?code=sort"
              :desc      "Order results by specified query-param"
              :name      :_sort
              :default   :_created
