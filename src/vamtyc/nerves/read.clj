@@ -6,7 +6,7 @@
 
 (defn handler [req tx _app]
   (let [res-type  (-> req :vamtyc/route :path routes/type)
-        id        (-> req :params (get "_id"))
+        id        (-> req :vamtyc/route :path routes/id)
         fields    (-> req :params (get "_fields") fields/flat-expr)
         res       (store/read tx res-type id)]
     (if res

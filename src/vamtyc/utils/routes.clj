@@ -6,10 +6,10 @@
 
 (defn component [path code]
   (let [path-cmp (filter #(match-code? % code) path)]
-    (-> path-cmp first :value keyword)))
+    (-> path-cmp first :value)))
 
 (defn type [path]
-  (component path :/Coding/wellknown-params?code=type))
+  (-> path (component :/Coding/wellknown-params?code=type) keyword))
 
 (defn id [path]
   (component path :/Coding/wellknown-params?code=id))

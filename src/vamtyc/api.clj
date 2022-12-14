@@ -24,7 +24,7 @@
 (defn hydrate [req route env queryp]
   (let [rroute  (routes/resolve (:params req) route)
         rqueryp (into [] (map #(uqueryp/resolve (:params req) %) queryp))]
-    (->> (params/make-params req env route queryp)
+    (->> (params/make-params req env route rqueryp)
          (hash-map :vamtyc/route    rroute
                    :vamtyc/env      sec-env
                    :vamtyc/queryp   rqueryp
@@ -36,13 +36,12 @@
         code      (-> route :code keyword)
         handler   (nerves/pick code)]
     (fn [req]
-      (let [of-type     (-> req :params (get "_of") keyword)
-            req-params  (params/req-params req)]
+      (let [of-type (-> req :params (get "_of") keyword)
+            rreq    (merge req {:params (params/req-params req)})]
         (jdbc/with-transaction [tx ds]
-          (->> (merge req {:params req-params})
-               (params/extract-param-names)
+          (->> (params/extract-param-names rreq)
                (queryp/load-queryps tx [res-type of-type])
-               (hydrate req route sec-env)
+               (hydrate rreq route sec-env)
                (#(handler % tx app ))
                (make-http-response)))))))
 

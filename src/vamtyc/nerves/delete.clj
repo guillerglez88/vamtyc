@@ -6,7 +6,7 @@
 
 (defn handler [req tx _app]
   (let [res-type  (-> req :vamtyc/route :path routes/type)
-        id        (-> req :params (get "_id"))]
+        id        (-> req :vamtyc/route :path routes/id)]
     (if (store/delete tx res-type id)
       (status 204)
       (not-found "Not found"))))
