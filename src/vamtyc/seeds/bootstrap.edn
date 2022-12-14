@@ -562,6 +562,24 @@
                      {:code "/Coding/filters?code=date"
                       :desc "Filter results by comparing dates"}]}}
   {:method  :PUT
+   :url     "/Coding/wellknown-params"
+   :body    {:type  :Coding
+             :id    "wellknown-params"
+             :codes [{:code "/Coding/wellknown-params?code=type"
+                      :desc "Route path relative to resource type"}
+                     {:code "/Coding/wellknown-params?code=id"
+                      :desc "Route path relative to resource id"}
+                     {:code "/Coding/wellknown-params?code=of"
+                      :desc "Query string param for type"}
+                     {:code "/Coding/wellknown-params?code=fields"
+                      :desc "Query string param for selecting and mapping result props"}
+                     {:code "/Coding/wellknown-params?code=limit"
+                      :desc "Query param for limitting result items count"}
+                     {:code "/Coding/wellknown-params?code=offset"
+                      :desc "Query param for skipping first 'n' items of result"}
+                     {:code "/Coding/wellknown-params?code=sort"
+                      :desc "Query param for ordering result items"}]}}
+  {:method  :PUT
    :url     "/Coding/transaction-statuses"
    :body    {:type  :Coding
              :id    "transaction-statuses"
