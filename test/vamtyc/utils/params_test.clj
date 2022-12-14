@@ -26,25 +26,25 @@
     :code       "/Coding/filters?code=keyword"
     :desc       "Type of resource to search for"
     :name       :_of
-    :default    :List
+    :value      :List
     :of         :List}
    {:type       :QueryParam
     :code       "/Coding/filters?code=number"
     :desc       "Limit items count in the result"
     :name       :_limit
-    :default    128
+    :value      128
     :of         :List}
    {:type       :QueryParam
     :code       "/Coding/filters?code=number"
     :desc       "Skip that many items before starting to count result items"
     :name       :_offset
-    :default    0
+    :value      0
     :of         :List}
    {:type       :QueryParam
     :code       "/Coding/filters?code=keyword"
     :desc       "Order results by specified query-param"
     :name       :_sort
-    :default    :_created
+    :value      :_created
     :of         :List}])
 
 (defn make-env []

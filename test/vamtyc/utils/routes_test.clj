@@ -34,7 +34,7 @@
                              :code :/Coding/wellknown-params?code=id})))
     (t/is (= false
              (sut/res-type? {:name "id"})))
-    (t/is (= "Resource"
+    (t/is (= :Resource
              (sut/get-res-type [{:name "_type"
                                  :value "Resource"
                                  :code :/Coding/wellknown-params?code=type}
@@ -43,3 +43,10 @@
                                  :code :/Coding/wellknown-params?code=type}])))
     (t/is (= nil
              (sut/get-res-type [])))))
+
+(t/deftest resolve
+  (t/testing "Can resolve route-free path-components from req-params"
+    (t/is (= {:path [{:name    "_type" :value   "Resource"}
+                     {:name    "_id" :value   "a98bc78"}]}
+             (sut/resolve {"_type" "Resource" "_id" "a98bc78"}
+                          {:path [{:name "_type"} {:name "_id"}]})))))

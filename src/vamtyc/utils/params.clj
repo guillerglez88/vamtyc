@@ -8,8 +8,8 @@
 (defn env-params [env]
   (reduce #(assoc %1 (str "env/" (name %2)) (%2 env)) {} (keys env)))
 
-(defn queryp-default-str [queryp]
-  (let [default (:default queryp)]
+(defn queryp-val-str [queryp]
+  (let [default (:value queryp)]
     (cond
       (keyword? default) (name default)
       (nil? default) ""
@@ -17,7 +17,7 @@
 
 (defn queryp-params [query-params]
   (->> (map #(vector (-> % :name name)
-                     (queryp-default-str %)) query-params)
+                     (queryp-val-str %)) query-params)
        (into {})))
 
 (defn route-params [route]

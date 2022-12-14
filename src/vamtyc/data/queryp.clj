@@ -9,7 +9,7 @@
     (-> (select :*)
         (from :QueryParam)
         (where [:and [:in [:jsonb_extract_path_text :resource "of"] of-list]]
-                     [:or [:<> [:jsonb_extract_path_text :resource "default"] nil]
+                     [:or [:<> [:jsonb_extract_path_text :resource "value"] nil]
                           [:in [:jsonb_extract_path_text :resource "name"] names]])
           (hsql/format))))
 

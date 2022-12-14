@@ -1,9 +1,10 @@
 (ns vamtyc.nerves.create
   (:require [ring.util.response :refer [created]]
-            [vamtyc.data.store :as store]))
+            [vamtyc.data.store :as store]
+            [vamtyc.utils.routes :as routes]))
 
 (defn handler [req tx _app]
-  (let [res-type (-> req :params (get "_type") keyword)]
+  (let [res-type (-> req :vamtyc/route :path routes/get-res-type)]
     (->> (:body req)
          (store/create tx res-type)
          (#(created (:url %) %)))))

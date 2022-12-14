@@ -13,7 +13,8 @@
             [vamtyc.nerves.core :as nerves]
             [vamtyc.utils.params :as params]
             [vamtyc.config.env :refer [sec-env]]
-            [vamtyc.data.queryp :as queryp]))
+            [vamtyc.data.queryp :as queryp]
+            [vamtyc.utils.queryp :as uqueryp]))
 
 (defn make-http-response [resp]
   (let [body (-> resp :body json/write-str)]
@@ -21,21 +22,25 @@
         (content-type "application/json"))))
 
 (defn hydrate [req route env queryp]
-  (->> (params/make-params req env route queryp)
-       (hash-map :vamtyc/route route
-                 :vamtyc/env sec-env
-                 :vamtyc/queryp queryp
-                 :params)
-       (merge req)))
+  (let [rroute  (routes/resolve (:params req) route)
+        rqueryp (into [] (map #(uqueryp/resolve (:params req) %) queryp))]
+    (->> (params/make-params req env route queryp)
+         (hash-map :vamtyc/route    rroute
+                   :vamtyc/env      sec-env
+                   :vamtyc/queryp   rqueryp
+                   :params)
+         (merge req))))
 
 (defn compojure-handler [route app]
   (let [res-type  (-> route :path routes/get-res-type)
         code      (-> route :code keyword)
         handler   (nerves/pick code)]
     (fn [req]
-      (let [of-type (-> req :params (get "_of") keyword)]
+      (let [of-type     (-> req :params (get "_of") keyword)
+            req-params  (params/req-params req)]
         (jdbc/with-transaction [tx ds]
-          (->> (params/extract-param-names req)
+          (->> (merge req {:params req-params})
+               (params/extract-param-names)
                (queryp/load-queryps tx [res-type of-type])
                (hydrate req route sec-env)
                (#(handler % tx app ))
