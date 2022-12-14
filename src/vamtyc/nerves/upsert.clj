@@ -5,7 +5,7 @@
 
 (defn handler [req tx _app]
   (let [body        (:body req)
-        res-type    (-> req :vamtyc/route :path routes/get-res-type)
+        res-type    (-> req :vamtyc/route :path routes/type)
         id          (-> req :params (get "_id"))]
     (if (store/read tx res-type id)
       (-> (store/update tx res-type id body)

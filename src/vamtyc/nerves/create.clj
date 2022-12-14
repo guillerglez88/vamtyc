@@ -4,7 +4,7 @@
             [vamtyc.utils.routes :as routes]))
 
 (defn handler [req tx _app]
-  (let [res-type (-> req :vamtyc/route :path routes/get-res-type)]
+  (let [res-type (-> req :vamtyc/route :path routes/type)]
     (->> (:body req)
          (store/create tx res-type)
          (#(created (:url %) %)))))

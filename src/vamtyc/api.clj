@@ -32,7 +32,7 @@
          (merge req))))
 
 (defn compojure-handler [route app]
-  (let [res-type  (-> route :path routes/get-res-type)
+  (let [res-type  (-> route :path routes/type)
         code      (-> route :code keyword)
         handler   (nerves/pick code)]
     (fn [req]

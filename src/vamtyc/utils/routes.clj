@@ -1,12 +1,18 @@
 (ns vamtyc.utils.routes
   (:require [clojure.string :as str]))
 
-(defn res-type? [path-cmp]
-  (-> path-cmp :code keyword (= :/Coding/wellknown-params?code=type)))
+(defn match-code? [path-cmp code]
+  (-> path-cmp :code keyword (= code)))
 
-(defn get-res-type [path]
-  (let [path-cmp (filter res-type? path)]
+(defn component [path code]
+  (let [path-cmp (filter #(match-code? % code) path)]
     (-> path-cmp first :value keyword)))
+
+(defn type [path]
+  (component path :/Coding/wellknown-params?code=type))
+
+(defn id [path]
+  (component path :/Coding/wellknown-params?code=id))
 
 (defn str-path [path]
   (->> path

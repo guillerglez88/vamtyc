@@ -5,7 +5,7 @@
             [vamtyc.utils.routes :as routes]))
 
 (defn handler [req tx _app]
-  (let [res-type    (-> req :vamtyc/route :path routes/get-res-type)
+  (let [res-type  (-> req :vamtyc/route :path routes/type)
         id        (-> req :params (get "_id"))]
     (if (store/delete tx res-type id)
       (status 204)
