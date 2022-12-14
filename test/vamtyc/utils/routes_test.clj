@@ -25,8 +25,21 @@
 
 (t/deftest get-res-type
   (t/testing "Can get _type from route path"
+    (t/is (= true
+             (sut/res-type? {:name "_type"
+                             :value "Resource"
+                             :code :/Coding/wellknown-params?code=type})))
+    (t/is (= false
+             (sut/res-type? {:name "id"
+                             :code :/Coding/wellknown-params?code=id})))
+    (t/is (= false
+             (sut/res-type? {:name "id"})))
     (t/is (= "Resource"
-             (sut/get-res-type [{:name "_type" :value "Resource"}
-                                {:name "sub" :value "Vamtyc"}])))
+             (sut/get-res-type [{:name "_type"
+                                 :value "Resource"
+                                 :code :/Coding/wellknown-params?code=type}
+                                {:name "sub"
+                                 :value "Vamtyc"
+                                 :code :/Coding/wellknown-params?code=type}])))
     (t/is (= nil
              (sut/get-res-type [])))))

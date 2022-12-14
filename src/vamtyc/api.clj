@@ -28,7 +28,7 @@
                  :params)
        (merge req)))
 
-(defn handler [route app]
+(defn compojure-handler [route app]
   (let [res-type  (-> route :path routes/get-res-type)
         code      (-> route :code keyword)
         handler   (nerves/pick code)]
@@ -52,8 +52,8 @@
   (if (contains? route :path)
     (make-route (compojure-method route)
                 (compojure-path route)
-                (handler route app))
-    (handler route app)))
+                (compojure-handler route app))
+    (compojure-handler route app)))
 
 (defn load-compojure-routes [app]
   (->> (store/list ds :Route)
@@ -64,8 +64,7 @@
 (defonce app (atom nil))
 
 (defn init []
-  (->> {:handle @app
-        :reload init}
+  (->> {:handle @app :reload init}
        (load-compojure-routes)
        (wrap-params)
        (wrap-json-body)
