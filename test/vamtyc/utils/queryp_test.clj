@@ -15,5 +15,5 @@
 (t/deftest resolve
   (t/testing "Can resolve QueryParam value from req-params"
     (t/is (= (make-queryp 5)
-             (sut/resolve {"_limit" 5 "_of" "Resource"}
-                          (make-queryp))))))
+             (sut/resolve-queryp {"_limit" 5 "_of" "Resource"}
+                                 (make-queryp))))))

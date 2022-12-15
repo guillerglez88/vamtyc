@@ -9,11 +9,10 @@
             [next.jdbc :as jdbc]
             [vamtyc.data.datasource :refer [ds]]
             [vamtyc.data.store :as store]
-            [vamtyc.utils.routes :as routes]
+            [vamtyc.utils.routes :as uroutes]
             [vamtyc.nerves.core :as nerves]
             [vamtyc.utils.params :as params]
-            [vamtyc.config.env :refer [sec-env]]
-            [vamtyc.data.queryp :as queryp]
+            [vamtyc.data.queryp :as dqueryp]
             [vamtyc.utils.queryp :as uqueryp]))
 
 (defn make-http-response [resp]
@@ -21,49 +20,48 @@
     (-> (merge resp {:body body})
         (content-type "application/json"))))
 
-(defn hydrate [req route env queryp]
-  (let [rroute  (routes/resolve (:params req) route)
-        rqueryp (into [] (map #(uqueryp/resolve (:params req) %) queryp))]
-    (->> (params/make-params req env route rqueryp)
-         (hash-map :vamtyc/route    rroute
-                   :vamtyc/env      sec-env
-                   :vamtyc/queryp   rqueryp
-                   :params)
-         (merge req))))
+(defn hydrate [req route queryps]
+  (let [params      (params/req-params req)
+        resv-route  (uroutes/resolve params route)
+        resv-queryp (uqueryp/resolve-queryps params queryps)]
+    (merge req {:params         params
+                :vamtyc/route   resv-route
+                :vamtyc/queryp  resv-queryp})))
 
-(defn compojure-handler [route app]
-  (let [res-type  (-> route :path routes/type)
-        code      (-> route :code keyword)
-        handler   (nerves/pick code)]
-    (fn [req]
-      (let [of-type (-> req :params (get "_of") keyword)
-            rreq    (merge req {:params (params/req-params req)})]
-        (jdbc/with-transaction [tx ds]
-          (->> (params/extract-param-names rreq)
-               (queryp/load-queryps tx [res-type of-type])
-               (hydrate rreq route sec-env)
-               (#(handler % tx app ))
-               (make-http-response)))))))
+(defn compojure-handler [route queryps app]
+  (fn [req]
+    (let [handler   (-> route :code keyword nerves/pick)
+          type      (-> route :path uroutes/type)
+          of        (-> req :params (get "_of") keyword)]
+      (jdbc/with-transaction [tx ds]
+        (->> (params/extract-param-names req)
+             (dqueryp/load-queryps tx [type of])
+             (concat queryps)
+             (reverse)
+             (hydrate req route)
+             (#(handler % tx app))
+             (make-http-response))))))
 
 (defn compojure-method [route]
   (when (contains? route :method)
     (-> route :method str/lower-case keyword)))
 
 (defn compojure-path [route]
-  (-> route :path routes/str-path))
+  (-> route :path uroutes/str-path))
 
-(defn compojure-route [app route]
+(defn compojure-route [app route queryp]
   (if (contains? route :path)
     (make-route (compojure-method route)
                 (compojure-path route)
-                (compojure-handler route app))
-    (compojure-handler route app)))
+                (compojure-handler route queryp app))
+    (compojure-handler route queryp app)))
 
 (defn load-compojure-routes [app]
-  (->> (store/list ds :Route)
-       (sort-by #(-> % :path routes/calc-match-index) >)
-       (map #(compojure-route app %))
-       (apply routes)))
+  (let [queryps (dqueryp/load-default-queryps ds)]
+    (->> (store/list ds :Route)
+         (sort-by #(-> % :path routes/calc-match-index) >)
+         (map #(compojure-route app % queryps))
+         (apply routes))))
 
 (defonce app (atom nil))
 

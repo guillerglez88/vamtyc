@@ -10,8 +10,14 @@
         (from :QueryParam)
         (where [:and [:in [:jsonb_extract_path_text :resource "of"] of-list]]
                      [:or [:<> [:jsonb_extract_path_text :resource "value"] nil]
-                          [:in [:jsonb_extract_path_text :resource "name"] names]])
-          (hsql/format))))
+                     [:in [:jsonb_extract_path_text :resource "name"] names]])
+        (hsql/format))))
+
+(defn def-queryps-sql []
+  (-> (select :*)
+      (from :QueryParam)
+      (where [:<> [:jsonb_extract_path_text :resource "value"] nil])
+      (hsql/format)))
 
 (defn or-something [param-names]
   (if (or (nil? param-names)
@@ -19,10 +25,17 @@
     ["__0f610cba__"]
     param-names))
 
+(defn str-res-types [res-types]
+  (->> (conj res-types :*)
+       (filter #(not (nil? %)))
+       (map name)))
+
+(defn load-default-queryps [tx]
+  (->> (def-queryps-sql)
+       (store/list tx :QueryParam)))
+
 (defn load-queryps [tx res-types param-names]
-  (let [types (->> (conj res-types :*)
-                   (filter #(not (nil? %)))
-                   (map name))
-        names (or-something param-names)]
-    (->> (queryps-sql types names)
+  (let [types (str-res-types res-types)]
+    (->> (or-something param-names)
+         (queryps-sql types)
          (store/list tx :QueryParam))))

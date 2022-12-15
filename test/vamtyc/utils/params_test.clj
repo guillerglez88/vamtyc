@@ -57,14 +57,7 @@
    "_limit"     "2"
    "_type"      "List"
    "_offset"    "0"
-   "_sort"      "_created"
-   "env/LIMIT"  "128"
-   "env/PORT"   "3000"})
-
-(t/deftest can-make-env-params
-  (t/testing "Can convert env map into a params like map"
-    (t/is (= {"env/LIMIT" "128"}
-             (sut/env-params {:LIMIT "128"})))))
+   "_sort"      "_created"})
 
 (t/deftest can-make-queryp-params
   (t/testing "Can convert a query-params coll into a params like map"
@@ -91,11 +84,3 @@
   (t/testing "Can sanitize request params to str keys"
     (t/is (= {"_id" "a987df8"}
              (sut/req-params {:params {:_id "a987df8"}})))))
-
-(t/deftest can-make-params
-  (t/testing "Can make filter-params from: req, route, query-params, env"
-    (t/is (= (make-params)
-             (sut/make-params (make-request)
-                              (make-env)
-                              (make-route)
-                              (make-query-param))))))
