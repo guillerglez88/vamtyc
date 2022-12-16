@@ -8,8 +8,7 @@
   (let [of-list (into [] (filter #(not (nil? %)) types))]
     (-> (select :*)
         (from :QueryParam)
-        (where [:and [:in [:jsonb_extract_path_text :resource "of"] of-list]]
-                     [:or [:<> [:jsonb_extract_path_text :resource "value"] nil]
+        (where [:and [:in [:jsonb_extract_path_text :resource "of"] of-list]
                      [:in [:jsonb_extract_path_text :resource "name"] names]])
         (hsql/format))))
 

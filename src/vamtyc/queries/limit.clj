@@ -1,15 +1,8 @@
 (ns vamtyc.queries.limit
-  (:require [vamtyc.config.env :refer [env]]
-            [honey.sql :as sql]
-            [honey.sql.helpers :refer [limit]]
-            [vamtyc.data.store :as store]
-            [vamtyc.config.env :as env]))
+  (:require [honey.sql.helpers :refer [limit]]))
 
-(defn filter
-  ([req query-param sql-map _col]
-   (filter sql-map (:params req)))
-  ([sql params]
-   (-> (get params "_limit")
-       (or (get params "env/LIMIT"))
+(defn apply-queryp [sql-map req queryp]
+   (-> (:value queryp)
+       (str)
        (Integer/parseInt)
-       (->> (limit sql)))))
+       (->> (limit sql-map))))

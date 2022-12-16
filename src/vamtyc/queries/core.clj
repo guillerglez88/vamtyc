@@ -7,42 +7,31 @@
             [vamtyc.queries.offset :as offset]
             [vamtyc.queries.fields :as fields]
             [vamtyc.queries.keyword :as keyw]
-            [vamtyc.queries.sort :as sort]))
+            [vamtyc.queries.sort :as sort]
+            [vamtyc.utils.routes :as uroutes]
+            [vamtyc.utils.queryp :as uqueryp]))
 
 (def filters
-  {:_limit                        limit/filter
-   :_offset                       offset/filter
-   :_of                           of/filter
-   :_fields                       fields/filter
-   :_sort                         sort/filter
-   :/Coding/filters?code=text     text/filter
-   :/Coding/filters?code=keyword  keyw/filter})
+  {:/Coding/wellknown-params?code=limit   limit/apply-queryp
+   :/Coding/wellknown-params?code=offset  offset/apply-queryp
+   :/Coding/wellknown-params?code=of      of/apply-queryp
+   :/Coding/wellknown-params?code=fields  fields/apply-queryp
+   :/Coding/wellknown-params?code=sort    sort/apply-queryp
+   :/Coding/filters?code=text             text/apply-queryp
+   :/Coding/filters?code=keyword          keyw/apply-queryp})
 
-(defn refine-query [req sql-map query-param]
-  (let [code    (-> query-param :code keyword)
-        path    (-> query-param :path (or []))
-        name    (-> query-param :name keyword)
-        filter  (or (name filters) (code filters))]
-    (loop [acc            sql-map
-           col            :resource
-           [curr & rest]  path]
-      (cond
-        (nil? curr)
-          (filter req query-param acc col)
-        (:meta curr)
-          sql-map
-        (:collection curr)
-          (let [alias (utils/make-prop-alias col curr "_elem")]
-            (-> (utils/jsonb-extract-coll acc col curr alias)
-                (recur alias rest)))
-        :else
-          (let [alias (utils/make-prop-alias col curr)]
-            (-> (utils/jsonb-extract-prop acc col curr alias)
-                (recur alias rest)))))))
+(defn refine-query [req sql-map queryp]
+  (let [path    (-> queryp :path (or []))
+        name    (uqueryp/queryp-name queryp)
+        refine  (-> queryp :code keyword (#(get filters %)))]
+    (-> (identity sql-map)
+        (utils/extract-prop :resource path name)
+        (refine req queryp))))
 
-(defn make-search-query [req tx]
-  (let [queryp        (-> req :vamtyc/queryp)
-        res-type      (-> req :params (get "_of") keyword)
-        sql-map       (utils/make-sql-map res-type)]
+(defn search-query [req tx]
+  (let [queryp    (-> req :vamtyc/queryp)
+        type      (-> req :vamtyc/route :path uroutes/type)
+        of        (-> req :params (get "_of") keyword)
+        sql-map   (utils/make-sql-map (or of type))]
     (-> (reduce #(refine-query req %1 %2) sql-map queryp)
         (sql/format {:pretty true}))))

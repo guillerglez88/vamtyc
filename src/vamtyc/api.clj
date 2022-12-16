@@ -20,10 +20,12 @@
     (-> (merge resp {:body body})
         (content-type "application/json"))))
 
-(defn hydrate [req route queryps]
+(defn hydrate [req route def-queryps req-queryps]
   (let [params      (params/req-params req)
         resv-route  (uroutes/resolve params route)
-        resv-queryp (uqueryp/resolve-queryps params queryps)]
+        resv-queryp (uqueryp/resolve-queryps params
+                                             def-queryps
+                                             req-queryps)]
     (merge req {:params         params
                 :vamtyc/route   resv-route
                 :vamtyc/queryp  resv-queryp})))
@@ -36,9 +38,7 @@
       (jdbc/with-transaction [tx ds]
         (->> (params/extract-param-names req)
              (dqueryp/load-queryps tx [type of])
-             (concat queryps)
-             (reverse)
-             (hydrate req route)
+             (hydrate req route queryps)
              (#(handler % tx app))
              (make-http-response))))))
 
@@ -59,7 +59,7 @@
 (defn load-compojure-routes [app]
   (let [queryps (dqueryp/load-default-queryps ds)]
     (->> (store/list ds :Route)
-         (sort-by #(-> % :path routes/calc-match-index) >)
+         (sort-by #(-> % :path uroutes/calc-match-index) >)
          (map #(compojure-route app % queryps))
          (apply routes))))
 

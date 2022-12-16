@@ -1,4 +1,4 @@
 (ns vamtyc.queries.fields)
 
-(defn filter [_req _query-param sql-map _col]
+(defn apply-queryp [sql-map req queryp]
   sql-map)
