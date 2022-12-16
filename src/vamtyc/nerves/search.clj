@@ -19,7 +19,7 @@
 
 (defn handler [req tx _app]
   (let [url     (relative-url req)
-        fields  (-> req :params (get "_fields") (ufields/flat-expr))
+        fields  (-> req :vamtyc/queryp uqueryp/fields (ufields/flat-expr))
         type    (-> req :vamtyc/route :path uroutes/type)
         of      (-> req :vamtyc/queryp uqueryp/of)]
     (->> (queries/search-query req tx)
