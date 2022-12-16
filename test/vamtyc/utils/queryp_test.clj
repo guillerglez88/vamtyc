@@ -11,8 +11,15 @@
                                  {:name :_limit
                                   :of   :List})))))
 
-(t/deftest of
-  (t/testing "Extract type from _of queryp"
+(t/deftest find-by-code
+  (t/testing "Find queryp value by code"
+    (t/is (= "List"
+             (sut/find-by-code [{:code "/Coding/wellknown-params?code=of"
+                                 :value "List"}]
+                               :/Coding/wellknown-params?code=of)))
+    (t/is (= "items.path.value"
+             (sut/fields [{:code "/Coding/wellknown-params?code=fields"
+                           :value "items.path.value"}])))
     (t/is (= :List
              (sut/of [{:code "/Coding/wellknown-params?code=of"
                        :value "List"}])))))

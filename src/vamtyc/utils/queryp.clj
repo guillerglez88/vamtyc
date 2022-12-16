@@ -23,10 +23,19 @@
       (->> (map first))
       (into [])))
 
-(defn of [queryps]
+(defn find-by-code [queryps code]
   (->> (map #(hash-map :code (-> % :code keyword)
                        :value (:value %)) queryps)
-       (filter #(= :/Coding/wellknown-params?code=of (:code %)))
+       (filter #(= code (:code %)))
        (first)
-       (:value)
-       (keyword)))
+       (:value)))
+
+
+(defn of [queryps]
+  (-> (identity queryps)
+      (find-by-code :/Coding/wellknown-params?code=of)
+      (keyword)))
+
+(defn fields [queryps]
+  (-> (identity queryps)
+      (find-by-code :/Coding/wellknown-params?code=fields)))

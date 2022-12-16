@@ -2,7 +2,7 @@
   (:require [ring.util.response :refer [response]]
             [vamtyc.utils.request :refer [relative-url]]
             [vamtyc.data.store :as store]
-            [vamtyc.utils.fields :as fields]
+            [vamtyc.utils.fields :as ufields]
             [vamtyc.queries.core :as queries]
             [clojure.string :as str]
             [vamtyc.utils.routes :as uroutes]
@@ -19,12 +19,12 @@
 
 (defn handler [req tx _app]
   (let [url     (relative-url req)
-        fields  (-> req :params (get "_fields") (fields/flat-expr))
+        fields  (-> req :params (get "_fields") (ufields/flat-expr))
         type    (-> req :vamtyc/route :path uroutes/type)
         of      (-> req :vamtyc/queryp uqueryp/of)]
     (->> (queries/search-query req tx)
          (store/list tx (or of type))
          (into [])
          (#(make-result-set % url))
-         (#(fields/select-fields % fields))
+         (#(ufields/select-fields % fields))
          (response))))
