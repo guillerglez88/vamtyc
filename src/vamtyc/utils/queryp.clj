@@ -22,3 +22,11 @@
       (vals)
       (->> (map first))
       (into [])))
+
+(defn of [queryps]
+  (->> (map #(hash-map :code (-> % :code keyword)
+                       :value (:value %)) queryps)
+       (filter #(= :/Coding/wellknown-params?code=of (:code %)))
+       (first)
+       (:value)
+       (keyword)))

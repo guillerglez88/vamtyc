@@ -5,7 +5,8 @@
             [vamtyc.utils.fields :as fields]
             [vamtyc.queries.core :as queries]
             [clojure.string :as str]
-            [vamtyc.utils.routes :as uroutes]))
+            [vamtyc.utils.routes :as uroutes]
+            [vamtyc.utils.queryp :as uqueryp]))
 
 (defn make-result-set [items url]
   {:type    :List
@@ -20,7 +21,7 @@
   (let [url     (relative-url req)
         fields  (-> req :params (get "_fields") (fields/flat-expr))
         type    (-> req :vamtyc/route :path uroutes/type)
-        of      (-> req :params (get "_of") keyword)]
+        of      (-> req :vamtyc/queryp uqueryp/of)]
     (->> (queries/search-query req tx)
          (store/list tx (or of type))
          (into [])

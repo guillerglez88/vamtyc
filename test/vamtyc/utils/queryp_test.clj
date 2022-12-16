@@ -10,3 +10,9 @@
              (sut/resolve-queryp {"_limit" 5 "_of" "Resource"}
                                  {:name :_limit
                                   :of   :List})))))
+
+(t/deftest of
+  (t/testing "Extract type from _of queryp"
+    (t/is (= :List
+             (sut/of [{:code "/Coding/wellknown-params?code=of"
+                       :value "List"}])))))

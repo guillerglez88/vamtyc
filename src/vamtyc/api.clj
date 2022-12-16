@@ -34,7 +34,7 @@
   (fn [req]
     (let [handler   (-> route :code keyword nerves/pick)
           type      (-> route :path uroutes/type)
-          of        (-> req :params (get "_of") keyword)]
+          of        (-> req :vamtyc/queryp uqueryp/of)]
       (jdbc/with-transaction [tx ds]
         (->> (params/extract-param-names req)
              (dqueryp/load-queryps tx [type of])

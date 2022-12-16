@@ -31,7 +31,7 @@
 (defn search-query [req tx]
   (let [queryp    (-> req :vamtyc/queryp)
         type      (-> req :vamtyc/route :path uroutes/type)
-        of        (-> req :params (get "_of") keyword)
+        of        (-> req :vamtyc/queryp uqueryp/of)
         sql-map   (utils/make-sql-map (or of type))]
     (-> (reduce #(refine-query req %1 %2) sql-map queryp)
         (sql/format {:pretty true}))))
