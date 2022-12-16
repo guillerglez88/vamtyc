@@ -22,4 +22,10 @@
                            :value "items.path.value"}])))
     (t/is (= :List
              (sut/of [{:code "/Coding/wellknown-params?code=of"
-                       :value "List"}])))))
+                       :value "List"}])))
+    (t/is (= 0
+             (sut/offset [{:code "/Coding/wellknown-params?code=offset"
+                           :value 0}])))
+    (t/is (= 128
+             (sut/limit [{:code "/Coding/wellknown-params?code=limit"
+                           :value 128}])))))

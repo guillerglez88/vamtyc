@@ -39,3 +39,15 @@
 (defn fields [queryps]
   (-> (identity queryps)
       (find-by-code :/Coding/wellknown-params?code=fields)))
+
+(defn offset [queryps]
+  (-> (identity queryps)
+      (find-by-code :/Coding/wellknown-params?code=offset)
+      (str)
+      (Integer/parseInt)))
+
+(defn limit [queryps]
+  (-> (identity queryps)
+      (find-by-code :/Coding/wellknown-params?code=limit)
+      (str)
+      (Integer/parseInt)))

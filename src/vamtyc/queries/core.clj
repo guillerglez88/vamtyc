@@ -33,5 +33,4 @@
         type      (-> req :vamtyc/route :path uroutes/type)
         of        (-> req :vamtyc/queryp uqueryp/of)
         sql-map   (utils/make-sql-map (or of type))]
-    (-> (reduce #(refine-query req %1 %2) sql-map queryp)
-        (sql/format {:pretty true}))))
+    (reduce #(refine-query req %1 %2) sql-map queryp)))

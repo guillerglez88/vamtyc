@@ -74,4 +74,6 @@
       (dissoc :select)
       (select [[:count :*] :count])
       (hsql/format)
-      (->> (sql/query tx))))
+      (->> (sql/query tx))
+      (first)
+      (:count)))

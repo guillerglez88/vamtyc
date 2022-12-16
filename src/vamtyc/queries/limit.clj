@@ -1,8 +1,7 @@
 (ns vamtyc.queries.limit
-  (:require [honey.sql.helpers :refer [limit]]))
+  (:require [honey.sql.helpers :refer [limit]]
+            [vamtyc.utils.queryp :as uqueryp]))
 
 (defn apply-queryp [sql-map req queryp]
-   (-> (:value queryp)
-       (str)
-       (Integer/parseInt)
-       (->> (limit sql-map))))
+  (->> (uqueryp/limit [queryp])
+       (limit sql-map)))
