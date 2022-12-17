@@ -71,7 +71,7 @@
 
 (defn count [tx sql-map]
   (-> sql-map
-      (dissoc :select)
+      (dissoc :select :offset :limit)
       (select [[:count :*] :count])
       (hsql/format)
       (->> (sql/query tx))

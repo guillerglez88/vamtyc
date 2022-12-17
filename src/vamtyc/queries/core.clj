@@ -25,7 +25,7 @@
         name    (uqueryp/queryp-name queryp)
         refine  (-> queryp :code keyword (#(get filters %)))]
     (-> (identity sql-map)
-        (utils/extract-prop :resource path name)
+        (utils/extract-path :resource path name)
         (refine req queryp))))
 
 (defn search-query [req tx]
