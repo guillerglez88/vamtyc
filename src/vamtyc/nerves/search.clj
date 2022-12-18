@@ -17,7 +17,7 @@
   (let [offset  (-> req :vamtyc/queryp uqueryp/offset)
         limit   (-> req :vamtyc/queryp uqueryp/limit)
         first   0
-        last    (- total limit)
+        last    (max (- total limit) 0)
         prev    (max first (- offset limit))
         next    (min last (+ offset limit))]
     {:type  :List
