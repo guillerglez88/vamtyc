@@ -17,7 +17,18 @@
   lambdaisland/uri                  {:mvn/version "1.13.95"}
   clj-http/clj-http                 {:mvn/version "3.12.3"}}
  :aliases
- {:dev
+ {
+  :cider
+  {:extra-deps
+   {nrepl/nrepl                     {:mvn/version "0.9.0"}
+    cider/cider-nrepl               {:mvn/version "0.28.4"}
+    refactor-nrepl/refactor-nrepl   {:mvn/version "3.5.2"}}
+   :main-opts ["-m" "nrepl.cmdline"
+               "--interactive"
+               "--color"
+               "--middleware"
+               "[refactor-nrepl.middleware/wrap-refactor,cider.nrepl/cider-middleware]"]}
+  :dev
   {:extra-paths ["dev"]
    :extra-deps
    {ring/ring-devel {:mvn/version "1.9.6"}}
