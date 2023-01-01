@@ -2,13 +2,13 @@
   (:require
    [ring.adapter.jetty :refer [run-jetty]]
    [vamtyc.config.env :refer [env]]
-   [vamtyc.seeds.core :as seeds]
+   [vamtyc.seed :as seed]
    [vamtyc.api :as api])
   (:gen-class))
 
 (defn start []
   (let [port (-> env :PORT Integer/parseInt)]
-    (seeds/init)
+    (seed/init)
     (-> (api/init)
         (run-jetty {:port port}))
     (println (str "Server running at: http://localhost:" port "/"))))

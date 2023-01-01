@@ -3,7 +3,7 @@
    [ring.adapter.jetty :refer [run-jetty]]
    [ring.middleware.reload :refer [wrap-reload]]
    [vamtyc.config.env :refer [env]]
-   [vamtyc.seeds.core :as seeds]
+   [vamtyc.seed :as seed]
    [vamtyc.api :as api])
   (:gen-class))
 
@@ -11,7 +11,7 @@
 
 (defn start []
   (let [port (-> env :PORT Integer/parseInt)]
-    (seeds/init)
+    (seed/init)
     (-> (api/init)
         (wrap-reload)
         (run-jetty {:port port :join? false})

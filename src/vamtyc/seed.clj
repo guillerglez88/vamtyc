@@ -1,10 +1,11 @@
-(ns vamtyc.seeds.core
+(ns vamtyc.seed
   (:require
    [clojure.edn :as edn]
    [vamtyc.data.store :as store]
    [vamtyc.data.datasource :refer [ds]]
    [next.jdbc :as jdbc]
-   [clojure.string :as str]))
+   [clojure.string :as str]
+   [clojure.java.io :as io]))
 
 (defn is-already-init? []
   (try
@@ -44,8 +45,8 @@
         (throw (Exception. (str  "Method " (:method item) " not allowed while booting app")))))))
 
 (defn init []
-  (let [boot-file "./src/vamtyc/seeds/bootstrap.edn"]
-    (when-not (is-already-init?)
-      (-> (slurp boot-file)
-          (edn/read-string)
-          (commit-boot-trn)))))
+  (when-not (is-already-init?)
+    (-> (io/resource "bootstrap.edn")
+        (slurp)
+        (edn/read-string)
+        (commit-boot-trn))))
