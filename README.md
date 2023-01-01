@@ -1,3 +1,3 @@
 # vamtyc
 
-Dynamic REST server
+REST on values
