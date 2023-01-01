@@ -1,12 +1,13 @@
 (ns vamtyc.data.store
-  (:require [clojure.string :as str]
-            [next.jdbc.sql :as sql]
-            [honey.sql :as hsql]
-            [honey.sql.helpers :refer [select from where limit] :as h]
-            [vamtyc.config.env :refer [env]])
+  (:require
+   [clojure.string :as str]
+   [next.jdbc.sql :as sql]
+   [honey.sql :as hsql]
+   [honey.sql.helpers :refer [select from limit]]
+   [vamtyc.config.env :refer [env]])
   (:import [java.time Instant]))
 
-(defn process [entity res-type]
+(defn- process [entity res-type]
   (when entity
     (let [res-name      (name res-type)
           res-name-lc   (str/lower-case res-name)
@@ -35,12 +36,12 @@
    (let [id (str (java.util.UUID/randomUUID))]
      (create tx res-type id res))))
 
-(defn read [tx res-type id]
+(defn fetch [tx res-type id]
   (-> (sql/get-by-id tx res-type id :id {})
       (process res-type)))
 
-(defn update [tx res-type id res]
-  (let [stored  (read tx res-type id)
+(defn edit [tx res-type id res]
+  (let [stored  (fetch tx res-type id)
         created (-> stored :created)
         now     (Instant/now)]
     (sql/update! tx res-type {:resource res :modified now} {:id id})
@@ -48,17 +49,16 @@
         (process res-type))))
 
 (defn upsert [tx res-type id res]
-  (let [entity (read tx res-type id)]
-    (if entity
-      (update tx res-type id res)
-      (create tx res-type id res))))
+  (if (fetch tx res-type id)
+    (edit tx res-type id res)
+    (create tx res-type id res)))
 
 (defn delete [tx res-type id]
-  (let [entity  (read tx res-type id)]
+  (let [entity  (fetch tx res-type id)]
     (sql/delete! tx res-type {:id id})
     entity))
 
-(defn list
+(defn search
   ([tx res-type sql]
    (->> (sql/query tx sql)
         (map #(process % res-type))))
@@ -67,9 +67,9 @@
        (from res-type)
        (limit (-> env :LIMIT Integer/parseInt))
        (hsql/format)
-       (#(list tx res-type %)))))
+       (#(search tx res-type %)))))
 
-(defn count [tx sql-map]
+(defn total [tx sql-map]
   (-> sql-map
       (dissoc :select :offset :limit)
       (select [[:count :*] :count])

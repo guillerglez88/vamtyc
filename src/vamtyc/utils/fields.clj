@@ -5,7 +5,7 @@
   (->> (str/split expr #",")
        (map #(str/split % #"\."))
        (map #(into [] (filter (fn [cmp] (not (str/blank? cmp))) %)))
-       (filter #(not (empty? %)))
+       (filter #(seq %))
        (into [])))
 
 (defn flat-expr [expr]

@@ -2,5 +2,5 @@
 
 (defn relative-url [req]
   (str (:uri req)
-       (if-let [query (:query-string req)]
+       (when-let [query (:query-string req)]
          (str "?" query))))

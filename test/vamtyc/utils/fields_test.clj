@@ -1,6 +1,7 @@
 (ns vamtyc.utils.fields-test
-  (:require [vamtyc.utils.fields :as sut]
-            [clojure.test :as t]))
+  (:require
+   [vamtyc.utils.fields :as sut]
+   [clojure.test :refer [deftest testing is]]))
 
 (defn make-route []
   {:type        :Route
@@ -17,47 +18,47 @@
    :name        {:given ["John" "Adams"]
                  :family "Smith"}})
 
-(t/deftest parse-fields
-  (t/testing "Can parse _fields querp expression value"
-    (t/is (= [["name"]]
-             (sut/parse-expr "name")))
-    (t/is (= [["name"] ["type"]]
-             (sut/parse-expr "name,type")))
-    (t/is (= [["name"] ["path" "name"]]
-             (sut/parse-expr "name,path.name")))
-    (t/is (= [["path" "name"]]
-             (sut/parse-expr "path.name")))
-    (t/is (= []
-             (sut/parse-expr "")))))
+(deftest parse-fields
+  (testing "Can parse _fields querp expression value"
+    (is (= [["name"]]
+           (sut/parse-expr "name")))
+    (is (= [["name"] ["type"]]
+           (sut/parse-expr "name,type")))
+    (is (= [["name"] ["path" "name"]]
+           (sut/parse-expr "name,path.name")))
+    (is (= [["path" "name"]]
+           (sut/parse-expr "path.name")))
+    (is (= []
+           (sut/parse-expr "")))))
 
-(t/deftest select-path
-  (t/testing "Can select deep path into a projected map"
-    (t/is (= {:path [{:name "_type"} {:name "_id"}]}
-             (sut/select-path-into ["path" "name"] (make-route) {})))
-    (t/is (= {:name {:family "Smith"}}
-             (sut/select-path-into ["name" "family"] (make-person) {})))
-    (t/is (= {:name {:family "Smith"}
-              :gender :male}
-             (sut/select-path-into ["name" "family"] (make-person) {:gender :male})))
-    (t/is (= {:type :Person}
-             (sut/select-path-into ["type"] (make-person) {:type :Animal})))))
+(deftest select-path
+  (testing "Can select deep path into a projected map"
+    (is (= {:path [{:name "_type"} {:name "_id"}]}
+           (sut/select-path-into ["path" "name"] (make-route) {})))
+    (is (= {:name {:family "Smith"}}
+           (sut/select-path-into ["name" "family"] (make-person) {})))
+    (is (= {:name {:family "Smith"}
+            :gender :male}
+           (sut/select-path-into ["name" "family"] (make-person) {:gender :male})))
+    (is (= {:type :Person}
+           (sut/select-path-into ["type"] (make-person) {:type :Animal})))))
 
-(t/deftest str-field-expr
-  (t/testing "Flat multi-expr field value"
-    (t/is (= "name,path.name"
-             (sut/flat-expr ["name" "path.name"])))
-    (t/is (= "name,path.name"
-             (sut/flat-expr "name,path.name")))
-    (t/is (= ""
-             (sut/flat-expr "")))
-    (t/is (= ""
-             (sut/flat-expr nil)))))
+(deftest str-field-expr
+  (testing "Flat multi-expr field value"
+    (is (= "name,path.name"
+           (sut/flat-expr ["name" "path.name"])))
+    (is (= "name,path.name"
+           (sut/flat-expr "name,path.name")))
+    (is (= ""
+           (sut/flat-expr "")))
+    (is (= ""
+           (sut/flat-expr nil)))))
 
-(t/deftest select-fields
-  (t/testing "Can select map projection from _fields expression value"
-    (t/is (= {:type :Route
-              :path [{:name "_type"} {:name "_id"}]}
-             (sut/select-fields (make-route) "type,path.name")))
-    (t/is (= {:type :Route
-              :path [{} {}]}
-             (sut/select-fields (make-route) "type,path.fake")))))
+(deftest select-fields
+  (testing "Can select map projection from _fields expression value"
+    (is (= {:type :Route
+            :path [{:name "_type"} {:name "_id"}]}
+           (sut/select-fields (make-route) "type,path.name")))
+    (is (= {:type :Route
+            :path [{} {}]}
+           (sut/select-fields (make-route) "type,path.fake")))))

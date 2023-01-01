@@ -1,8 +1,8 @@
 (ns vamtyc.data.queryp
-  (:require [honey.sql :as hsql]
-            [vamtyc.data.store :as store]
-            [honey.sql :as hsql]
-            [honey.sql.helpers :refer [select from where]]))
+  (:require
+   [honey.sql :as sql]
+   [vamtyc.data.store :as store]
+   [honey.sql.helpers :refer [select from where]]))
 
 (defn queryps-sql [types names]
   (let [of-list (into [] (filter #(not (nil? %)) types))]
@@ -10,13 +10,13 @@
         (from :QueryParam)
         (where [:and [:in [:jsonb_extract_path_text :resource "of"] of-list]
                      [:in [:jsonb_extract_path_text :resource "name"] names]])
-        (hsql/format))))
+        (sql/format))))
 
 (defn def-queryps-sql []
   (-> (select :*)
       (from :QueryParam)
       (where [:<> [:jsonb_extract_path_text :resource "value"] nil])
-      (hsql/format)))
+      (sql/format)))
 
 (defn or-something [param-names]
   (if (or (nil? param-names)
@@ -31,10 +31,10 @@
 
 (defn load-default-queryps [tx]
   (->> (def-queryps-sql)
-       (store/list tx :QueryParam)))
+       (store/search tx :QueryParam)))
 
 (defn load-queryps [tx res-types param-names]
   (let [types (str-res-types res-types)]
     (->> (or-something param-names)
          (queryps-sql types)
-         (store/list tx :QueryParam))))
+         (store/search tx :QueryParam))))

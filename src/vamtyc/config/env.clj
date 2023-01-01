@@ -1,6 +1,7 @@
 (ns vamtyc.config.env
-  (:require [clojure.java.io :as io]
-            [clojure.string :as str]))
+  (:require
+   [clojure.java.io :as io]
+   [clojure.string :as str]))
 
 (defn parse-line [line]
   (let [[first second]  (str/split line #"=" 2)
@@ -20,7 +21,8 @@
           (map str/trim)
           (filter #(not (should-ignore? %)))
           (map parse-line)
-          (into {}))))
+          (into {}))
+     {}))
   ([] (load-dot-env ".env")))
 
 (def def-env {:DB_CNX_STR "jdbc:postgresql://localhost:5432/vamtyc"

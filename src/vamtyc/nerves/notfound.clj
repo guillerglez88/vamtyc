@@ -1,6 +1,7 @@
 (ns vamtyc.nerves.notfound
-  (:require [ring.util.response :refer [not-found]]
-            [clojure.string :as str]))
+  (:require
+   [ring.util.response :refer [not-found]]
+   [clojure.string :as str]))
 
 (defn handler [req _tx _app]
   (let [method  (-> req :request-method name str/upper-case)]

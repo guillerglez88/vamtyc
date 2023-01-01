@@ -1,13 +1,14 @@
 (ns vamtyc.seeds.core
-  (:require [clojure.edn :as edn]
-            [vamtyc.data.store :as store]
-            [vamtyc.data.datasource :refer [ds]]
-            [next.jdbc :as jdbc]
-            [clojure.string :as str]))
+  (:require
+   [clojure.edn :as edn]
+   [vamtyc.data.store :as store]
+   [vamtyc.data.datasource :refer [ds]]
+   [next.jdbc :as jdbc]
+   [clojure.string :as str]))
 
 (defn is-already-init? []
   (try
-    (store/list ds :Resource)
+    (store/search ds :Resource)
     true
     (catch Exception _ false)))
 
@@ -44,7 +45,7 @@
 
 (defn init []
   (let [boot-file "./src/vamtyc/seeds/bootstrap.edn"]
-    (if (not (is-already-init?))
+    (when-not (is-already-init?)
       (-> (slurp boot-file)
           (edn/read-string)
           (commit-boot-trn)))))

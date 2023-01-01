@@ -1,5 +1,6 @@
 (ns vamtyc.utils.queryp
-  (:require [clojure.string :as str]))
+  (:require
+   [clojure.string :as str]))
 
 (defn queryp-name [queryp]
   (-> (:name queryp)
@@ -24,8 +25,7 @@
       (into [])))
 
 (defn find-by-code [queryps code]
-  (->> (map #(hash-map :code (-> % :code keyword)
-                       :value (:value %)) queryps)
+  (->> (map #(select-keys % [:code :value]) queryps)
        (filter #(= code (:code %)))
        (first)
        (:value)))
@@ -33,21 +33,21 @@
 
 (defn of [queryps]
   (-> (identity queryps)
-      (find-by-code :/Coding/wellknown-params?code=of)
+      (find-by-code "/Coding/wellknown-params?code=of")
       (keyword)))
 
 (defn fields [queryps]
   (-> (identity queryps)
-      (find-by-code :/Coding/wellknown-params?code=fields)))
+      (find-by-code "/Coding/wellknown-params?code=fields")))
 
 (defn offset [queryps]
   (-> (identity queryps)
-      (find-by-code :/Coding/wellknown-params?code=offset)
+      (find-by-code "/Coding/wellknown-params?code=offset")
       (str)
       (Integer/parseInt)))
 
 (defn limit [queryps]
   (-> (identity queryps)
-      (find-by-code :/Coding/wellknown-params?code=limit)
+      (find-by-code "/Coding/wellknown-params?code=limit")
       (str)
       (Integer/parseInt)))

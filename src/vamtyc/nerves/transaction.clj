@@ -1,8 +1,9 @@
 (ns vamtyc.nerves.transaction
-  (:require [clj-http.client :as client]
-            [clojure.string :as str]
-            [clojure.data.json :as json]
-            [ring.util.response :refer [response content-type]]))
+  (:require
+   [clj-http.client :as client]
+   [clojure.string :as str]
+   [clojure.data.json :as json]
+   [ring.util.response :refer [response]]))
 
 (defn make-trn-result [items]
   {:type    :Transaction

@@ -1,19 +1,19 @@
 (ns vamtyc.api
-  (:require [clojure.data.json :as json]
-            [clojure.string :as str]
-            [compojure.core :refer [make-route routes]]
-            [compojure.route :as route]
-            [ring.util.response :refer [content-type response status]]
-            [ring.middleware.params :refer [wrap-params]]
-            [ring.middleware.json :refer [wrap-json-body]]
-            [next.jdbc :as jdbc]
-            [vamtyc.data.datasource :refer [ds]]
-            [vamtyc.data.store :as store]
-            [vamtyc.utils.routes :as uroutes]
-            [vamtyc.nerves.core :as nerves]
-            [vamtyc.utils.params :as params]
-            [vamtyc.data.queryp :as dqueryp]
-            [vamtyc.utils.queryp :as uqueryp]))
+  (:require
+   [clojure.data.json :as json]
+   [clojure.string :as str]
+   [compojure.core :refer [make-route routes]]
+   [ring.util.response :refer [content-type]]
+   [ring.middleware.params :refer [wrap-params]]
+   [ring.middleware.json :refer [wrap-json-body]]
+   [next.jdbc :as jdbc]
+   [vamtyc.data.datasource :refer [ds]]
+   [vamtyc.data.store :as store]
+   [vamtyc.utils.routes :as uroutes]
+   [vamtyc.nerves.core :as nerves]
+   [vamtyc.utils.params :as params]
+   [vamtyc.data.queryp :as dqueryp]
+   [vamtyc.utils.queryp :as uqueryp]))
 
 (defn make-http-response [resp]
   (let [body (-> resp :body json/write-str)]
@@ -22,7 +22,7 @@
 
 (defn hydrate [req route def-queryps req-queryps]
   (let [params      (params/req-params req)
-        resv-route  (uroutes/resolve params route)
+        resv-route  (uroutes/resolve-path route params)
         resv-queryp (uqueryp/resolve-queryps params
                                              def-queryps
                                              req-queryps)]
@@ -32,8 +32,8 @@
 
 (defn compojure-handler [route queryps app]
   (fn [req]
-    (let [handler   (-> route :code keyword nerves/pick)
-          type      (-> route :path uroutes/type)
+    (let [handler   (-> route :code nerves/pick)
+          type      (-> route :path uroutes/_type)
           of        (-> req :vamtyc/queryp uqueryp/of)]
       (jdbc/with-transaction [tx ds]
         (->> (params/extract-param-names req)
@@ -58,7 +58,7 @@
 
 (defn load-compojure-routes [app]
   (let [queryps (dqueryp/load-default-queryps ds)]
-    (->> (store/list ds :Route)
+    (->> (store/search ds :Route)
          (sort-by #(-> % :path uroutes/calc-match-index) >)
          (map #(compojure-route app % queryps))
          (apply routes))))

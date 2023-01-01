@@ -26,8 +26,7 @@
    :main-opts ["-m" "nrepl.cmdline"
                "--interactive"
                "--color"
-               "--middleware"
-               "[refactor-nrepl.middleware/wrap-refactor,cider.nrepl/cider-middleware]"]}
+               "--middleware" "[refactor-nrepl.middleware/wrap-refactor,cider.nrepl/cider-middleware]"]}
   :dev
   {:extra-paths ["dev"]
    :extra-deps
@@ -42,4 +41,9 @@
   :build
   {:deps
    {io.github.clojure/tools.build {:git/tag "v0.8.3", :git/sha "0d20256"}}
-   :ns-default build}}}
+   :ns-default build}
+  :kondo
+  {:replace-deps {clj-kondo/clj-kondo {:mvn/version "RELEASE"}}
+   :main-opts ["-m" "clj-kondo.main"
+               "--lint" "src"
+               "--lint" "test"]}}}

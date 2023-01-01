@@ -1,8 +1,9 @@
 (ns vamtyc.core
-  (:require [ring.adapter.jetty :refer [run-jetty]]
-            [vamtyc.config.env :refer [env]]
-            [vamtyc.seeds.core :as seeds]
-            [vamtyc.api :as api])
+  (:require
+   [ring.adapter.jetty :refer [run-jetty]]
+   [vamtyc.config.env :refer [env]]
+   [vamtyc.seeds.core :as seeds]
+   [vamtyc.api :as api])
   (:gen-class))
 
 (defn start []

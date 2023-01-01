@@ -1,6 +1,7 @@
 (ns vamtyc.utils.params-test
-  (:require [vamtyc.utils.params :as sut]
-            [clojure.test :as t]))
+  (:require
+   [vamtyc.utils.params :as sut]
+   [clojure.test :refer [deftest testing is]]))
 
 (defn make-request []
   {:params          {"_of" "Resource"
@@ -59,28 +60,28 @@
    "_offset"    "0"
    "_sort"      "_created"})
 
-(t/deftest can-make-queryp-params
-  (t/testing "Can convert a query-params coll into a params like map"
-    (t/is (= {"_of" "List"
-              "_limit" "128"
-              "_offset" "0"
-              "_sort" "_created"}
-             (sut/queryp-params (make-query-param))))))
+(deftest can-make-queryp-params
+  (testing "Can convert a query-params coll into a params like map"
+    (is (= {"_of" "List"
+            "_limit" "128"
+            "_offset" "0"
+            "_sort" "_created"}
+           (sut/queryp-params (make-query-param))))))
 
-(t/deftest can-make-route-params
-  (t/testing "Can convert a route path into a hash-map"
-    (t/is (= {"_type" "List"}
-             (sut/route-params {:path [{:name "_type" :value "List"}]})))
-    (t/is (= {"_type" "Resource"
-              "_id" nil}
-             (sut/route-params {:path [{:name "_type" :value "Resource"}
-                                            {:name "_id" }]})))
-    (t/is (= {"_type" "Resource"
-              "_id" "route"}
-             (sut/route-params {:path [{:name "_type" :value "Resource"}
+(deftest can-make-route-params
+  (testing "Can convert a route path into a hash-map"
+    (is (= {"_type" "List"}
+           (sut/route-params {:path [{:name "_type" :value "List"}]})))
+    (is (= {"_type" "Resource"
+            "_id" nil}
+           (sut/route-params {:path [{:name "_type" :value "Resource"}
+                                          {:name "_id" }]})))
+    (is (= {"_type" "Resource"
+            "_id" "route"}
+           (sut/route-params {:path [{:name "_type" :value "Resource"}
                                             {:name "_id" :value "route"}]})))))
 
-(t/deftest can-make-req-params
-  (t/testing "Can sanitize request params to str keys"
-    (t/is (= {"_id" "a987df8"}
-             (sut/req-params {:params {:_id "a987df8"}})))))
+(deftest can-make-req-params
+  (testing "Can sanitize request params to str keys"
+    (is (= {"_id" "a987df8"}
+           (sut/req-params {:params {:_id "a987df8"}})))))
