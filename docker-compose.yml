@@ -1,0 +1,27 @@
+version: '3.4'
+
+services:
+  postgres:
+    image: "postgres"
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+      POSTGRES_DB: "vamtyc"
+    volumes:
+      - "dbdata:/var/lib/postgresql/data:rw"
+    ports:
+      - "5432:5432"
+  vamtyc:
+    image: "vamtyc"
+    build:
+      context: .
+      dockerfile: "./Dockerfile"
+      target: "prod"
+    ports:
+      - "3000:3000"
+    environment:
+      DB_CNX_STR: "jdbc:postgresql://host.docker.internal:5432/vamtyc"
+      PORT: "3000"
+      LIMIT: "128"
+volumes:
+  dbdata: {}

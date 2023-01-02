@@ -6,7 +6,7 @@
 (def class-dir "target/classes")
 (def basis (b/create-basis {:project "deps.edn"}))
 (def jar-file (format "target/%s-%s.jar" (name lib) version))
-(def uber-file (format "target/%s-%s-uber.jar" (name lib) version))
+(def uber-file (format "target/%s-uber.jar" (name lib)))
 
 (defn clean [_]
   (b/delete {:path "target"}))
@@ -17,7 +17,7 @@
                 :version version
                 :basis basis
                 :src-dirs ["src"]})
-  (b/copy-dir {:src-dirs ["src" "resources"]
+  (b/copy-dir {:src-dirs ["resources"]
                :target-dir class-dir})
   (b/jar {:class-dir class-dir
           :jar-file jar-file})
