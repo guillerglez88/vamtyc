@@ -25,6 +25,12 @@
      {}))
   ([] (load-dot-env ".env")))
 
+(defn load-sys-env []
+  (->> (System/getenv)
+       (into {})
+       (map #(vector (-> % first keyword) (second %)))
+       (into {})))
+
 (def def-env {:DB_CNX_STR "jdbc:postgresql://localhost:5432/vamtyc"
               :PORT       "3000"
               :LIMIT      "128"})
@@ -32,7 +38,7 @@
 (def env
   (let [keys (keys def-env)
         dot-env (load-dot-env)
-        sys-env (System/getenv)]
+        sys-env (load-sys-env)]
     (select-keys (merge def-env dot-env sys-env) keys)))
 
 (def sec-env
