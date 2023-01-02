@@ -2,7 +2,7 @@ FROM clojure:temurin-11-tools-deps-1.11.1.1208-alpine AS base
 
 FROM base AS jre
 RUN $JAVA_HOME/bin/jlink \
-    --add-modules java.base,java.logging,java.net.http,java.sql,java.sql.rowset,java.transaction.xa \
+    --add-modules java.base,java.logging,java.net.http,java.sql,java.sql.rowset,java.transaction.xa,java.management\
     --strip-debug \
     --no-man-pages \
     --no-header-files \

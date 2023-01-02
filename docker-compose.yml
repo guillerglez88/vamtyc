@@ -20,7 +20,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      DB_CNX_STR: "jdbc:postgresql://host.docker.internal:5432/vamtyc"
+      DB_CNX_STR: "jdbc:postgresql://host.docker.internal:5432/vamtyc?user=postgres&password=postgres"
       PORT: "3000"
       LIMIT: "128"
 volumes:
