@@ -21,7 +21,7 @@
         (content-type "application/json"))))
 
 (defn hydrate [req route def-queryps req-queryps]
-  (let [params      (params/req-params req)
+  (let [params      (params/req-to-params req)
         resv-route  (uroutes/resolve-path route params)
         resv-queryp (uqueryp/resolve-queryps params
                                              def-queryps
