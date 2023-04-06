@@ -2,9 +2,9 @@
   (:require
    [ring.adapter.jetty :refer [run-jetty]]
    [ring.middleware.reload :refer [wrap-reload]]
+   [vamtyc.api :as api]
    [vamtyc.config.env :refer [env]]
-   [vamtyc.seed :as seed]
-   [vamtyc.api :as api])
+   [vamtyc.seed :as seed])
   (:gen-class))
 
 (defonce server (atom nil))
@@ -28,5 +28,5 @@
 
 (comment
   (start)
-  (stop)
-  )
+  (stop))
+  

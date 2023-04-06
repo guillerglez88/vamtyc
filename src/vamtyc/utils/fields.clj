@@ -1,8 +1,9 @@
 (ns vamtyc.utils.fields
-  (:require [clojure.string :as str]))
+  (:require
+   [clojure.string :as str]))
 
 (defn parse-expr [expr]
-  (->> (str/split expr #",")
+  (->> (str/split (or expr "") #",")
        (map #(str/split % #"\."))
        (map #(into [] (filter (fn [cmp] (not (str/blank? cmp))) %)))
        (filter #(seq %))
@@ -15,19 +16,19 @@
     :else           expr))
 
 (defn select-path-into [path from to]
-  (let [[field-str & rest]  path
-        field               (keyword field-str)
-        from-prop           (field from)]
+  (let [[current & rest] path
+        prop             (keyword current)
+        value            (prop from)]
     (cond
-      (nil? from-prop)      to
-      (empty? rest)         (assoc to field from-prop)
-      (vector? from-prop)   (->> (or (field to) (repeat (count from-prop) {}))
-                                 (map #(select-path-into rest %1 %2) from-prop)
-                                 (into [])
-                                 (assoc to field))
-      :else                 (->> (or (field to) {})
-                                 (select-path-into rest from-prop)
-                                 (assoc to field)))))
+      (nil? value)    to
+      (empty? rest)   (assoc to prop value)
+      (vector? value) (->> (or (prop to) (repeat (count value) {}))
+                           (map #(select-path-into rest %1 %2) value)
+                           (into [])
+                           (assoc to prop))
+      :else           (->> (or (prop to) {})
+                           (select-path-into rest value)
+                           (assoc to prop)))))
 
 (defn select-fields [map expr]
   (let [fields (parse-expr expr)]

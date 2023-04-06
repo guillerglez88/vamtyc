@@ -1,5 +1,6 @@
 (ns vamtyc.sanity-test
-  (:require  [clojure.test :refer [deftest is]]))
+  (:require  [clojure.test :refer [deftest is testing]]))
 
 (deftest can-test
-  (is (= 5 (+ 3 2))))
+  (testing "Testing infractructure is properly working"
+    (is (= 5 (+ 3 2)))))
