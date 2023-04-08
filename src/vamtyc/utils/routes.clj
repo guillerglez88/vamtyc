@@ -1,6 +1,4 @@
-(ns vamtyc.utils.routes
-  (:require
-   [clojure.string :as str]))
+(ns vamtyc.utils.routes)
 
 (defn match-code? [path-cmp code]
   (-> path-cmp :code (= code)))
@@ -15,16 +13,6 @@
 
 (defn _id [path]
   (component path "/Coding/wellknown-params?code=id"))
-
-(defn str-path [path]
-  (->> path
-       (map (fn [cmp] (or (:value cmp) (str ":" (:name cmp)))))
-       (str/join "/")
-       (str "/")))
-
-(defn calc-match-index [path]
-  (->> (filter #(contains? % :value) path)
-       (count)))
 
 (defn resolve-path [route params]
   (->> (or (:path route) [])

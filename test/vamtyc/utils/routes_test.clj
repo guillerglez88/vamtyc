@@ -3,27 +3,6 @@
    [vamtyc.utils.routes :as sut]
    [clojure.test :refer [deftest testing is]]))
 
-(deftest str-path
-  (testing "Can stringify route path"
-    (is (= "/Resource/:_id"
-           (sut/str-path [{:name "_type" :value "Resource"}
-                          {:name "_id"}])))
-    (is (= "/Resource"
-           (sut/str-path [{:name "_type" :value "Resource"}])))))
-
-(deftest calc-match-index
-  (testing "Can calculate a match index in order to sort routes"
-    (is (= 0
-           (sut/calc-match-index [])))
-    (is (= 1
-           (sut/calc-match-index [{:name "_type" :value "Resource"}])))
-    (is (= 1
-           (sut/calc-match-index [{:name "_type" :value "Resource"}
-                                  {:name "_id"}])))
-    (is (= 2
-           (sut/calc-match-index [{:name "_type" :value "Resource"}
-                                  {:name "sub" :value "Vamtyc"}])))))
-
 (deftest get-res-type
   (testing "Can get _type from route path"
     (is (= :Resource
