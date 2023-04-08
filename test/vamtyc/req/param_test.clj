@@ -41,6 +41,45 @@
                               :name :read-resource
                               :path [{:name "_type" :value "Resource"}
                                      {:name "_id"}]})))
-    (is (= nil
+    (is (= {}
            (sut/route->param {:type :Route
                               :name :not-found})))))
+
+(deftest sanityze-qs-name-test
+  (testing "Can extract querystring name without modifiers"
+    (is (= :name
+           (sut/sanityze-qs-name "name")))
+    (is (= :name
+           (sut/sanityze-qs-name :name)))
+    (is (= :name
+           (sut/sanityze-qs-name "name:exact")))))
+
+(deftest url-test
+  (testing "Can extract relative ring request url"
+    (is (= "/List?_of=Route&_limit=3"
+           (sut/url {:uri "/List" :query-string "_of=Route&_limit=3"})))
+    (is (= "/List"
+           (sut/url {:uri "/List"})))
+    (is (= "/"
+           (sut/url {:uri "/"})))))
+
+(deftest req->param-test
+  (testing "Can map ring request to params map"
+    (is (= {:__url "/Person?_field=path.name,id", :_id "e6873cb6", :_fields "path.name,id"}
+           (sut/req->param {:uri "/Person"
+                            :query-string "_field=path.name,id"
+                            :params {:_id "e6873cb6", :_fields "path.name,id"}})))
+    (is (= {:__url "/"}
+           (sut/req->param {:uri "/"})))
+    (is (= {:__url "/Person?name=john", :name "john"}
+           (sut/req->param {:uri "/Person"
+                            :query-string "name=john"
+                            :params {:name "john"}})))
+    (is (= {:__url "/Person?name:exact=John", :name "John"}
+           (sut/req->param {:uri "/Person"
+                            :query-string "name:exact=John"
+                            :params {"name:exact" "John"}})))
+    (is (= {:__url "/Person?name=John", :name "John"}
+           (sut/req->param {:uri "/Person"
+                            :query-string "name=John"
+                            :params {"name" "John"}})))))

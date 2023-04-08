@@ -1,4 +1,6 @@
-(ns vamtyc.req.param)
+(ns vamtyc.req.param
+  (:require
+    [clojure.string :as str]))
 
 (defn queryp->param [queryp]
   (let [key (:name queryp)
@@ -18,4 +20,22 @@
 (defn route->param [route]
   (->> (or (:path route) [])
        (map route-path-cmp->param)
-       (reduce merge)))
+       (reduce merge {})))
+
+(defn sanityze-qs-name [qs-name]
+  (-> (name qs-name)
+      (str/split #":")
+      (first)
+      (keyword)))
+
+(defn url [req]
+  (str (:uri req)
+       (when-let [query (:query-string req)]
+         (str "?" query))))
+
+(defn req->param [req]
+  (->> (or (:params req) {})
+       (seq)
+       (map (fn [[key val]] (-> (sanityze-qs-name key)
+                                (vector val))))
+       (into {:__url (url req)})))
