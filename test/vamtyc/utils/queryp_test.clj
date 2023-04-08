@@ -1,10 +1,10 @@
 (ns vamtyc.utils.queryp-test
   (:require
-   [vamtyc.utils.queryp :as sut]
-   [clojure.test :refer [deftest testing is]]))
+   [clojure.test :refer [deftest is testing]]
+   [vamtyc.utils.queryp :as sut]))
 
 (deftest resolve-queryp
-  (testing "Can resolve QueryParam value from req-params"
+  (testing "Can resolve Queryp value from req-params"
     (is (= {:name     :_limit
             :value    5
             :of       :List}

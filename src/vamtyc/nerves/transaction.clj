@@ -17,7 +17,7 @@
     {:method        method
      :url           url
      :content-type  :json
-     :query-params  { "_inspect" "true" }
+     :queryps  { "_inspect" "true"}
      :body          body}))
 
 (defn make-trn-item-result [req resp]

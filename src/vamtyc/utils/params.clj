@@ -12,9 +12,9 @@
       (nil? default) ""
       :else (str default))))
 
-(defn queryp-to-params [query-params]
+(defn queryp-to-params [queryps]
   (->> (map #(vector (-> % :name name)
-                     (queryp-val-str %)) query-params)
+                     (queryp-val-str %)) queryps)
        (into {})))
 
 (defn route-to-params [route]

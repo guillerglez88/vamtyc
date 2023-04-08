@@ -8,7 +8,7 @@
  ;;  :Route
  ;;  :List
  ;;  :Transaction
- ;;  :QueryParam
+ ;;  :Queryp
  ;;  :Coding]
  ;;
  [{:method  :PUT
@@ -44,13 +44,13 @@
              :of        :Transaction
              :routes    "/List?_of=Route&res-type=Transaction"}}
   {:method  :PUT
-   :url     "/Resource/query-param"
+   :url     "/Resource/queryp"
    :body    {:type      :Resource
-             :id        "query-param"
-             :desc      "REST query-param"
+             :id        "queryp"
+             :desc      "REST queryp"
              :status    "/Coding/resource-statuses?code=pending"
-             :of        :QueryParam
-             :routes    "/List?_of=Route&res-type=QueryParam"}}
+             :of        :Queryp
+             :routes    "/List?_of=Route&res-type=Queryp"}}
   {:method  :PUT
    :url     "/Resource/coding"
    :body    {:type      :Resource
@@ -292,12 +292,12 @@
              :name      :delete-transaction
              :code      "/Coding/nerves?code=delete"
              :resource  "/Resource/transaction"}}
-  ;; Creation of :QueryParam REST routes
+  ;; Creation of :Queryp REST routes
   ;;
-  ;; ["create"  :POST   "/QueryParam"
-  ;;  "read"    :GET    "/QueryParam/:id"
-  ;;  "upsert"  :PUT    "/QueryParam/:id"
-  ;;  "delete"  :DELETE "/QueryParam/:id"]
+  ;; ["create"  :POST   "/Queryp"
+  ;;  "read"    :GET    "/Queryp/:id"
+  ;;  "upsert"  :PUT    "/Queryp/:id"
+  ;;  "delete"  :DELETE "/Queryp/:id"]
   ;;
   {:method  :POST
    :url     "/Route"
@@ -305,46 +305,46 @@
              :method    :POST
              :path      [{:name     "_type"
                           :code     "/Coding/wellknown-params?code=type"
-                          :value    "QueryParam"}]
-             :name      :create-query-param
+                          :value    "Queryp"}]
+             :name      :create-queryp
              :code      "/Coding/nerves?code=create"
-             :resource  "/Resource/query-param"}}
+             :resource  "/Resource/queryp"}}
   {:method  :POST
    :url     "/Route"
    :body    {:type      :Route
              :method    :GET
              :path      [{:name     "_type"
                           :code     "/Coding/wellknown-params?code=type"
-                          :value    "QueryParam"}
+                          :value    "Queryp"}
                          {:name     "_id"
                           :code     "/Coding/wellknown-params?code=id"}]
-             :name      :read-query-param
+             :name      :read-queryp
              :code      "/Coding/nerves?code=read"
-             :resource  "/Resource/query-param"}}
+             :resource  "/Resource/queryp"}}
   {:method  :POST
    :url     "/Route"
    :body    {:type      :Route
              :method    :PUT
              :path      [{:name     "_type"
                           :code     "/Coding/wellknown-params?code=type"
-                          :value    "QueryParam"}
+                          :value    "Queryp"}
                          {:name     "_id"
                           :code     "/Coding/wellknown-params?code=id"}]
-             :name      :upsert-query-param
+             :name      :upsert-queryp
              :code      "/Coding/nerves?code=upsert"
-             :resource  "/Resource/query-param"}}
+             :resource  "/Resource/queryp"}}
   {:method  :POST
    :url     "/Route"
    :body    {:type      :Route
              :method    :DELETE
              :path      [{:name     "_type"
                           :code     "/Coding/wellknown-params?code=type"
-                          :value    "QueryParam"}
+                          :value    "Queryp"}
                          {:name     "_id"
                           :code     "/Coding/wellknown-params?code=id"}]
-             :name      :delete-query-param
+             :name      :delete-queryp
              :code      "/Coding/nerves?code=delete"
-             :resource  "/Resource/query-param"}}
+             :resource  "/Resource/queryp"}}
   ;; Creation of :Coding REST routes
   ;;
   ;; ["create"  :POST   "/Coding"
@@ -398,54 +398,54 @@
              :name      :delete-coding
              :code      "/Coding/nerves?code=delete"
              :resource  "/Resource/coding"}}
-  ;; Creation of REST query-params valid of any resource type
+  ;; Creation of REST queryps valid of any resource type
   ;;
   ;; ["?_fields=:path-array-expr"
   ;;
   {:method  :POST
-   :url     "/QueryParam"
-   :body    {:type  :QueryParam
+   :url     "/Queryp"
+   :body    {:type  :Queryp
              :code  "/Coding/wellknown-params?code=fields"
              :desc  "Reduce response payload by filtering properties"
              :name  :_fields
              :of    :*}}
-  ;; Creation of :Resource REST query-params
+  ;; Creation of :Resource REST queryps
   ;;
   ;; ["?type=:keyword"]
   ;;
   {:method  :POST
-   :url     "/QueryParam"
-   :body    {:type  :QueryParam
+   :url     "/Queryp"
+   :body    {:type  :Queryp
              :code  "/Coding/filters?code=keyword"
              :desc  "Filter Resource by of"
              :name  :of
              :path  [{:name     "of"}]
              :of    :Resource}}
-  ;; Creation of :Route REST query-params
+  ;; Creation of :Route REST queryps
   ;;
   ;; ["?method=:keyword"
   ;;  "?name=:keyword"
   ;;  "?res-type=:keyword"]
   ;;
   {:method  :POST
-   :url     "/QueryParam"
-   :body    {:type  :QueryParam
+   :url     "/Queryp"
+   :body    {:type  :Queryp
              :code  "/Coding/filters?code=keyword"
              :desc  "Filter Route by method"
              :name  :method
              :path  [{:name     "method"}]
              :of    :Route}}
   {:method  :POST
-   :url     "/QueryParam"
-   :body    {:type  :QueryParam
+   :url     "/Queryp"
+   :body    {:type  :Queryp
              :code  "/Coding/filters?code=text"
              :desc  "Filter Route by name"
              :name  :name
              :path  [{:name     "name"}]
              :of    :Route}}
   {:method  :POST
-   :url     "/QueryParam"
-   :body    {:type  :QueryParam
+   :url     "/Queryp"
+   :body    {:type  :Queryp
              :code  "/Coding/filters?code=keyword"
              :desc  "Filter Route by the _type part of the route"
              :name  :res-type
@@ -454,7 +454,7 @@
                       :filter       {:code "/Coding/wellknown-params?code=type"}}
                      {:name         "value"}]
              :of    :Route}}
-  ;; Creation of :List REST query-params
+  ;; Creation of :List REST queryps
   ;;
   ;; ["?_of=:keyword"
   ;;  "?_limit=:number"
@@ -464,32 +464,32 @@
   ;;  "?_sort=:keyword"]
   ;;
   {:method  :POST
-   :url     "/QueryParam"
-   :body    {:type      :QueryParam
+   :url     "/Queryp"
+   :body    {:type      :Queryp
              :code      "/Coding/wellknown-params?code=of"
              :desc      "Type of resource to search for"
              :name      :_of
              :value     :List
              :of        :List}}
   {:method  :POST
-   :url     "/QueryParam"
-   :body    {:type      :QueryParam
+   :url     "/Queryp"
+   :body    {:type      :Queryp
              :code      "/Coding/wellknown-params?code=limit"
              :desc      "Limit items count in the result"
              :name      :_limit
              :value     128
              :of        :List}}
   {:method  :POST
-   :url     "/QueryParam"
-   :body    {:type      :QueryParam
+   :url     "/Queryp"
+   :body    {:type      :Queryp
              :code      "/Coding/wellknown-params?code=offset"
              :desc      "Skip that many items before starting to count result items"
              :name      :_offset
              :value     0
              :of        :List}}
   {:method  :POST
-   :url     "/QueryParam"
-   :body    {:type  :QueryParam
+   :url     "/Queryp"
+   :body    {:type  :Queryp
              :code  "/Coding/filters?code=date"
              :desc  "Filter results by creation date"
              :name  :_created
@@ -497,8 +497,8 @@
                       :meta     true}]
              :of    :List}}
   {:method  :POST
-   :url     "/QueryParam"
-   :body    {:type  :QueryParam
+   :url     "/Queryp"
+   :body    {:type  :Queryp
              :code  "/Coding/filters?code=date"
              :desc  "Filter result by last modified date"
              :name  :_modified
@@ -506,53 +506,53 @@
                       :meta     true}]
              :of    :List}}
   {:method  :POST
-   :url     "/QueryParam"
-   :body    {:type      :QueryParam
+   :url     "/Queryp"
+   :body    {:type      :Queryp
              :code      "/Coding/wellknown-params?code=sort"
-             :desc      "Order results by specified query-param"
+             :desc      "Order results by specified queryp"
              :name      :_sort
              :value     :_created
              :of        :List}}
-  ;; Creation of :Transaction REST query-params
+  ;; Creation of :Transaction REST queryps
   ;;
   ;; ["?status=:code-url"]
   ;;
   {:method  :POST
-   :url     "/QueryParam"
-   :body    {:type  :QueryParam
+   :url     "/Queryp"
+   :body    {:type  :Queryp
              :code  "/Coding/filters?code=url"
              :desc  "Filter Transactions by status"
              :name  :status
              :path  [{:name     "status"}]
              :of    :Transaction}}
-  ;; Creation of :QueryParam REST query-params
+  ;; Creation of :Queryp REST queryps
   ;;
   ;; ["?name=:keyword"
   ;;  "?type=:keyword"]
   ;;
   {:method  :POST
-   :url     "/QueryParam"
-   :body    {:type  :QueryParam
+   :url     "/Queryp"
+   :body    {:type  :Queryp
              :code  "/Coding/filters?code=keyword"
-             :desc  "Filter QueryParams by name"
+             :desc  "Filter Queryps by name"
              :name  :name
              :path  [{:name     "name"}]
-             :of    :QueryParam}}
+             :of    :Queryp}}
   {:method  :POST
-   :url     "/QueryParam"
-   :body    {:type  :QueryParam
+   :url     "/Queryp"
+   :body    {:type  :Queryp
              :code  "/Coding/filters?code=keyword"
-             :desc  "Filter QueryParams by type"
+             :desc  "Filter Queryps by type"
              :name  :of
              :path  [{:name     "of"}]
-             :of    :QueryParam}}
-  ;; Creation of :Coding REST query-params
+             :of    :Queryp}}
+  ;; Creation of :Coding REST queryps
   ;;
   ;; ["?code=:keyword"]
   ;;
   {:method  :POST
-   :url     "/QueryParam"
-   :body    {:type  :QueryParam
+   :url     "/Queryp"
+   :body    {:type  :Queryp
              :code  "/Coding/filters?code=keyword"
              :desc  "Filter Coding by code"
              :name  :code

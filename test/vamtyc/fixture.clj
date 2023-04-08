@@ -15,28 +15,28 @@
    :name        {:given ["John" "Adams"]
                  :family "Smith"}})
 
-(defn make-query-params []
-  [{:type       :QueryParam
+(defn make-queryps []
+  [{:type       :Queryp
     :code       "/Coding/filters?code=keyword"
     :desc       "Type of resource to search for"
     :name       :_of
     :value      :List
     :of         :List}
-   {:type       :QueryParam
+   {:type       :Queryp
     :code       "/Coding/filters?code=number"
     :desc       "Limit items count in the result"
     :name       :_limit
     :value      128
     :of         :List}
-   {:type       :QueryParam
+   {:type       :Queryp
     :code       "/Coding/filters?code=number"
     :desc       "Skip that many items before starting to count result items"
     :name       :_offset
     :value      0
     :of         :List}
-   {:type       :QueryParam
+   {:type       :Queryp
     :code       "/Coding/filters?code=keyword"
-    :desc       "Order results by specified query-param"
+    :desc       "Order results by specified queryp"
     :name       :_sort
     :value      :_created
     :of         :List}])

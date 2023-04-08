@@ -7,14 +7,14 @@
 (defn queryps-sql [types names]
   (let [of-list (into [] (filter #(not (nil? %)) types))]
     (-> (select :*)
-        (from :QueryParam)
+        (from :Queryp)
         (where [:and [:in [:jsonb_extract_path_text :resource "of"] of-list]
                      [:in [:jsonb_extract_path_text :resource "name"] names]])
         (sql/format))))
 
 (defn def-queryps-sql []
   (-> (select :*)
-      (from :QueryParam)
+      (from :Queryp)
       (where [:<> [:jsonb_extract_path_text :resource "value"] nil])
       (sql/format)))
 
@@ -31,10 +31,10 @@
 
 (defn load-default-queryps [tx]
   (->> (def-queryps-sql)
-       (store/search tx :QueryParam)))
+       (store/search tx :Queryp)))
 
 (defn load-queryps [tx res-types param-names]
   (let [types (str-res-types res-types)]
     (->> (or-something param-names)
          (queryps-sql types)
-         (store/search tx :QueryParam))))
+         (store/search tx :Queryp))))

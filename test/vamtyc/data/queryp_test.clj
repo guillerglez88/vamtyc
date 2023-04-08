@@ -3,20 +3,20 @@
             [clojure.test :refer [deftest testing is]]))
 
 (deftest load-default
-  (testing "Can build sql to load QueryParam with default value"
+  (testing "Can build sql to load Queryp with default value"
     (is (= [(str "SELECT * "
-                 "FROM QueryParam "
+                 "FROM Queryp "
                  "WHERE JSONB_EXTRACT_PATH_TEXT(resource, ?) IS NOT NULL")
-           "value"]
+            "value"]
            (sut/def-queryps-sql)))))
 
 (deftest load-querp-sql
-  (testing "Can build sql to load QueryParam"
+  (testing "Can build sql to load Queryp"
     (is (= [(str "SELECT * "
-                 "FROM QueryParam "
+                 "FROM Queryp "
                  "WHERE (JSONB_EXTRACT_PATH_TEXT(resource, ?) IN (?, ?, ?)) "
                  "AND (JSONB_EXTRACT_PATH_TEXT(resource, ?) IN (?, ?))")
             "of" "List" "Routes" "*" "name" "_of" "_limit"]
 
            (sut/queryps-sql ["List" "Routes" "*" nil]
-                              ["_of" "_limit"])))))
+                            ["_of" "_limit"])))))
