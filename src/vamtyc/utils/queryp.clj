@@ -30,7 +30,6 @@
        (first)
        (:value)))
 
-
 (defn of [queryps]
   (-> (identity queryps)
       (find-by-code "/Coding/wellknown-params?code=of")
