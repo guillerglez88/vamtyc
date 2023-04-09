@@ -67,7 +67,7 @@
    :url     "/Route"
    :body    {:type      :Route
              :name      :not-found
-             :code      "/Coding/nerves?code=not-found"
+             :code      "/Coding/handlers?code=not-found"
              :routes    "/List?_of=Route"}}
   ;; Creation of :Resource REST routes
   ;;
@@ -84,7 +84,7 @@
                           :code     "/Coding/wellknown-params?code=type"
                           :value    "Resource"}]
              :name      :create-resource
-             :code      "/Coding/nerves?code=create"
+             :code      "/Coding/handlers?code=create"
              :resource  "/Resource/resource"}}
   {:method  :POST
    :url     "/Route"
@@ -96,7 +96,7 @@
                          {:name     "_id"
                           :code     "/Coding/wellknown-params?code=id"}]
              :name      :read-resource
-             :code      "/Coding/nerves?code=read"
+             :code      "/Coding/handlers?code=read"
              :resource  "/Resource/resource"}}
   {:method  :POST
    :url     "/Route"
@@ -108,7 +108,7 @@
                          {:name     "_id"
                           :code     "/Coding/wellknown-params?code=id"}]
              :name      "upsert-resource"
-             :code      "/Coding/nerves?code=upsert"
+             :code      "/Coding/handlers?code=upsert"
              :resource  "/Resource/resource"}}
   {:method  :POST
    :url     "/Route"
@@ -120,7 +120,7 @@
                          {:name     "_id"
                           :code     "/Coding/wellknown-params?code=id"}]
              :name      :delete-resource
-             :code      "/Coding/nerves?code=delete"
+             :code      "/Coding/handlers?code=delete"
              :resource  "/Resource/resource"}}
   ;; Creation of :Route REST routes
   ;;
@@ -137,7 +137,7 @@
                           :code     "/Coding/wellknown-params?code=type"
                           :value    "Route"}]
              :name      :create-route
-             :code      "/Coding/nerves?code=create"
+             :code      "/Coding/handlers?code=create"
              :resource  "/Resource/route"}}
   {:method  :POST
    :url     "/Route"
@@ -149,7 +149,7 @@
                          {:name     "_id"
                           :code     "/Coding/wellknown-params?code=id"}]
              :name      :read-route
-             :code      "/Coding/nerves?code=read"
+             :code      "/Coding/handlers?code=read"
              :resource  "/Resource/route"}}
   {:method  :POST
    :url     "/Route"
@@ -161,7 +161,7 @@
                          {:name     "_id"
                           :code     "/Coding/wellknown-params?code=id"}]
              :name      :upsert-route
-             :code      "/Coding/nerves?code=upsert"
+             :code      "/Coding/handlers?code=upsert"
              :resource  "/Resource/route"}}
   {:method  :POST
    :url     "/Route"
@@ -173,7 +173,7 @@
                          {:name     "_id"
                           :code     "/Coding/wellknown-params?code=id"}]
              :name      :delete-route
-             :code      "/Coding/nerves?code=delete"
+             :code      "/Coding/handlers?code=delete"
              :resource  "/Resource/route"}}
   ;; Creation of :List REST routes
   ;;
@@ -191,7 +191,7 @@
                           :code     "/Coding/wellknown-params?code=type"
                           :value    "List"}]
              :name      :create-list
-             :code      "/Coding/nerves?code=create"
+             :code      "/Coding/handlers?code=create"
              :resource  "/Resource/list"}}
   {:method  :POST
    :url     "/Route"
@@ -203,7 +203,7 @@
                          {:name     "_id"
                           :code     "/Coding/wellknown-params?code=id"}]
              :name      :read-list
-             :code      "/Coding/nerves?code=read"
+             :code      "/Coding/handlers?code=read"
              :resource  "/Resource/list"}}
   {:method  :POST
    :url     "/Route"
@@ -215,7 +215,7 @@
                          {:name     "_id"
                           :code     "/Coding/wellknown-params?code=id"}]
              :name      :upsert-list
-             :code      "/Coding/nerves?code=upsert"
+             :code      "/Coding/handlers?code=upsert"
              :resource  "/Resource/list"}}
   {:method  :POST
    :url     "/Route"
@@ -227,7 +227,7 @@
                          {:name     "_id"
                           :code     "/Coding/wellknown-params?code=id"}]
              :name      :delete-list
-             :code      "/Coding/nerves?code=delete"
+             :code      "/Coding/handlers?code=delete"
              :resource  "/Resource/list"}}
   {:method  :POST
    :url     "/Route"
@@ -237,7 +237,7 @@
                           :code     "/Coding/wellknown-params?code=type"
                           :value    "List"}]
              :name      :search-list
-             :code      "/Coding/nerves?code=search"
+             :code      "/Coding/handlers?code=search"
              :resource  "/Resource/list"}}
   ;; Creation of :Transaction REST routes
   ;;
@@ -254,7 +254,7 @@
                           :code     "/Coding/wellknown-params?code=type"
                           :value    "Transaction"}]
              :name      :create-transaction
-             :code      "/Coding/nerves?code=create"
+             :code      "/Coding/handlers?code=create"
              :resource  "/Resource/transaction"}}
   {:method  :POST
    :url     "/Route"
@@ -266,7 +266,7 @@
                          {:name     "_id"
                           :code     "/Coding/wellknown-params?code=id"}]
              :name      :read-transaction
-             :code      "/Coding/nerves?code=read"
+             :code      "/Coding/handlers?code=read"
              :resource  "/Resource/transaction"}}
   {:method  :POST
    :url     "/Route"
@@ -278,7 +278,7 @@
                          {:name     "_id"
                           :code     "/Coding/wellknown-params?code=id"}]
              :name      :upsert-transaction
-             :code      "/Coding/nerves?code=upsert"
+             :code      "/Coding/handlers?code=upsert"
              :resource  "/Resource/transaction"}}
   {:method  :POST
    :url     "/Route"
@@ -290,7 +290,7 @@
                          {:name     "_id"
                           :code     "/Coding/wellknown-params?code=id"}]
              :name      :delete-transaction
-             :code      "/Coding/nerves?code=delete"
+             :code      "/Coding/handlers?code=delete"
              :resource  "/Resource/transaction"}}
   ;; Creation of :Queryp REST routes
   ;;
@@ -307,7 +307,7 @@
                           :code     "/Coding/wellknown-params?code=type"
                           :value    "Queryp"}]
              :name      :create-queryp
-             :code      "/Coding/nerves?code=create"
+             :code      "/Coding/handlers?code=create"
              :resource  "/Resource/queryp"}}
   {:method  :POST
    :url     "/Route"
@@ -319,7 +319,7 @@
                          {:name     "_id"
                           :code     "/Coding/wellknown-params?code=id"}]
              :name      :read-queryp
-             :code      "/Coding/nerves?code=read"
+             :code      "/Coding/handlers?code=read"
              :resource  "/Resource/queryp"}}
   {:method  :POST
    :url     "/Route"
@@ -331,7 +331,7 @@
                          {:name     "_id"
                           :code     "/Coding/wellknown-params?code=id"}]
              :name      :upsert-queryp
-             :code      "/Coding/nerves?code=upsert"
+             :code      "/Coding/handlers?code=upsert"
              :resource  "/Resource/queryp"}}
   {:method  :POST
    :url     "/Route"
@@ -343,7 +343,7 @@
                          {:name     "_id"
                           :code     "/Coding/wellknown-params?code=id"}]
              :name      :delete-queryp
-             :code      "/Coding/nerves?code=delete"
+             :code      "/Coding/handlers?code=delete"
              :resource  "/Resource/queryp"}}
   ;; Creation of :Coding REST routes
   ;;
@@ -360,7 +360,7 @@
                           :code     "/Coding/wellknown-params?code=type"
                           :value    "Coding"}]
              :name      :create-coding
-             :code      "/Coding/nerves?code=create"
+             :code      "/Coding/handlers?code=create"
              :resource  "/Resource/coding"}}
   {:method  :POST
    :url     "/Route"
@@ -372,7 +372,7 @@
                          {:name     "_id"
                           :code     "/Coding/wellknown-params?code=id"}]
              :name      :read-coding
-             :code      "/Coding/nerves?code=read"
+             :code      "/Coding/handlers?code=read"
              :resource  "/Resource/coding"}}
   {:method  :POST
    :url     "/Route"
@@ -384,7 +384,7 @@
                          {:name     "_id"
                           :code     "/Coding/wellknown-params?code=id"}]
              :name      :upsert-coding
-             :code      "/Coding/nerves?code=upsert"
+             :code      "/Coding/handlers?code=upsert"
              :resource  "/Resource/coding"}}
   {:method  :POST
    :url     "/Route"
@@ -396,7 +396,7 @@
                          {:name     "_id"
                           :code     "/Coding/wellknown-params?code=id"}]
              :name      :delete-coding
-             :code      "/Coding/nerves?code=delete"
+             :code      "/Coding/handlers?code=delete"
              :resource  "/Resource/coding"}}
   ;; Creation of REST queryps valid of any resource type
   ;;
@@ -563,7 +563,7 @@
   ;; Creation of core :Coding list
   ;;
   ;; ["/Coding/resource-statuses
-  ;;  "/Coding/nerves
+  ;;  "/Coding/handlers
   ;;  "/Coding/filters ]
   ;;
   {:method  :PUT
@@ -575,20 +575,20 @@
                      {:code "/Coding/resource-statuses?code=active"
                       :desc "Storage allocated"}]}}
   {:method  :PUT
-   :url     "/Coding/nerves"
+   :url     "/Coding/handlers"
    :body    {:type  :Coding
-             :id    "nerves"
-             :codes [{:code "/Coding/nerves?code=create"
-                      :desc "Triggers the creation of resource"}
-                     {:code "/Coding/nerves?code=read"
-                      :desc "Triggers the retrieval of resource matching by id"}
-                     {:code "/Coding/nerves?code=upsert"
-                      :desc "Triggers the creation of resource or update matching by id"}
-                     {:code "/Coding/nerves?code=delete"
-                      :desc "Triggers the removal of resource matching by id"}
-                     {:code "/Coding/nerves?code=search"
-                      :desc "Triggers the search of resources"}
-                     {:code "/Coding/nerves?code=not-found"
+             :id    "handlers"
+             :codes [{:code "/Coding/handlers?code=create"
+                      :desc "Handles the creation of resource"}
+                     {:code "/Coding/handlers?code=read"
+                      :desc "Handles the retrieval of resource matching by id"}
+                     {:code "/Coding/handlers?code=upsert"
+                      :desc "Handles the creation of resource or update matching by id"}
+                     {:code "/Coding/handlers?code=delete"
+                      :desc "Handles the removal of resource matching by id"}
+                     {:code "/Coding/handlers?code=search"
+                      :desc "Handles the search of resources"}
+                     {:code "/Coding/handlers?code=not-found"
                       :desc "Produces a not-found HTTP response"}]}}
   {:method  :PUT
    :url     "/Coding/filters"

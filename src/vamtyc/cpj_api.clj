@@ -14,12 +14,12 @@
    [vamtyc.param :as param]))
 
 (def handlers
-  {"/Coding/nerves?code=create"       handler/create
-   "/Coding/nerves?code=read"         handler/rread
-   "/Coding/nerves?code=upsert"       handler/upsert
-   "/Coding/nerves?code=delete"       handler/delete
-   "/Coding/nerves?code=search"       handler/search
-   "/Coding/nerves?code=not-found"    handler/notfound})
+  {"/Coding/handlers?code=create"       handler/create
+   "/Coding/handlers?code=read"         handler/rread
+   "/Coding/handlers?code=upsert"       handler/upsert
+   "/Coding/handlers?code=delete"       handler/delete
+   "/Coding/handlers?code=search"       handler/search
+   "/Coding/handlers?code=not-found"    handler/notfound})
 
 (defn make-http-response [resp]
   (let [body (-> resp :body json/write-str)]

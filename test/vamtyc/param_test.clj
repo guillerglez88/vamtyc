@@ -91,7 +91,7 @@
                                       :code "/Coding/wellknown-params?code=id"}]})))
     (is (= {}
            (sut/route->param {:type :Route
-                              :code "/Coding/nerves?code=not-found"
+                              :code "/Coding/handlers?code=not-found"
                               :name :not-found})))))
 
 (deftest sanityze-qs-name-test
