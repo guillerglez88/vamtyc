@@ -20,34 +20,21 @@
 
 (deftest select-path-into
   (testing "Can select deep path into a projected map"
-    (is (= {:path [{:name "_type"} {:name "_id"}]}
-           (sut/select-path-into ["path" "name"]
-                                 {:type :Route
-                                   :method :GET
-                                   :path [{:name "_type", :value "Resource"}
-                                          {:name "_id"}]
-                                   :name :read-resource
-                                   :code "/Coding/nerves?code=read"
-                                   :resource "/Resource/resource"}
-                                 {})))
-    (is (= {:name {:family "Smith"}}
-           (sut/select-path-into ["name" "family"]
-                                 {:type :Person
-                                  :name {:given ["John" "Adams"]
-                                         :family "Smith"}}
-                                 {})))
-    (is (= {:name {:family "Smith"} :gender :male}
-           (sut/select-path-into ["name" "family"]
-                                 {:type :Person
-                                  :name {:given ["John" "Adams"]
-                                         :family "Smith"}}
-                                 {:gender :male})))
-    (is (= {:type :Person}
-           (sut/select-path-into ["type"]
-                                 {:type :Person
-                                  :name {:given ["John" "Adams"]
-                                         :family "Smith"}}
-                                 {:type :Animal})))))
+    (let [route {:type :Route
+                 :method :GET
+                 :path [{:name "_type", :value "Resource"}
+                        {:name "_id"}]}
+          person {:type :Person
+                  :name {:given ["John" "Adams"]
+                         :family "Smith"}}]
+      (is (= {:path [{:name "_type"} {:name "_id"}]}
+            (sut/select-path-into ["path" "name"] route {})))
+      (is (= {:name {:family "Smith"}}
+            (sut/select-path-into ["name" "family"] person {})))
+      (is (= {:name {:family "Smith"} :gender :male}
+            (sut/select-path-into ["name" "family"] person {:gender :male})))
+      (is (= {:type :Person}
+            (sut/select-path-into ["type"] person {:type :Animal}))))))
 
 (deftest flat-expr
   (testing "Flat multi-valued _fields queryparam"
@@ -62,30 +49,18 @@
 
 (deftest select-fields
   (testing "Can select map projection from _fields expression value"
-    (is (= {:type :Route
-            :path [{:name "_type"} {:name "_id"}]}
-           (sut/select-fields {:type :Route
-                               :method :GET
-                               :path [{:name "_type", :value "Resource"}
-                                      {:name "_id"}]
-                               :name :read-resource
-                               :code "/Coding/nerves?code=read"
-                               :resource "/Resource/resource"}
-                              "type,path.name")))
-    (is (= {:type :Route
-            :path [{} {}]}
-           (sut/select-fields {:type :Route
-                               :method :GET
-                               :path [{:name "_type", :value "Resource"}
-                                      {:name "_id"}]
-                               :name :read-resource
-                               :code "/Coding/nerves?code=read"
-                               :resource "/Resource/resource"}
-                              "type,path.fake")))
-    (is (= {:type :Person
-            :name {:given ["John" "Adams"]
-                   :family "Smith"}}
-           (sut/select-fields {:type :Person
-                               :name {:given ["John" "Adams"]
-                                      :family "Smith"}}
-                              nil)))))
+    (let [route {:type :Route
+                 :method :GET
+                 :path [{:name "_type", :value "Resource"}
+                        {:name "_id"}]}
+          person {:type :Person
+                  :name {:given ["John" "Adams"]
+                         :family "Smith"}}]
+      (is (= {:type :Route
+              :path [{:name "_type"} {:name "_id"}]}
+             (sut/select-fields route "type,path.name")))
+      (is (= {:type :Route
+              :path [{} {}]}
+             (sut/select-fields route "type,path.fake")))
+      (is (= person
+             (sut/select-fields person nil))))))
