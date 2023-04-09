@@ -1,4 +1,4 @@
-(ns vamtyc.resp.fields
+(ns vamtyc.fields
   (:require
    [clojure.string :as str]))
 

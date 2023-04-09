@@ -6,7 +6,7 @@
    [vamtyc.data.store :as store]
    [vamtyc.queries.core :as queries]
    [vamtyc.param :as param]
-   [vamtyc.resp.fields :as fields]))
+   [vamtyc.fields :as fields]))
 
 (defn nav-uri [url offset]
   (-> url (assoc-query :_offset offset) uri-str))

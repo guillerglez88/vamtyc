@@ -3,7 +3,7 @@
    [ring.util.response :refer [not-found response]]
    [vamtyc.data.store :as store]
    [vamtyc.param :as param]
-   [vamtyc.resp.fields :as fields]))
+   [vamtyc.fields :as fields]))
 
 (defn handler [req tx _app]
   (let [type (-> req :vamtyc/param (param/get-value "/Coding/wellknown-params?code=type"))
