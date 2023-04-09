@@ -31,10 +31,12 @@
 
 (defn load-default-queryps [tx]
   (->> (def-queryps-sql)
-       (store/search tx :Queryp)))
+       (store/search tx :Queryp)
+       (vec)))
 
 (defn load-queryps [tx res-types param-names]
   (let [types (str-res-types res-types)]
     (->> (or-something param-names)
          (queryps-sql types)
-         (store/search tx :Queryp))))
+         (store/search tx :Queryp)
+         (vec))))

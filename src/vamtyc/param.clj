@@ -12,6 +12,7 @@
 
 (defn merge-param [params]
   (reduce #(->> (concat (:vamtyc/codes %1) (:vamtyc/codes %2))
+                (vec)
                 (hash-map :vamtyc/codes)
                 (merge %1 %2)) {} params))
 

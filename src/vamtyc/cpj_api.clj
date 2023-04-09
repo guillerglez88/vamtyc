@@ -32,9 +32,10 @@
         req-queryp-param (param/queryps->param req-queryps)
         req-param (param/req->param req)]
     (->> (param/merge-param [route-param def-queryp-param req-queryp-param req-param])
-         (merge req {:vamtyc/param req-param
-                     :vamtyc/route route
-                     :vamtyc/queryp (concat def-queryps req-queryps)}))))
+         (hash-map :vamtyc/route route
+                   :vamtyc/queryp (concat def-queryps req-queryps)
+                   :vamtyc/param)
+         (merge req))))
 
 (defn cpj-handler [route queryps app]
   (fn [req]
@@ -45,6 +46,7 @@
           of (param/get-value req-param "/Coding/wellknown-params?code=of")]
       (jdbc/with-transaction [tx ds]
         (->> (keys route-param)
+             (filter #(-> % #{:vamtyc/codes :vamtyc/url} not))
              (map #(-> % (or "") name))
              (vec)
              (dqueryp/load-queryps tx [type of])
