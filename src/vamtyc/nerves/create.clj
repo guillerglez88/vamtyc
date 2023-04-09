@@ -2,10 +2,10 @@
   (:require
    [ring.util.response :refer [created]]
    [vamtyc.data.store :as store]
-   [vamtyc.utils.routes :as routes]))
+   [vamtyc.req.param :as param]))
 
 (defn handler [req tx _app]
-  (let [res-type (-> req :vamtyc/route :path routes/_type)]
+  (let [type (-> req :vamtyc/param (param/get-value "/Coding/wellknown-params?code=type"))]
     (->> (:body req)
-         (store/create tx res-type)
+         (store/create tx type)
          (#(created (:url %) %)))))

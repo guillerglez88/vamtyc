@@ -1,8 +1,8 @@
-(ns vamtyc.utils.fields-test
+(ns vamtyc.resp.fields-test
   (:require
    [clojure.test :refer [deftest is testing]]
    [vamtyc.fixture :as fixture]
-   [vamtyc.utils.fields :as sut]))
+   [vamtyc.resp.fields :as sut]))
 
 (deftest parse-expr
   (testing "Can parse _fields querparam expression value"

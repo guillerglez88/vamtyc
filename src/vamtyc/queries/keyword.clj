@@ -1,9 +1,10 @@
 (ns vamtyc.queries.keyword
   (:require
-   [honey.sql.helpers :refer [where]]
-   [vamtyc.utils.queryp :as uqueryp]))
+   [clojure.string :as str]
+   [honey.sql.helpers :refer [where]]))
 
-(defn apply-queryp [sql-map _req queryp]
-  (let [name  (uqueryp/queryp-name queryp)
-        val   (:value queryp)]
-    (where sql-map [:= [:cast name :text] (str "\"" val "\"")])))
+(defn apply-queryp [sql-map req queryp]
+  (let [name (-> queryp :name name)
+        db-name (-> name (str/replace #"-" "_") keyword)
+        val (-> req :vamtyc/param (get name))]
+    (where sql-map [:= [:cast db-name :text] (str "\"" val "\"")])))

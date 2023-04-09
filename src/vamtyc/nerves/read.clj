@@ -1,17 +1,15 @@
 (ns vamtyc.nerves.read
   (:require
-   [ring.util.response :refer [response not-found]]
+   [ring.util.response :refer [not-found response]]
    [vamtyc.data.store :as store]
-   [vamtyc.utils.fields :as fields]
-   [vamtyc.utils.routes :as routes]
-   [vamtyc.utils.queryp :as uqueryp]))
+   [vamtyc.req.param :as param]
+   [vamtyc.resp.fields :as fields]))
 
 (defn handler [req tx _app]
-  (let [res-type  (-> req :vamtyc/route :path routes/_type)
-        id        (-> req :vamtyc/route :path routes/_id)
-        fields    (-> req :vamtyc/queryp uqueryp/fields fields/flat-expr)
-        res       (store/fetch tx res-type id)]
-    (if res
+  (let [type (-> req :vamtyc/param (param/get-value "/Coding/wellknown-params?code=type"))
+        id (-> req :vamtyc/param (param/get-value "/Coding/wellknown-params?code=id"))
+        fields (-> req :vamtyc/param (param/get-value "/Coding/wellknown-params?code=fields"))]
+    (if-let [res (store/fetch tx type id)]
       (-> (fields/select-fields res fields)
           (response))
       (not-found "Not found"))))

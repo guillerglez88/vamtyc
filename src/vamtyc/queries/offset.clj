@@ -1,8 +1,11 @@
 (ns vamtyc.queries.offset
   (:require
-   [vamtyc.utils.queryp :as uqueryp]
-   [honey.sql.helpers :refer [offset]]))
+   [honey.sql.helpers :refer [offset]]
+   [vamtyc.req.param :as param]))
 
-(defn apply-queryp [sql-map _req queryp]
-  (->> (uqueryp/offset [queryp])
-       (offset sql-map)))
+(defn apply-queryp [sql-map req _queryp]
+  (-> (:vamtyc/param req)
+      (param/get-value "/Coding/wellknown-params?code=offset")
+      (str)
+      (Integer/parseInt)
+      (#(offset sql-map %))))
