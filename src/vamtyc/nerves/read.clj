@@ -2,7 +2,7 @@
   (:require
    [ring.util.response :refer [not-found response]]
    [vamtyc.data.store :as store]
-   [vamtyc.req.param :as param]
+   [vamtyc.param :as param]
    [vamtyc.resp.fields :as fields]))
 
 (defn handler [req tx _app]

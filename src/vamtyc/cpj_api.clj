@@ -11,7 +11,7 @@
    [vamtyc.data.queryp :as dqueryp]
    [vamtyc.data.store :as store]
    [vamtyc.nerves.core :as nerves]
-   [vamtyc.req.param :as param]))
+   [vamtyc.param :as param]))
 
 (defn make-http-response [resp]
   (let [body (-> resp :body json/write-str)]

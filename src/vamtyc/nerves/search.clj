@@ -5,7 +5,7 @@
    [ring.util.response :refer [response]]
    [vamtyc.data.store :as store]
    [vamtyc.queries.core :as queries]
-   [vamtyc.req.param :as param]
+   [vamtyc.param :as param]
    [vamtyc.resp.fields :as fields]))
 
 (defn nav-uri [url offset]

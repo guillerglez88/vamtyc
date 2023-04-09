@@ -9,7 +9,7 @@
    [vamtyc.queries.sort :as sort]
    [vamtyc.queries.text :as text]
    [vamtyc.queries.utils :as utils]
-   [vamtyc.req.param :as param]))
+   [vamtyc.param :as param]))
 
 (def filters
   {"/Coding/wellknown-params?code=limit"   limit/apply-queryp

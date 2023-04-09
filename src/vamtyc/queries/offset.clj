@@ -1,7 +1,7 @@
 (ns vamtyc.queries.offset
   (:require
    [honey.sql.helpers :refer [offset]]
-   [vamtyc.req.param :as param]))
+   [vamtyc.param :as param]))
 
 (defn apply-queryp [sql-map req _queryp]
   (-> (:vamtyc/param req)

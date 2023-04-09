@@ -1,4 +1,4 @@
-(ns vamtyc.req.param
+(ns vamtyc.param
   (:require
    [clojure.string :as str]
    [lambdaisland.uri :refer [query-map]]))

@@ -2,7 +2,7 @@
   (:require
    [ring.util.response :refer [created]]
    [vamtyc.data.store :as store]
-   [vamtyc.req.param :as param]))
+   [vamtyc.param :as param]))
 
 (defn handler [req tx _app]
   (let [type (-> req :vamtyc/param (param/get-value "/Coding/wellknown-params?code=type"))]

@@ -1,7 +1,7 @@
-(ns vamtyc.req.param-test
+(ns vamtyc.param-test
   (:require
    [clojure.test :as t :refer [deftest is testing]]
-   [vamtyc.req.param :as sut]))
+   [vamtyc.param :as sut]))
 
 (deftest queryp->param-test
   (testing "Can map Queryp to param map"
