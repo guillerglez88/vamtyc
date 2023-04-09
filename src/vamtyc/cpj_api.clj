@@ -10,8 +10,16 @@
    [vamtyc.data.datasource :refer [ds]]
    [vamtyc.data.queryp :as dqueryp]
    [vamtyc.data.store :as store]
-   [vamtyc.nerves.core :as nerves]
+   [vamtyc.handler :as handler]
    [vamtyc.param :as param]))
+
+(def handlers
+  {"/Coding/nerves?code=create"       handler/create
+   "/Coding/nerves?code=read"         handler/read
+   "/Coding/nerves?code=upsert"       handler/upsert
+   "/Coding/nerves?code=delete"       handler/delete
+   "/Coding/nerves?code=search"       handler/search
+   "/Coding/nerves?code=not-found"    handler/notfound})
 
 (defn make-http-response [resp]
   (let [body (-> resp :body json/write-str)]
@@ -32,7 +40,7 @@
   (fn [req]
     (let [route-param (param/route->param route)
           req-param (param/req->param req)
-          handler (-> route :code nerves/pick)
+          handler (->> route :code (get handlers))
           type (param/get-value route-param "/Coding/wellknown-params?code=type")
           of (param/get-value req-param "/Coding/wellknown-params?code=of")]
       (jdbc/with-transaction [tx ds]

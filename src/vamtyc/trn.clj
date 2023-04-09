@@ -1,9 +1,8 @@
-(ns vamtyc.nerves.transaction
+(ns vamtyc.trn
   (:require
    [clj-http.client :as client]
    [clojure.string :as str]
-   [clojure.data.json :as json]
-   [ring.util.response :refer [response]]))
+   [clojure.data.json :as json]))
 
 (defn make-trn-result [items]
   {:type    :Transaction
@@ -44,10 +43,3 @@
       (inspect-req)
       (handle-req tx)
       (->> (make-trn-item-result item))))
-
-(defn handler [req tx _app]
-  (->> (-> req :body :items)
-       (map #(commit % req tx))
-       (into [])
-       (make-trn-result)
-       (response)))
