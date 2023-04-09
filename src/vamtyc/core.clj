@@ -3,7 +3,7 @@
    [ring.adapter.jetty :refer [run-jetty]]
    [vamtyc.config.env :refer [env]]
    [vamtyc.seed :as seed]
-   [vamtyc.api :as api])
+   [vamtyc.cpj-api :as api])
   (:gen-class))
 
 (defn start []

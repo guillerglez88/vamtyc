@@ -2,7 +2,7 @@
   (:require
    [ring.adapter.jetty :refer [run-jetty]]
    [ring.middleware.reload :refer [wrap-reload]]
-   [vamtyc.api :as api]
+   [vamtyc.cpj-api :as api]
    [vamtyc.config.env :refer [env]]
    [vamtyc.seed :as seed])
   (:gen-class))

@@ -1,4 +1,4 @@
-(ns vamtyc.api
+(ns vamtyc.cpj-api
   (:require
    [clojure.data.json :as json]
    [clojure.string :as str]
