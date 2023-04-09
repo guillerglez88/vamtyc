@@ -15,7 +15,7 @@
 
 (def handlers
   {"/Coding/nerves?code=create"       handler/create
-   "/Coding/nerves?code=read"         handler/read
+   "/Coding/nerves?code=read"         handler/rread
    "/Coding/nerves?code=upsert"       handler/upsert
    "/Coding/nerves?code=delete"       handler/delete
    "/Coding/nerves?code=search"       handler/search

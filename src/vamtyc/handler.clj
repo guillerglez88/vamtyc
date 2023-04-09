@@ -10,7 +10,7 @@
    [vamtyc.queries.core :as queries]
    [vamtyc.trn :as trn]))
 
-(defn read [req tx _app]
+(defn rread [req tx _app]
   (let [type (-> req :vamtyc/param (param/get-value "/Coding/wellknown-params?code=type"))
         id (-> req :vamtyc/param (param/get-value "/Coding/wellknown-params?code=id"))
         fields (-> req :vamtyc/param (param/get-value "/Coding/wellknown-params?code=fields"))]
