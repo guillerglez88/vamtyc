@@ -1,8 +1,8 @@
-(ns vamtyc.queries.utils-test
+(ns vamtyc.query-test
   (:require
-   [vamtyc.queries.utils :as sut]
-   [clojure.test :refer [deftest testing is]]
-   [honey.sql :as hsql]))
+   [clojure.test :refer [deftest is testing]]
+   [honey.sql :as hsql]
+   [vamtyc.query :as sut]))
 
 (deftest make-sql-map
   (testing "Can make base sql map to filter results on"
@@ -23,10 +23,10 @@
                   "FROM Resource "
                   "INNER JOIN JSONB_EXTRACT_PATH(resource, ?) AS resource_path ON TRUE "
                   "INNER JOIN JSONB_ARRAY_ELEMENTS(resource_path) AS path ON TRUE")
-             "path"]
-            (-> (sut/make-sql-map :Resource)
-                (sut/extract-coll :resource {:name "path"} :path)
-                (hsql/format))))))
+            "path"]
+           (-> (sut/make-sql-map :Resource)
+               (sut/extract-coll :resource {:name "path"} :path)
+               (hsql/format))))))
 
 (deftest prop-alias
   (testing "Can build prop alias"

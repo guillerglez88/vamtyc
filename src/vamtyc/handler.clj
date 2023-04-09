@@ -7,7 +7,7 @@
    [vamtyc.fields :as fields]
    [vamtyc.nav :as nav]
    [vamtyc.param :as param]
-   [vamtyc.queries.core :as queries]
+   [vamtyc.query :as query]
    [vamtyc.trn :as trn]))
 
 (defn rread [req tx _app]
@@ -47,7 +47,7 @@
         type (-> req :vamtyc/param (param/get-value "/Coding/wellknown-params?code=type"))
         of (-> req :vamtyc/param (param/get-value "/Coding/wellknown-params?code=of"))
         fields (-> req :vamtyc/param (param/get-value "/Coding/wellknown-params?code=fields"))
-        sql-map (queries/search-query req tx)
+        sql-map (query/search-query req tx)
         total   (store/total tx sql-map)]
     (->> (hsql/format sql-map)
          (store/search tx (or of type))
