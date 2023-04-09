@@ -1,7 +1,6 @@
 (ns vamtyc.fields-test
   (:require
    [clojure.test :refer [deftest is testing]]
-   [vamtyc.fixture :as fixture]
    [vamtyc.fields :as sut]))
 
 (deftest parse-expr
@@ -22,13 +21,33 @@
 (deftest select-path-into
   (testing "Can select deep path into a projected map"
     (is (= {:path [{:name "_type"} {:name "_id"}]}
-           (sut/select-path-into ["path" "name"] (fixture/make-route) {})))
+           (sut/select-path-into ["path" "name"]
+                                 {:type :Route
+                                   :method :GET
+                                   :path [{:name "_type", :value "Resource"}
+                                          {:name "_id"}]
+                                   :name :read-resource
+                                   :code "/Coding/nerves?code=read"
+                                   :resource "/Resource/resource"}
+                                 {})))
     (is (= {:name {:family "Smith"}}
-           (sut/select-path-into ["name" "family"] (fixture/make-person) {})))
+           (sut/select-path-into ["name" "family"]
+                                 {:type :Person
+                                  :name {:given ["John" "Adams"]
+                                         :family "Smith"}}
+                                 {})))
     (is (= {:name {:family "Smith"} :gender :male}
-           (sut/select-path-into ["name" "family"] (fixture/make-person) {:gender :male})))
+           (sut/select-path-into ["name" "family"]
+                                 {:type :Person
+                                  :name {:given ["John" "Adams"]
+                                         :family "Smith"}}
+                                 {:gender :male})))
     (is (= {:type :Person}
-           (sut/select-path-into ["type"] (fixture/make-person) {:type :Animal})))))
+           (sut/select-path-into ["type"]
+                                 {:type :Person
+                                  :name {:given ["John" "Adams"]
+                                         :family "Smith"}}
+                                 {:type :Animal})))))
 
 (deftest flat-expr
   (testing "Flat multi-valued _fields queryparam"
@@ -45,11 +64,28 @@
   (testing "Can select map projection from _fields expression value"
     (is (= {:type :Route
             :path [{:name "_type"} {:name "_id"}]}
-           (sut/select-fields (fixture/make-route) "type,path.name")))
+           (sut/select-fields {:type :Route
+                               :method :GET
+                               :path [{:name "_type", :value "Resource"}
+                                      {:name "_id"}]
+                               :name :read-resource
+                               :code "/Coding/nerves?code=read"
+                               :resource "/Resource/resource"}
+                              "type,path.name")))
     (is (= {:type :Route
             :path [{} {}]}
-           (sut/select-fields (fixture/make-route) "type,path.fake")))
+           (sut/select-fields {:type :Route
+                               :method :GET
+                               :path [{:name "_type", :value "Resource"}
+                                      {:name "_id"}]
+                               :name :read-resource
+                               :code "/Coding/nerves?code=read"
+                               :resource "/Resource/resource"}
+                              "type,path.fake")))
     (is (= {:type :Person
             :name {:given ["John" "Adams"]
                    :family "Smith"}}
-           (sut/select-fields (fixture/make-person) nil)))))
+           (sut/select-fields {:type :Person
+                               :name {:given ["John" "Adams"]
+                                      :family "Smith"}}
+                              nil)))))
