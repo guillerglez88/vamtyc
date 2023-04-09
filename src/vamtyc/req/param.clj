@@ -1,6 +1,7 @@
 (ns vamtyc.req.param
   (:require
-    [clojure.string :as str]))
+   [clojure.string :as str]
+   [lambdaisland.uri :refer [query-map]]))
 
 (defn queryp->param [queryp]
   (let [key (-> queryp :name name)
@@ -47,3 +48,10 @@
        (map (fn [[key val]] (-> (sanityze-qs-name key)
                                 (vector val))))
        (into {:vamtyc/url (url req)})))
+
+(defn get-value [param code]
+  (->> (:vamtyc/codes param)
+       (filter #(str/starts-with? % code))
+       (map query-map)
+       (map #(get param (-> % :name name)))
+       (first)))

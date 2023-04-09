@@ -137,3 +137,24 @@
            (sut/req->param {:uri "/Person"
                             :query-string "name=John"
                             :params {"name" "John"}})))))
+
+(deftest get-value-test
+  (testing "Can resolve /Coding/wellknown-params?code=type"
+    (let [param {"_of" :List
+                 "_created" nil
+                 "_limit" 128
+                 "_type" "Resource"
+                 "_id" "ecf3cf94"
+                 :vamtyc/codes ["/Coding/wellknown-params?code=type&name=_type"
+                                "/Coding/wellknown-params?code=id&name=_id"
+                                "/Coding/wellknown-params?code=of&name=_of"
+                                "/Coding/wellknown-params?code=limit&name=_limit"
+                                "/Coding/filters?code=date&name=_created"]}]
+      (is (= "Resource"
+             (sut/get-value param "/Coding/wellknown-params?code=type")))
+      (is (= "ecf3cf94"
+             (sut/get-value param "/Coding/wellknown-params?code=id")))
+      (is (= 128
+             (sut/get-value param "/Coding/wellknown-params?code=limit")))
+      (is (= nil
+             (sut/get-value param "/Coding/wellknown-params?code=fields"))))))
