@@ -19,13 +19,17 @@
 (def handler-search      "/Coding/handlers?code=search")
 (def handler-not-found   "/Coding/handlers?code=not-found")
 
-(defn create [req route]
-  (let [route-params (-> route param/route->param route)
-        type (param/get-value route-params param/wellknown-type)]
-    (jdbc/with-transaction [tx ds]
-      (->> (:body req)
-           (store/create tx type)
-           (#(created (:url %) %))))))
+(defn create
+  ([req route]
+   (jdbc/with-transaction [tx ds]
+     (->> (partial store/create tx)
+          (create req route))))
+  ([req route db-create]
+   (let [route-params (param/route->param route)
+         type (param/get-value route-params param/wellknown-type)]
+     (->> (:body req)
+          (db-create type)
+          (#(created (:url %) %))))))
 
 (defn rread [req route]
   (let [route-params (param/route->param route)
