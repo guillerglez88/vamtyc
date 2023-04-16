@@ -31,17 +31,21 @@
           (db-create type)
           (#(created (:url %) %))))))
 
-(defn rread [req route]
-  (let [route-params (param/route->param route)
-        req-params (param/req->param req)
-        type (param/get-value route-params param/wellknown-type)
-        id (param/get-value route-params param/wellknown-id)
-        fields (param/get-value req-params param/wellknown-fields)]
-    (jdbc/with-transaction [tx ds]
-      (if-let [res (store/fetch tx type id)]
-        (-> (fields/select-fields res fields)
-            (response))
-        (not-found "Not found")))))
+(defn rread
+  ([req route]
+   (jdbc/with-transaction [tx ds]
+     (->> (partial store/fetch tx)
+          (rread req route))))
+  ([req route db-fetch]
+   (let [route-params (param/route->param route)
+         req-params (param/req->param req)
+         type (param/get-value route-params param/wellknown-type)
+         id (param/get-value route-params param/wellknown-id)
+         fields (param/get-value req-params param/wellknown-fields)]
+     (if-let [res (db-fetch type id)]
+       (-> (fields/select-fields res fields)
+           (response))
+       (not-found "Not found")))))
 
 (defn upsert [req route]
   (let [route-params (param/route->param route)
