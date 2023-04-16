@@ -40,14 +40,22 @@
       :total total
       :queryps queryps})))
 
+(defn make-params [req route db]
+  (let [db-queryps (:queryps db)
+        route-params (param/route->param route)
+        req-params (param/req->param req)
+        type (param/get-value route-params param/wellknown-type)
+        queryps (db-queryps [type] (keys req-params))
+        queryp-params (param/queryps->param queryps)]
+    (param/merge-param [route-params queryp-params req-params])))
+
 (defn create
   ([req route]
    (->> (make-db) (create req route)))
   ([req route db]
    (let [db-create (:create db)
-         route-params (param/route->param route)
-         type (param/get-value route-params param/wellknown-type)]
-         
+         params (make-params req route db)
+         type (param/get-value params param/wellknown-type)]
      (->> (:body req)
           (db-create type)
           (#(created (:url %) %))))))
@@ -57,13 +65,7 @@
    (->> (make-db) (rread req route)))
   ([req route db]
    (let [db-fetch (:fetch db)
-         db-queryps (:queryps db)
-         route-params (param/route->param route)
-         req-params (param/req->param req)
-         type (param/get-value route-params param/wellknown-type)
-         queryps (db-queryps [type] (keys req-params))
-         queryp-params (param/queryps->param queryps)
-         params (param/merge-param [route-params queryp-params req-params])
+         params (make-params req route db)
          id (param/get-value params param/wellknown-id)
          fields (param/get-value params param/wellknown-fields)]
      (if-let [res (db-fetch type id)]
@@ -78,10 +80,8 @@
    (let [db-fetch (:fetch db)
          db-edit (:edit db)
          db-create (:create db)
-         route-params (param/route->param route)
-         req-params (param/req->param req)
-         type (param/get-value route-params param/wellknown-type)
-         params (param/merge-param [route-params req-params])
+         params (make-params req route db)
+         type (param/get-value params param/wellknown-type)
          id (param/get-value params param/wellknown-id)
          body (:body req)]
      (if (db-fetch type id)
@@ -95,10 +95,8 @@
    (->> (make-db) (delete req route)))
   ([req route db]
    (let [db-delete (:delete db)
-         route-params (param/route->param route)
-         req-params (param/req->param req)
-         type (param/get-value route-params param/wellknown-type)
-         params (param/merge-param [route-params req-params])
+         params (make-params req route db)
+         type (param/get-value params param/wellknown-type)
          id (param/get-value params param/wellknown-id)]
      (if (db-delete type id)
        (status 204)
@@ -110,12 +108,11 @@
   ([req route db]
    (let [db-search (:search db)
          db-total (:total db)
-         route-params (param/route->param route)
-         req-params (param/req->param req)
-         type (param/get-value route-params param/wellknown-type)
-         of (param/get-value req-params param/wellknown-of)
-         fields (param/get-value req-params param/wellknown-fields)
-         url (param/get-value req-params :vamtyc/url)
+         params (make-params req route db)
+         type (param/get-value params param/wellknown-type)
+         of (param/get-value params param/wellknown-of)
+         fields (param/get-value params param/wellknown-fields)
+         url (param/get-value params :vamtyc/url)
          sql-map (query/search-query req)]
      (->> (hsql/format sql-map)
           (db-search (or of type))
