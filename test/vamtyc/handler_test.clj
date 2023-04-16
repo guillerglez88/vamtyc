@@ -118,7 +118,7 @@
                                               body))
           db-edit (fn [_type _id body] (merge resource
                                               body
-                                              {:modified "2023-04-16 16:36:14.291 +0200"}))
+                                              {:modified "2023-04-17 16:36:14.291 +0200"}))
           db-fetch (fn [_type id] (if (= "person" id) resource nil))]
 
       (is (= {:status 201
@@ -134,6 +134,26 @@
                      :routes "/List?_of=Route&res-type=Person"}}
              (sut/upsert {:params {"_id" "new-person"}
                           :body {:desc "Human being"
+                                 :of :Person
+                                 :status "/Coding/resource-statuses?code=pending"
+                                 :routes "/List?_of=Route&res-type=Person"}}
+                         route
+                         db-fetch
+                         db-edit
+                         db-create)))
+      (is (= {:status 200
+              :headers {}
+              :body {:type "Resource"
+                     :id "person"
+                     :url "/Resource/person"
+                     :created "2023-04-16 16:36:14.291 +0200"
+                     :modified "2023-04-17 16:36:14.291 +0200"
+                     :desc "Existing person"
+                     :of :Person
+                     :status "/Coding/resource-statuses?code=pending"
+                     :routes "/List?_of=Route&res-type=Person"}}
+             (sut/upsert {:params {"_id" "person"}
+                          :body {:desc "Existing person"
                                  :of :Person
                                  :status "/Coding/resource-statuses?code=pending"
                                  :routes "/List?_of=Route&res-type=Person"}}
