@@ -12,6 +12,13 @@
    [vamtyc.query :as query]
    [vamtyc.trn :as trn]))
 
+(def handler-create      "/Coding/handlers?code=create")
+(def handler-read        "/Coding/handlers?code=read")
+(def handler-upsert      "/Coding/handlers?code=upsert")
+(def handler-delete      "/Coding/handlers?code=delete")
+(def handler-search      "/Coding/handlers?code=search")
+(def handler-not-found   "/Coding/handlers?code=not-found")
+
 (defn create [req route]
   (let [route-params (-> route param/route->param route)
         type (param/get-value route-params param/wellknown-type)]
@@ -83,3 +90,12 @@
              "explore available routes at: "
              "/List?_of=Route&method=" method)
         (not-found))))
+
+(defn lookup [code]
+  (-> {handler-create    create
+       handler-read      rread
+       handler-upsert    upsert
+       handler-delete    delete
+       handler-search    search
+       handler-not-found notfound}
+      (get code)))

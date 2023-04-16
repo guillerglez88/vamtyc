@@ -10,14 +10,6 @@
    [vamtyc.data.store :as store]
    [vamtyc.handler :as handler]))
 
-(def handlers
-  {"/Coding/handlers?code=create"       handler/create
-   "/Coding/handlers?code=read"         handler/rread
-   "/Coding/handlers?code=upsert"       handler/upsert
-   "/Coding/handlers?code=delete"       handler/delete
-   "/Coding/handlers?code=search"       handler/search
-   "/Coding/handlers?code=not-found"    handler/notfound})
-
 (defn make-http-response [resp]
   (let [body (-> resp :body json/write-str)]
     (-> (merge resp {:body body})
@@ -26,7 +18,7 @@
 (defn cpj-handler [route]
   (fn [req]
     (let [code (:code route)]
-      (-> (get handlers code)
+      (-> (handler/lookup code)
           (apply req route)
           (make-http-response)))))
 
