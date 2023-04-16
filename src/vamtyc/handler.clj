@@ -20,26 +20,45 @@
 (def handler-search      "/Coding/handlers?code=search")
 (def handler-not-found   "/Coding/handlers?code=not-found")
 
+(defn make-db
+  ([]
+   (jdbc/with-transaction [tx, ds]
+     (make-db tx)))
+  ([tx]
+   (let [fetch (partial store/fetch tx)
+         edit (partial store/edit tx)
+         create (partial store/create tx)
+         delete (partial store/delete tx)
+         search (partial store/search tx)
+         total (partial store/total tx)
+         queryps (partial queryp/load-queryps tx)]
+     {:fetch fetch
+      :edit edit
+      :create create
+      :delete delete
+      :search search
+      :total total
+      :queryps queryps})))
+
 (defn create
   ([req route]
-   (jdbc/with-transaction [tx ds]
-     (let [db-create (partial store/create tx)]
-       (create req route db-create))))
-  ([req route db-create]
-   (let [route-params (param/route->param route)
+   (->> (make-db) (create req route)))
+  ([req route db]
+   (let [db-create (:create db)
+         route-params (param/route->param route)
          type (param/get-value route-params param/wellknown-type)]
+         
      (->> (:body req)
           (db-create type)
           (#(created (:url %) %))))))
 
 (defn rread
   ([req route]
-   (jdbc/with-transaction [tx ds]
-     (let [db-fetch (partial store/fetch tx)
-           db-queryps (partial queryp/load-queryps tx)]
-       (rread req route db-fetch db-queryps))))
-  ([req route db-fetch db-queryps]
-   (let [route-params (param/route->param route)
+   (->> (make-db) (rread req route)))
+  ([req route db]
+   (let [db-fetch (:fetch db)
+         db-queryps (:queryps db)
+         route-params (param/route->param route)
          req-params (param/req->param req)
          type (param/get-value route-params param/wellknown-type)
          queryps (db-queryps [type] (keys req-params))
@@ -54,13 +73,12 @@
 
 (defn upsert
   ([req route]
-   (jdbc/with-transaction [tx ds]
-     (let [db-fetch (partial store/fetch tx)
-           db-edit (partial store/edit tx)
-           db-create (partial store/create tx)]
-       (upsert req route db-fetch db-edit db-create))))
-  ([req route db-fetch db-edit db-create]
-   (let [route-params (param/route->param route)
+   (->> (make-db) (upsert req route)))
+  ([req route db]
+   (let [db-fetch (:fetch db)
+         db-edit (:edit db)
+         db-create (:create db)
+         route-params (param/route->param route)
          req-params (param/req->param req)
          type (param/get-value route-params param/wellknown-type)
          params (param/merge-param [route-params req-params])
@@ -74,11 +92,10 @@
 
 (defn delete
   ([req route]
-   (jdbc/with-transaction [tx ds]
-     (let [db-delete (partial store/delete tx)]
-       (delete req route db-delete))))
-  ([req route db-delete]
-   (let [route-params (param/route->param route)
+   (->> (make-db) (delete req route)))
+  ([req route db]
+   (let [db-delete (:delete db)
+         route-params (param/route->param route)
          req-params (param/req->param req)
          type (param/get-value route-params param/wellknown-type)
          params (param/merge-param [route-params req-params])
@@ -87,21 +104,25 @@
        (status 204)
        (not-found "Not found")))))
 
-(defn search [req route]
-  (let [route-params (param/route->param route)
-        req-params (param/req->param req)
-        type (param/get-value route-params param/wellknown-type)
-        of (param/get-value req-params param/wellknown-of)
-        fields (param/get-value req-params param/wellknown-fields)
-        url (param/get-value req-params :vamtyc/url)
-        sql-map (query/search-query req)]
-    (jdbc/with-transaction [tx ds]
-      (->> (hsql/format sql-map)
-           (store/search tx (or of type))
-           (into [])
-           (nav/result-set req url (store/total tx sql-map))
-           (#(fields/select-fields % fields))
-           (response)))))
+(defn search
+  ([req route]
+   (->> (make-db) (search req route)))
+  ([req route db]
+   (let [db-search (:search db)
+         db-total (:total db)
+         route-params (param/route->param route)
+         req-params (param/req->param req)
+         type (param/get-value route-params param/wellknown-type)
+         of (param/get-value req-params param/wellknown-of)
+         fields (param/get-value req-params param/wellknown-fields)
+         url (param/get-value req-params :vamtyc/url)
+         sql-map (query/search-query req)]
+     (->> (hsql/format sql-map)
+          (db-search (or of type))
+          (into [])
+          (nav/result-set req url (db-total sql-map))
+          (#(fields/select-fields % fields))
+          (response)))))
 
 (defn transaction [req _route]
   (jdbc/with-transaction [tx ds]
