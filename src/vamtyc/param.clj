@@ -3,6 +3,14 @@
    [clojure.string :as str]
    [lambdaisland.uri :refer [query-map]]))
 
+(def wellknown-type   "/Coding/wellknown-params?code=type")
+(def wellknown-id     "/Coding/wellknown-params?code=id")
+(def wellknown-of     "/Coding/wellknown-params?code=of")
+(def wellknown-fields "/Coding/wellknown-params?code=fields")
+(def wellknown-limit  "/Coding/wellknown-params?code=limit")
+(def wellknown-offset "/Coding/wellknown-params?code=offset")
+(def wellknown-sort   "/Coding/wellknown-params?code=sort")
+
 (defn queryp->param [queryp]
   (let [key (-> queryp :name name)
         val (:value queryp)

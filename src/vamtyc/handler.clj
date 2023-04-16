@@ -12,27 +12,31 @@
    [vamtyc.query :as query]
    [vamtyc.trn :as trn]))
 
-(defn create [req]
-  (let [type (-> req :vamtyc/param (param/get-value "/Coding/wellknown-params?code=type"))]
+(defn create [req route]
+  (let [route-params (-> route param/route->param route)
+        type (param/get-value route-params param/wellknown-type)]
     (jdbc/with-transaction [tx ds]
       (->> (:body req)
            (store/create tx type)
            (#(created (:url %) %))))))
 
-(defn rread [req]
-  (let [type (-> req :vamtyc/param (param/get-value "/Coding/wellknown-params?code=type"))
-        id (-> req :vamtyc/param (param/get-value "/Coding/wellknown-params?code=id"))
-        fields (-> req :vamtyc/param (param/get-value "/Coding/wellknown-params?code=fields"))]
+(defn rread [req route]
+  (let [route-params (param/route->param route)
+        req-params (param/req->param req)
+        type (param/get-value route-params param/wellknown-type)
+        id (param/get-value route-params param/wellknown-id)
+        fields (param/get-value req-params param/wellknown-fields)]
     (jdbc/with-transaction [tx ds]
       (if-let [res (store/fetch tx type id)]
         (-> (fields/select-fields res fields)
             (response))
         (not-found "Not found")))))
 
-(defn upsert [req]
-  (let [body (:body req)
-        type (-> req :vamtyc/param (param/get-value "/Coding/wellknown-params?code=type"))
-        id (-> req :vamtyc/param (param/get-value "/Coding/wellknown-params?code=id"))]
+(defn upsert [req route]
+  (let [route-params (param/route->param route)
+        type (param/get-value route-params param/wellknown-type)
+        id (param/get-value route-params param/wellknown-id)
+        body (:body req)]
     (jdbc/with-transaction [tx ds]
       (if (store/fetch tx type id)
         (-> (store/edit tx type id body)
@@ -40,19 +44,22 @@
         (-> (store/create tx type id body)
             (#(created (:url %) %)))))))
 
-(defn delete [req]
-  (let [type (-> req :vamtyc/param (param/get-value "/Coding/wellknown-params?code=type"))
-        id (-> req :vamtyc/param (param/get-value "/Coding/wellknown-params?code=id"))]
+(defn delete [_req route]
+  (let [route-params (param/route->param route)
+        type (param/get-value route-params param/wellknown-type)
+        id (param/get-value route-params param/wellknown-id)]
     (jdbc/with-transaction [tx ds]
       (if (store/delete tx type id)
         (status 204)
         (not-found "Not found")))))
 
-(defn search [req]
-  (let [url     (:vamtyc/url req)
-        type (-> req :vamtyc/param (param/get-value "/Coding/wellknown-params?code=type"))
-        of (-> req :vamtyc/param (param/get-value "/Coding/wellknown-params?code=of"))
-        fields (-> req :vamtyc/param (param/get-value "/Coding/wellknown-params?code=fields"))
+(defn search [req route]
+  (let [route-params (param/route->param route)
+        req-params (param/req->param req)
+        type (param/get-value route-params param/wellknown-type)
+        of (param/get-value req-params param/wellknown-of)
+        fields (param/get-value req-params param/wellknown-fields)
+        url (param/get-value req-params :vamtyc/url)
         sql-map (query/search-query req)]
     (jdbc/with-transaction [tx ds]
       (->> (hsql/format sql-map)
@@ -62,7 +69,7 @@
            (#(fields/select-fields % fields))
            (response)))))
 
-(defn transaction [req]
+(defn transaction [req _route]
   (jdbc/with-transaction [tx ds]
     (->> (-> req :body :items)
          (map #(trn/commit % req tx))
@@ -70,7 +77,7 @@
          (trn/make-trn-result)
          (response))))
 
-(defn notfound [req]
+(defn notfound [req _route]
   (let [method  (-> req :request-method name str/upper-case)]
     (-> (str "Not found, "
              "explore available routes at: "

@@ -27,7 +27,7 @@
   (fn [req]
     (let [code (:code route)]
       (-> (get handlers code)
-          (apply req)
+          (apply req route)
           (make-http-response)))))
 
 (defn cpj-method [route]
