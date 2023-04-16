@@ -60,9 +60,12 @@
                     :of :Person
                     :status "/Coding/resource-statuses?code=pending"
                     :routes "/List?_of=Route&res-type=Person"}
-          db-fetch (fn [_type _id] resource)]
-
+          db-fetch (fn [_type id] (if (= "person" id) resource nil))]
       (is (= {:status 200
               :headers {}
               :body resource}
-             (sut/rread {:params {"_id" "person"}} route db-fetch))))))
+             (sut/rread {:params {"_id" "person"}} route db-fetch)))
+      (is (= {:status 404
+              :headers {}
+              :body "Not found"}
+             (sut/rread {:params {"_id" "non-existing"}} route db-fetch))))))

@@ -39,9 +39,10 @@
   ([req route db-fetch]
    (let [route-params (param/route->param route)
          req-params (param/req->param req)
-         type (param/get-value route-params param/wellknown-type)
-         id (param/get-value route-params param/wellknown-id)
-         fields (param/get-value req-params param/wellknown-fields)]
+         params (param/merge-param [route-params req-params])
+         type (param/get-value params param/wellknown-type)
+         id (param/get-value params param/wellknown-id)
+         fields (param/get-value params param/wellknown-fields)]
      (if-let [res (db-fetch type id)]
        (-> (fields/select-fields res fields)
            (response))
