@@ -161,3 +161,57 @@
                          db-fetch
                          db-edit
                          db-create))))))
+(deftest delete-test
+  (testing "Can handle DELETE /:type/:id requests"
+    (let [route {:type :Route
+                 :method :DELETE
+                 :path [{:name "_type"
+                         :code "/Coding/wellknown-params?code=type"
+                         :value "Resource"}
+                        {:name "_id"
+                         :code "/Coding/wellknown-params?code=id"}]
+                 :name :delete-resource
+                 :code "/Coding/handlers?code=delete"
+                 :resource "/Resource/resource"}
+          resource {:type "Resource"
+                    :id "person"
+                    :url "/Resource/person"
+                    :created "2023-04-16 16:36:14.291 +0200"
+                    :modified "2023-04-16 16:36:14.291 +0200"
+                    :desc "Human being"
+                    :of :Person
+                    :status "/Coding/resource-statuses?code=pending"
+                    :routes "/List?_of=Route&res-type=Person"}
+          db-delete (fn [_type id] (if (= "person" id) resource nil))]
+
+      (is (= {:status 204
+              :headers {}
+              :body nil}
+             (sut/delete {:params {"_id" "person"}}
+                         route
+                         db-delete)))
+      (is (= {:status 404
+              :headers {}
+              :body "Not found"}
+             (sut/delete {:params {"_id" "non-existing"}}
+                         route
+                         db-delete))))))
+
+(deftest notfound-test
+  (testing "Can handle not-found"
+    (let [route {:type :Route
+                 :name :not-found
+                 :code "/Coding/handlers?code=not-found"
+                 :routes "/List?_of=Route"}]
+      (is (= {:status 404
+              :headers {}
+              :body "Not found, explore available routes at: /List?_of=Route&method=GET"}
+             (sut/notfound {:request-method :GET
+                            :params {"_id" "465a55be"}}
+                           route)))
+      (is (= {:status 404
+              :headers {}
+              :body "Not found, explore available routes at: /List?_of=Route&method=POST"}
+             (sut/notfound {:request-method :POST
+                            :params {"_id" "465a55be"}}
+                           route))))))

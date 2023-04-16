@@ -72,14 +72,20 @@
        (-> (db-create type id body)
            (#(created (:url %) %)))))))
 
-(defn delete [_req route]
-  (let [route-params (param/route->param route)
-        type (param/get-value route-params param/wellknown-type)
-        id (param/get-value route-params param/wellknown-id)]
-    (jdbc/with-transaction [tx ds]
-      (if (store/delete tx type id)
-        (status 204)
-        (not-found "Not found")))))
+(defn delete
+  ([req route]
+   (jdbc/with-transaction [tx ds]
+     (let [db-delete (partial store/delete tx)]
+       (delete req route db-delete))))
+  ([req route db-delete]
+   (let [route-params (param/route->param route)
+         req-params (param/req->param req)
+         type (param/get-value route-params param/wellknown-type)
+         params (param/merge-param [route-params req-params])
+         id (param/get-value params param/wellknown-id)]
+     (if (db-delete type id)
+       (status 204)
+       (not-found "Not found")))))
 
 (defn search [req route]
   (let [route-params (param/route->param route)
