@@ -23,8 +23,8 @@
 (defn create
   ([req route]
    (jdbc/with-transaction [tx ds]
-     (->> (partial store/create tx)
-          (create req route))))
+     (let [db-create (partial store/create tx)]
+       (create req route db-create))))
   ([req route db-create]
    (let [route-params (param/route->param route)
          type (param/get-value route-params param/wellknown-type)]
@@ -52,17 +52,25 @@
            (response))
        (not-found "Not found")))))
 
-(defn upsert [req route]
-  (let [route-params (param/route->param route)
-        type (param/get-value route-params param/wellknown-type)
-        id (param/get-value route-params param/wellknown-id)
-        body (:body req)]
-    (jdbc/with-transaction [tx ds]
-      (if (store/fetch tx type id)
-        (-> (store/edit tx type id body)
-            (response))
-        (-> (store/create tx type id body)
-            (#(created (:url %) %)))))))
+(defn upsert
+  ([req route]
+   (jdbc/with-transaction [tx ds]
+     (let [db-fetch (partial store/fetch tx)
+           db-edit (partial store/edit tx)
+           db-create (partial store/create tx)]
+       (upsert req route db-fetch db-edit db-create))))
+  ([req route db-fetch db-edit db-create]
+   (let [route-params (param/route->param route)
+         req-params (param/req->param req)
+         type (param/get-value route-params param/wellknown-type)
+         params (param/merge-param [route-params req-params])
+         id (param/get-value params param/wellknown-id)
+         body (:body req)]
+     (if (db-fetch type id)
+       (-> (db-edit type id body)
+           (response))
+       (-> (db-create type id body)
+           (#(created (:url %) %)))))))
 
 (defn delete [_req route]
   (let [route-params (param/route->param route)

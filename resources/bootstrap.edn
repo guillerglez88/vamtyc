@@ -579,15 +579,16 @@
    :body    {:type  :Coding
              :id    "handlers"
              :codes [{:code "/Coding/handlers?code=create"
-                      :desc "Handles the creation of resource"}
+                      :desc "Triggers the creation of resource"}
+
                      {:code "/Coding/handlers?code=read"
-                      :desc "Handles the retrieval of resource matching by id"}
+                      :desc "Triggers the retrieval of resource matching by id"}
                      {:code "/Coding/handlers?code=upsert"
-                      :desc "Handles the creation of resource or update matching by id"}
+                      :desc "Triggers the creation of resource or update matching by id"}
                      {:code "/Coding/handlers?code=delete"
-                      :desc "Handles the removal of resource matching by id"}
+                      :desc "Triggers the removal of resource matching by id"}
                      {:code "/Coding/handlers?code=search"
-                      :desc "Handles the search of resources"}
+                      :desc "Triggers the search of resources"}
                      {:code "/Coding/handlers?code=not-found"
                       :desc "Produces a not-found HTTP response"}]}}
   {:method  :PUT
