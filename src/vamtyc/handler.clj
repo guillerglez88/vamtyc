@@ -5,6 +5,7 @@
    [next.jdbc :as jdbc]
    [ring.util.response :refer [created not-found response status]]
    [vamtyc.data.datasource :refer [ds]]
+   [vamtyc.data.queryp :as queryp]
    [vamtyc.data.store :as store]
    [vamtyc.fields :as fields]
    [vamtyc.nav :as nav]
@@ -34,13 +35,16 @@
 (defn rread
   ([req route]
    (jdbc/with-transaction [tx ds]
-     (->> (partial store/fetch tx)
-          (rread req route))))
-  ([req route db-fetch]
+     (let [db-fetch (partial store/fetch tx)
+           db-queryps (partial queryp/load-queryps tx)]
+       (rread req route db-fetch db-queryps))))
+  ([req route db-fetch db-queryps]
    (let [route-params (param/route->param route)
          req-params (param/req->param req)
-         params (param/merge-param [route-params req-params])
-         type (param/get-value params param/wellknown-type)
+         type (param/get-value route-params param/wellknown-type)
+         queryps (db-queryps [type] (keys req-params))
+         queryp-params (param/queryps->param queryps)
+         params (param/merge-param [route-params queryp-params req-params])
          id (param/get-value params param/wellknown-id)
          fields (param/get-value params param/wellknown-fields)]
      (if-let [res (db-fetch type id)]

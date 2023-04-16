@@ -51,6 +51,11 @@
                  :name      :read-resource
                  :code      "/Coding/handlers?code=read"
                  :resource  "/Resource/resource"}
+          fields-queryp {:type :Queryp
+                         :code "/Coding/wellknown-params?code=fields"
+                         :desc "Reduce response payload by filtering properties"
+                         :name :_fields
+                         :of :*}
           resource {:type "Resource"
                     :id "person"
                     :url "/Resource/person"
@@ -60,12 +65,26 @@
                     :of :Person
                     :status "/Coding/resource-statuses?code=pending"
                     :routes "/List?_of=Route&res-type=Person"}
-          db-fetch (fn [_type id] (if (= "person" id) resource nil))]
+          db-fetch (fn [_type id] (if (= "person" id) resource nil))
+          db-queryp (fn [_types _params] [fields-queryp])]
       (is (= {:status 200
               :headers {}
               :body resource}
-             (sut/rread {:params {"_id" "person"}} route db-fetch)))
+             (sut/rread {:params {"_id" "person"}}
+                        route
+                        db-fetch
+                        db-queryp)))
+      (is (= {:status 200
+              :headers {}
+              :body {:type "Resource", :id "person"}}
+             (sut/rread {:params {"_id" "person", "_fields" "id,type"}}
+                        route
+                        db-fetch
+                        db-queryp)))
       (is (= {:status 404
               :headers {}
               :body "Not found"}
-             (sut/rread {:params {"_id" "non-existing"}} route db-fetch))))))
+             (sut/rread {:params {"_id" "non-existing"}}
+                        route
+                        db-fetch
+                        db-queryp))))))
