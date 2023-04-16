@@ -21,9 +21,6 @@
 (def handler-not-found   "/Coding/handlers?code=not-found")
 
 (defn make-db
-  ([]
-   (jdbc/with-transaction [tx, ds]
-     (make-db tx)))
   ([tx]
    (let [fetch (partial store/fetch tx)
          edit (partial store/edit tx)
@@ -45,13 +42,15 @@
         route-params (param/route->param route)
         req-params (param/req->param req)
         type (param/get-value route-params param/wellknown-type)
-        queryps (db-queryps [type] (keys req-params))
+        param-names (->> req-params keys (filter #(not (#{:vamtyc/url :vamtyc/codes} %))))
+        queryps (db-queryps [type] param-names)
         queryp-params (param/queryps->param queryps)]
     (param/merge-param [route-params queryp-params req-params])))
 
 (defn create
   ([req route]
-   (->> (make-db) (create req route)))
+   (jdbc/with-transaction [tx, ds]
+     (->> (make-db tx) (create req route))))
   ([req route db]
    (let [db-create (:create db)
          params (make-params req route db)
@@ -62,10 +61,12 @@
 
 (defn rread
   ([req route]
-   (->> (make-db) (rread req route)))
+   (jdbc/with-transaction [tx, ds]
+     (->> (make-db tx) (rread req route))))
   ([req route db]
    (let [db-fetch (:fetch db)
          params (make-params req route db)
+         type (param/get-value params param/wellknown-type)
          id (param/get-value params param/wellknown-id)
          fields (param/get-value params param/wellknown-fields)]
      (if-let [res (db-fetch type id)]
@@ -75,7 +76,8 @@
 
 (defn upsert
   ([req route]
-   (->> (make-db) (upsert req route)))
+   (jdbc/with-transaction [tx, ds]
+     (->> (make-db tx) (upsert req route))))
   ([req route db]
    (let [db-fetch (:fetch db)
          db-edit (:edit db)
@@ -92,7 +94,8 @@
 
 (defn delete
   ([req route]
-   (->> (make-db) (delete req route)))
+   (jdbc/with-transaction [tx, ds]
+     (->> (make-db tx) (delete req route))))
   ([req route db]
    (let [db-delete (:delete db)
          params (make-params req route db)
@@ -104,7 +107,8 @@
 
 (defn search
   ([req route]
-   (->> (make-db) (search req route)))
+   (jdbc/with-transaction [tx, ds]
+     (->> (make-db tx) (search req route))))
   ([req route db]
    (let [db-search (:search db)
          db-total (:total db)

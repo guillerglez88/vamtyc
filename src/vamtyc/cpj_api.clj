@@ -17,9 +17,8 @@
 
 (defn cpj-handler [route]
   (fn [req]
-    (let [code (:code route)]
-      (-> (handler/lookup code)
-          (apply req route)
+    (let [handle (-> route :code handler/lookup)]
+      (-> (handle req route)
           (make-http-response)))))
 
 (defn cpj-method [route]
@@ -34,7 +33,7 @@
 
 (defn cpj-route [route]
   (let [method (cpj-method route)
-        path   (cpj-path route)
+        path (cpj-path route)
         handler (cpj-handler route)]
     (if method
       (make-route method path handler)
