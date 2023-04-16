@@ -2,7 +2,9 @@
   (:require
    [clojure.string :as str]
    [honey.sql :as hsql]
+   [next.jdbc :as jdbc]
    [ring.util.response :refer [created not-found response status]]
+   [vamtyc.data.datasource :refer [ds]]
    [vamtyc.data.store :as store]
    [vamtyc.fields :as fields]
    [vamtyc.nav :as nav]
@@ -10,60 +12,65 @@
    [vamtyc.query :as query]
    [vamtyc.trn :as trn]))
 
-(defn rread [req tx _app]
+(defn create [req]
+  (let [type (-> req :vamtyc/param (param/get-value "/Coding/wellknown-params?code=type"))]
+    (jdbc/with-transaction [tx ds]
+      (->> (:body req)
+           (store/create tx type)
+           (#(created (:url %) %))))))
+
+(defn rread [req]
   (let [type (-> req :vamtyc/param (param/get-value "/Coding/wellknown-params?code=type"))
         id (-> req :vamtyc/param (param/get-value "/Coding/wellknown-params?code=id"))
         fields (-> req :vamtyc/param (param/get-value "/Coding/wellknown-params?code=fields"))]
-    (if-let [res (store/fetch tx type id)]
-      (-> (fields/select-fields res fields)
-          (response))
-      (not-found "Not found"))))
+    (jdbc/with-transaction [tx ds]
+      (if-let [res (store/fetch tx type id)]
+        (-> (fields/select-fields res fields)
+            (response))
+        (not-found "Not found")))))
 
-(defn create [req tx _app]
-  (let [type (-> req :vamtyc/param (param/get-value "/Coding/wellknown-params?code=type"))]
-    (->> (:body req)
-         (store/create tx type)
-         (#(created (:url %) %)))))
-
-(defn upsert [req tx _app]
+(defn upsert [req]
   (let [body (:body req)
         type (-> req :vamtyc/param (param/get-value "/Coding/wellknown-params?code=type"))
         id (-> req :vamtyc/param (param/get-value "/Coding/wellknown-params?code=id"))]
-    (if (store/fetch tx type id)
-      (-> (store/edit tx type id body)
-          (response))
-      (-> (store/create tx type id body)
-          (#(created (:url %) %))))))
+    (jdbc/with-transaction [tx ds]
+      (if (store/fetch tx type id)
+        (-> (store/edit tx type id body)
+            (response))
+        (-> (store/create tx type id body)
+            (#(created (:url %) %)))))))
 
-(defn delete [req tx _app]
+(defn delete [req]
   (let [type (-> req :vamtyc/param (param/get-value "/Coding/wellknown-params?code=type"))
         id (-> req :vamtyc/param (param/get-value "/Coding/wellknown-params?code=id"))]
-    (if (store/delete tx type id)
-      (status 204)
-      (not-found "Not found"))))
+    (jdbc/with-transaction [tx ds]
+      (if (store/delete tx type id)
+        (status 204)
+        (not-found "Not found")))))
 
-(defn search [req tx _app]
+(defn search [req]
   (let [url     (:vamtyc/url req)
         type (-> req :vamtyc/param (param/get-value "/Coding/wellknown-params?code=type"))
         of (-> req :vamtyc/param (param/get-value "/Coding/wellknown-params?code=of"))
         fields (-> req :vamtyc/param (param/get-value "/Coding/wellknown-params?code=fields"))
-        sql-map (query/search-query req tx)
-        total   (store/total tx sql-map)]
-    (->> (hsql/format sql-map)
-         (store/search tx (or of type))
+        sql-map (query/search-query req)]
+    (jdbc/with-transaction [tx ds]
+      (->> (hsql/format sql-map)
+           (store/search tx (or of type))
+           (into [])
+           (nav/result-set req url (store/total tx sql-map))
+           (#(fields/select-fields % fields))
+           (response)))))
+
+(defn transaction [req]
+  (jdbc/with-transaction [tx ds]
+    (->> (-> req :body :items)
+         (map #(trn/commit % req tx))
          (into [])
-         (nav/result-set req url total)
-         (#(fields/select-fields % fields))
+         (trn/make-trn-result)
          (response))))
 
-(defn transaction [req tx _app]
-  (->> (-> req :body :items)
-       (map #(trn/commit % req tx))
-       (into [])
-       (trn/make-trn-result)
-       (response)))
-
-(defn notfound [req _tx _app]
+(defn notfound [req]
   (let [method  (-> req :request-method name str/upper-case)]
     (-> (str "Not found, "
              "explore available routes at: "

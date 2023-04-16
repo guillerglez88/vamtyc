@@ -85,7 +85,7 @@
         (extract-path :resource path db-name)
         (refine req queryp))))
 
-(defn search-query [req _tx]
+(defn search-query [req]
   (let [queryp (-> req :vamtyc/queryp)
         type (-> req :vamtyc/param (param/get-value "/Coding/wellknown-params?code=type"))
         of (-> req :vamtyc/param (param/get-value "/Coding/wellknown-params?code=of"))
