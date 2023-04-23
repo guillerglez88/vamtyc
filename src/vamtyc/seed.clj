@@ -43,6 +43,3 @@
         (slurp)
         (edn/read-string)
         (commit-boot-trn))))
-
-(comment
-  (init))

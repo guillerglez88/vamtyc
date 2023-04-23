@@ -38,8 +38,8 @@
                                  :status "/Coding/resource-statuses?code=pending"
                                  :routes "/List?_of=Route&res-type=Person"}}
                          route
-                         {:create db-create
-                          :queryps db-queryps}))))))
+                         db-create
+                         db-queryps))))))
 
 (deftest rread-test
   (testing "Can handle GET /:type/:id requests"
@@ -74,22 +74,22 @@
               :body resource}
              (sut/rread {:params {"_id" "person"}}
                         route
-                        {:fetch db-fetch
-                         :queryps db-queryp})))
+                        db-fetch
+                        db-queryp)))
       (is (= {:status 200
               :headers {}
               :body {:type "Resource", :id "person"}}
              (sut/rread {:params {"_id" "person", "_fields" "id,type"}}
                         route
-                        {:fetch db-fetch
-                         :queryps db-queryp})))
+                        db-fetch
+                        db-queryp)))
       (is (= {:status 404
               :headers {}
               :body "Not found"}
              (sut/rread {:params {"_id" "non-existing"}}
                         route
-                        {:fetch db-fetch
-                         :queryps db-queryp}))))))
+                        db-fetch
+                        db-queryp))))))
 
 (deftest upsert-test
   (testing "Can handle PUT /:type/:id requests"
@@ -141,10 +141,10 @@
                                  :status "/Coding/resource-statuses?code=pending"
                                  :routes "/List?_of=Route&res-type=Person"}}
                          route
-                         {:fetch db-fetch
-                          :edit db-edit
-                          :create db-create
-                          :queryps db-queryps})))
+                         db-fetch
+                         db-edit
+                         db-create
+                         db-queryps)))
       (is (= {:status 200
               :headers {}
               :body {:type "Resource"
@@ -162,10 +162,10 @@
                                  :status "/Coding/resource-statuses?code=pending"
                                  :routes "/List?_of=Route&res-type=Person"}}
                          route
-                         {:fetch db-fetch
-                          :edit db-edit
-                          :create db-create
-                          :queryps db-queryps}))))))
+                         db-fetch
+                         db-edit
+                         db-create
+                         db-queryps))))))
 (deftest delete-test
   (testing "Can handle DELETE /:type/:id requests"
     (let [route {:type :Route
@@ -195,15 +195,15 @@
               :body nil}
              (sut/delete {:params {"_id" "person"}}
                          route
-                         {:delete db-delete
-                          :queryps db-queryps})))
+                         db-delete
+                         db-queryps)))
       (is (= {:status 404
               :headers {}
               :body "Not found"}
              (sut/delete {:params {"_id" "non-existing"}}
                          route
-                         {:delete db-delete
-                          :queryps db-queryps}))))))
+                         db-delete
+                         db-queryps))))))
 
 (deftest notfound-test
   (testing "Can handle not-found"

@@ -20,26 +20,8 @@
 (def handler-search      "/Coding/handlers?code=search")
 (def handler-not-found   "/Coding/handlers?code=not-found")
 
-(defn make-db
-  ([tx]
-   (let [fetch (partial store/fetch tx)
-         edit (partial store/edit tx)
-         create (partial store/create tx)
-         delete (partial store/delete tx)
-         search (partial store/search tx)
-         total (partial store/total tx)
-         queryps (partial queryp/load-queryps tx)]
-     {:fetch fetch
-      :edit edit
-      :create create
-      :delete delete
-      :search search
-      :total total
-      :queryps queryps})))
-
-(defn make-params [req route db]
-  (let [db-queryps (:queryps db)
-        route-params (param/route->param route)
+(defn make-params [req route db-queryps]
+  (let [route-params (param/route->param route)
         req-params (param/req->param req)
         type (param/get-value route-params param/wellknown-type)
         param-names (->> req-params keys (filter #(not (#{:vamtyc/url :vamtyc/codes} %))))
@@ -50,10 +32,11 @@
 (defn create
   ([req route]
    (jdbc/with-transaction [tx, ds]
-     (->> (make-db tx) (create req route))))
-  ([req route db]
-   (let [db-create (:create db)
-         params (make-params req route db)
+     (let [db-create (partial store/create tx)
+           db-queryps (partial queryp/load-queryps tx)]
+       (create req route db-create db-queryps))))
+  ([req route db-create db-queryps]
+   (let [params (make-params req route db-queryps)
          type (param/get-value params param/wellknown-type)]
      (->> (:body req)
           (db-create type)
@@ -62,10 +45,11 @@
 (defn rread
   ([req route]
    (jdbc/with-transaction [tx, ds]
-     (->> (make-db tx) (rread req route))))
-  ([req route db]
-   (let [db-fetch (:fetch db)
-         params (make-params req route db)
+     (let [db-fetch (partial store/fetch tx)
+           db-queryps (partial queryp/load-queryps tx)]
+       (rread req route db-fetch db-queryps))))
+  ([req route db-fetch db-queryps]
+   (let [params (make-params req route db-queryps)
          type (param/get-value params param/wellknown-type)
          id (param/get-value params param/wellknown-id)
          fields (param/get-value params param/wellknown-fields)]
@@ -77,12 +61,13 @@
 (defn upsert
   ([req route]
    (jdbc/with-transaction [tx, ds]
-     (->> (make-db tx) (upsert req route))))
-  ([req route db]
-   (let [db-fetch (:fetch db)
-         db-edit (:edit db)
-         db-create (:create db)
-         params (make-params req route db)
+     (let [db-fetch (partial store/fetch tx)
+           db-edit (partial store/edit tx)
+           db-create (partial store/create tx)
+           db-queryps (partial queryp/load-queryps tx)]
+       (upsert req route db-fetch db-edit db-create db-queryps))))
+  ([req route db-fetch db-edit db-create db-queryps]
+   (let [params (make-params req route db-queryps)
          type (param/get-value params param/wellknown-type)
          id (param/get-value params param/wellknown-id)
          body (:body req)]
@@ -95,10 +80,11 @@
 (defn delete
   ([req route]
    (jdbc/with-transaction [tx, ds]
-     (->> (make-db tx) (delete req route))))
-  ([req route db]
-   (let [db-delete (:delete db)
-         params (make-params req route db)
+     (let [db-delete (partial store/delete tx)
+           db-queryps (partial queryp/load-queryps tx)]
+       (delete req route db-delete db-queryps))))
+  ([req route db-delete db-queryps]
+   (let [params (make-params req route db-queryps)
          type (param/get-value params param/wellknown-type)
          id (param/get-value params param/wellknown-id)]
      (if (db-delete type id)
@@ -108,11 +94,12 @@
 (defn search
   ([req route]
    (jdbc/with-transaction [tx, ds]
-     (->> (make-db tx) (search req route))))
-  ([req route db]
-   (let [db-search (:search db)
-         db-total (:total db)
-         params (make-params req route db)
+     (let [db-search (partial store/search tx)
+           db-total (partial store/total tx)
+           db-queryps (partial queryp/load-queryps tx)]
+       (search req route db-search db-total db-queryps))))
+  ([req route db-search db-total db-queryps]
+   (let [params (make-params req route db-queryps)
          type (param/get-value params param/wellknown-type)
          of (param/get-value params param/wellknown-of)
          fields (param/get-value params param/wellknown-fields)
