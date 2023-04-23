@@ -13,25 +13,18 @@
     true
     (catch Exception _ false)))
 
-(defn make-storage-ddl [type]
-  (let [type-name (-> type name str/lower-case)]
-    [(str "CREATE TABLE IF NOT EXISTS public." type-name " (
-       id          TEXT             NOT NULL,
-       resource    JSONB            NOT NULL,
-       created     timestamptz      NOT NULL,
-       modified    timestamptz      NOT NULL,
-       CONSTRAINT  " type-name "_pk PRIMARY KEY (id));")]))
-
-(defn allocate-storage [tx type]
-  (->> (make-storage-ddl type)
+(defn allocate-storage [tx res]
+  (->> (:sql res)
+       (str/join "\n")
+       (vector)
        (jdbc/execute! tx)))
 
 (defn commit-boot-trn-item [tx res]
-  (let [res-type    (:type res)
-        id          (:id res)
-        type        (:of res)]
-    (when (= :Resource res-type)
-      (allocate-storage tx type))
+  (let [res-type (:type res)
+        id (:id res)
+        code (:code res)]
+    (when (= "/Coding/wellknown-resources?code=resource-storage" code)
+      (allocate-storage tx res))
     (if (nil? id)
       (store/create tx res-type res)
       (store/create tx res-type id res))))
@@ -50,3 +43,6 @@
         (slurp)
         (edn/read-string)
         (commit-boot-trn))))
+
+(comment
+  (init))

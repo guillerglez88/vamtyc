@@ -17,84 +17,78 @@
              :id        "pgtable"
              :desc      "Postgres table for storing 'PgTable'"
              :code      "/Coding/wellknown-resources?code=resource-storage"
-             :name      "pgtables"
              :of        :PgTable
-             :sql       ["CREATE TABLE IF NOT EXISTS public.%s ("
+             :sql       ["CREATE TABLE IF NOT EXISTS public.pgtable ("
                          "    id          TEXT             NOT NULL,"
                          "    resource    JSONB            NOT NULL,"
                          "    created     timestamptz      NOT NULL,"
                          "    modified    timestamptz      NOT NULL,"
-                         "CONSTRAINT  %s_pk PRIMARY KEY (id));"]}}
+                         "CONSTRAINT pgtable_pk PRIMARY KEY (id));"]}}
   {:method  :PUT
    :url     "/PgTable/coding"
    :body    {:type      :PgTable
              :id        "coding"
              :desc      "Postgres table for storing 'Coding'"
              :code      "/Coding/wellknown-resources?code=resource-storage"
-             :name      "codings"
              :of        :Coding
-             :sql       ["CREATE TABLE IF NOT EXISTS public.%s ("
+             :sql       ["CREATE TABLE IF NOT EXISTS public.coding ("
                          "    id          TEXT             NOT NULL,"
                          "    resource    JSONB            NOT NULL,"
                          "    created     timestamptz      NOT NULL,"
                          "    modified    timestamptz      NOT NULL,"
-                         "CONSTRAINT  %s_pk PRIMARY KEY (id));"]}}
+                         "CONSTRAINT coding_pk PRIMARY KEY (id));"]}}
   {:method  :PUT
    :url     "/PgTable/resource"
    :body    {:type      :PgTable
              :id        "resource"
              :desc      "Postgres table for storing 'Resource'"
              :code      "/Coding/wellknown-resources?code=resource-storage"
-             :name      "resources"
              :of        :Resource
-             :sql       ["CREATE TABLE IF NOT EXISTS public.%s ("
+             :sql       ["CREATE TABLE IF NOT EXISTS public.resource ("
                          "    id          TEXT             NOT NULL,"
                          "    resource    JSONB            NOT NULL,"
                          "    created     timestamptz      NOT NULL,"
                          "    modified    timestamptz      NOT NULL,"
-                         "CONSTRAINT  %s_pk PRIMARY KEY (id));"]}}
+                         "CONSTRAINT resource_pk PRIMARY KEY (id));"]}}
   {:method  :PUT
    :url     "/PgTable/route"
    :body    {:type      :PgTable
              :id        "route"
              :desc      "Postgres table for storing 'Route'"
              :code      "/Coding/wellknown-resources?code=resource-storage"
-             :name      "routes"
              :of        :Route
-             :sql       ["CREATE TABLE IF NOT EXISTS public.%s ("
+             :sql       ["CREATE TABLE IF NOT EXISTS public.route ("
                          "    id          TEXT             NOT NULL,"
                          "    resource    JSONB            NOT NULL,"
                          "    created     timestamptz      NOT NULL,"
                          "    modified    timestamptz      NOT NULL,"
-                         "CONSTRAINT  %s_pk PRIMARY KEY (id));"]}}
+                         "CONSTRAINT route_pk PRIMARY KEY (id));"]}}
   {:method  :PUT
    :url     "/PgTable/queryp"
    :body    {:type      :PgTable
              :id        "queryp"
              :desc      "Postgres table for storing 'Queryp'"
              :code      "/Coding/wellknown-resources?code=resource-storage"
-             :name      "queryps"
              :of        :Queryp
-             :sql       ["CREATE TABLE IF NOT EXISTS public.%s ("
+             :sql       ["CREATE TABLE IF NOT EXISTS public.queryp ("
                          "    id          TEXT             NOT NULL,"
                          "    resource    JSONB            NOT NULL,"
                          "    created     timestamptz      NOT NULL,"
                          "    modified    timestamptz      NOT NULL,"
-                         "CONSTRAINT  %s_pk PRIMARY KEY (id));"]}}
+                         "CONSTRAINT queryp_pk PRIMARY KEY (id));"]}}
   {:method  :PUT
    :url     "/PgTable/list"
    :body    {:type      :PgTable
              :id        "list"
              :desc      "Postgres table for storing 'List'"
              :code      "/Coding/wellknown-resources?code=resource-storage"
-             :name      "lists"
              :of        :List
-             :sql       ["CREATE TABLE IF NOT EXISTS public.%s ("
+             :sql       ["CREATE TABLE IF NOT EXISTS public.list ("
                          "    id          TEXT             NOT NULL,"
                          "    resource    JSONB            NOT NULL,"
                          "    created     timestamptz      NOT NULL,"
                          "    modified    timestamptz      NOT NULL,"
-                         "CONSTRAINT  %s_pk PRIMARY KEY (id));"]}}
+                         "CONSTRAINT list_pk PRIMARY KEY (id));"]}}
   ;; Base resources
   ;;
   ;; [:Resource
@@ -686,7 +680,7 @@
   {:method  :PUT
    :url     "/Coding/wellknown-resources"
    :body    {:type  :Coding
-             :id    "resource-statuses"
+             :id    "wellknown-resources"
              :codes [{:code "/Coding/wellknown-resources?code=resource-storage"
                       :desc "Resource storage allocation"}
                      {:code "/Coding/wellknown-resources?code=resource"
