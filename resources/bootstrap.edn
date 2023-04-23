@@ -2,16 +2,109 @@
  :status "/Coding/transaction-statuses?code=active"
  :mode "/Coding/transaction-modes?code=sync"
  :items
- ;; Initial provisioning of storage for base resources
- ;;
- ;; [:Resource
- ;;  :Route
- ;;  :List
- ;;  :Transaction
- ;;  :Queryp
- ;;  :Coding]
- ;;
- [{:method  :PUT
+ [;; Postgres Tables
+  ;;
+  ;; [:PgTable
+  ;;  :Coding
+  ;;  :Resource
+  ;;  :Route
+  ;;  :Queryp
+  ;;  :List]
+  ;;
+  {:method  :PUT
+   :url     "/PgTable/pgtable"
+   :body    {:type      :PgTable
+             :id        "pgtable"
+             :desc      "Postgres table for storing 'PgTable'"
+             :code      "/Coding/wellknown-resources?code=resource-storage"
+             :name      "pgtables"
+             :of        :PgTable
+             :sql       ["CREATE TABLE IF NOT EXISTS public.%s ("
+                         "    id          TEXT             NOT NULL,"
+                         "    resource    JSONB            NOT NULL,"
+                         "    created     timestamptz      NOT NULL,"
+                         "    modified    timestamptz      NOT NULL,"
+                         "CONSTRAINT  %s_pk PRIMARY KEY (id));"]}}
+  {:method  :PUT
+   :url     "/PgTable/coding"
+   :body    {:type      :PgTable
+             :id        "coding"
+             :desc      "Postgres table for storing 'Coding'"
+             :code      "/Coding/wellknown-resources?code=resource-storage"
+             :name      "codings"
+             :of        :Coding
+             :sql       ["CREATE TABLE IF NOT EXISTS public.%s ("
+                         "    id          TEXT             NOT NULL,"
+                         "    resource    JSONB            NOT NULL,"
+                         "    created     timestamptz      NOT NULL,"
+                         "    modified    timestamptz      NOT NULL,"
+                         "CONSTRAINT  %s_pk PRIMARY KEY (id));"]}}
+  {:method  :PUT
+   :url     "/PgTable/resource"
+   :body    {:type      :PgTable
+             :id        "resource"
+             :desc      "Postgres table for storing 'Resource'"
+             :code      "/Coding/wellknown-resources?code=resource-storage"
+             :name      "resources"
+             :of        :Resource
+             :sql       ["CREATE TABLE IF NOT EXISTS public.%s ("
+                         "    id          TEXT             NOT NULL,"
+                         "    resource    JSONB            NOT NULL,"
+                         "    created     timestamptz      NOT NULL,"
+                         "    modified    timestamptz      NOT NULL,"
+                         "CONSTRAINT  %s_pk PRIMARY KEY (id));"]}}
+  {:method  :PUT
+   :url     "/PgTable/route"
+   :body    {:type      :PgTable
+             :id        "route"
+             :desc      "Postgres table for storing 'Route'"
+             :code      "/Coding/wellknown-resources?code=resource-storage"
+             :name      "routes"
+             :of        :Route
+             :sql       ["CREATE TABLE IF NOT EXISTS public.%s ("
+                         "    id          TEXT             NOT NULL,"
+                         "    resource    JSONB            NOT NULL,"
+                         "    created     timestamptz      NOT NULL,"
+                         "    modified    timestamptz      NOT NULL,"
+                         "CONSTRAINT  %s_pk PRIMARY KEY (id));"]}}
+  {:method  :PUT
+   :url     "/PgTable/queryp"
+   :body    {:type      :PgTable
+             :id        "queryp"
+             :desc      "Postgres table for storing 'Queryp'"
+             :code      "/Coding/wellknown-resources?code=resource-storage"
+             :name      "queryps"
+             :of        :Queryp
+             :sql       ["CREATE TABLE IF NOT EXISTS public.%s ("
+                         "    id          TEXT             NOT NULL,"
+                         "    resource    JSONB            NOT NULL,"
+                         "    created     timestamptz      NOT NULL,"
+                         "    modified    timestamptz      NOT NULL,"
+                         "CONSTRAINT  %s_pk PRIMARY KEY (id));"]}}
+  {:method  :PUT
+   :url     "/PgTable/list"
+   :body    {:type      :PgTable
+             :id        "list"
+             :desc      "Postgres table for storing 'List'"
+             :code      "/Coding/wellknown-resources?code=resource-storage"
+             :name      "lists"
+             :of        :List
+             :sql       ["CREATE TABLE IF NOT EXISTS public.%s ("
+                         "    id          TEXT             NOT NULL,"
+                         "    resource    JSONB            NOT NULL,"
+                         "    created     timestamptz      NOT NULL,"
+                         "    modified    timestamptz      NOT NULL,"
+                         "CONSTRAINT  %s_pk PRIMARY KEY (id));"]}}
+  ;; Base resources
+  ;;
+  ;; [:Resource
+  ;;  :Route
+  ;;  :List
+  ;;  :Transaction
+  ;;  :Queryp
+  ;;  :Coding]
+  ;;
+  {:method  :PUT
    :url     "/Resource/resource"
    :body    {:type      :Resource
              :id        "resource"
@@ -19,6 +112,14 @@
              :status    "/Coding/resource-statuses?code=pending"
              :of        :Resource
              :routes    "/List?_of=Route&res-type=Resource"}}
+  {:method  :PUT
+   :url     "/Resource/pgtable"
+   :body    {:type      :Resource
+             :id        "pgtable"
+             :desc      "Postgres table"
+             :status    "/Coding/resource-statuses?code=active"
+             :of        :PgTable
+             :routes    "/List?_of=Route&res-type=PgTable"}}
   {:method  :PUT
    :url     "/Resource/route"
    :body    {:type      :Resource
@@ -122,6 +223,22 @@
              :name      :delete-resource
              :code      "/Coding/handlers?code=delete"
              :resource  "/Resource/resource"}}
+  ;; Creation of :PgTable REST routes
+  ;;
+  ;; ["read"    :GET    "/Resource/:id"
+  ;;
+  {:method  :POST
+   :url     "/Route"
+   :body    {:type      :Route
+             :method    :GET
+             :path      [{:name     "_type"
+                          :code     "/Coding/wellknown-params?code=type"
+                          :value    "PgTable"}
+                         {:name     "_id"
+                          :code     "/Coding/wellknown-params?code=id"}]
+             :name      :read-pg-table
+             :code      "/Coding/handlers?code=read"
+             :resource  "/Resource/pgtable"}}
   ;; Creation of :Route REST routes
   ;;
   ;; ["create"  :POST   "/Route"
@@ -562,10 +679,24 @@
              :of    :Coding}}
   ;; Creation of core :Coding list
   ;;
-  ;; ["/Coding/resource-statuses
-  ;;  "/Coding/handlers
-  ;;  "/Coding/filters ]
+  ;; ["/Coding/resource-statuses"]}}
+  ;;  "/Coding/handlers"
+  ;;  "/Coding/filters" ]
   ;;
+  {:method  :PUT
+   :url     "/Coding/wellknown-resources"
+   :body    {:type  :Coding
+             :id    "resource-statuses"
+             :codes [{:code "/Coding/wellknown-resources?code=resource-storage"
+                      :desc "Resource storage allocation"}
+                     {:code "/Coding/wellknown-resources?code=resource"
+                      :desc "REST resource"}
+                     {:code "/Coding/wellknown-resources?code=route"
+                      :desc "REST route"}
+                     {:code "/Coding/wellknown-resources?code=queryp"
+                      :desc "REST query param"}
+                     {:code "/Coding/wellknown-resources?code=list"
+                      :desc "REST result set"}]}}
   {:method  :PUT
    :url     "/Coding/resource-statuses"
    :body    {:type  :Coding
