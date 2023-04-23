@@ -8,86 +8,85 @@
     (-> (select :id :resource :created :modified)
         (from type)))
 
-(defn make-prop-alias
-  ([base path-elem suffix]
-   (let [prop-name  (:name path-elem)]
-     (-> (name base)
-         (str "_" prop-name (when suffix "_") suffix)
-         (str/trimr)
-         (keyword))))
-  ([base path-elem]
-   (make-prop-alias base path-elem nil)))
+(defn make-field-alias
+  ([base field suffix]
+   (-> (name base)
+       (str "_" field (when suffix "_") suffix)
+       (str/trimr)
+       (keyword)))
+  ([base field]
+   (make-field-alias base field nil)))
 
-(defn extract-prop [sql-map base path-elem alias]
-  (let [prop (:name path-elem)]
-    (inner-join sql-map [[:jsonb_extract_path base prop] alias] true)))
+(defn extract-prop [sql-map base field alias]
+  (inner-join sql-map [[:jsonb_extract_path base field] alias] true))
 
-(defn extract-coll [sql-map base path-elem alias]
-  (let [prop-alias  (make-prop-alias base path-elem)]
-    (-> (identity sql-map)
-        (extract-prop base path-elem prop-alias)
+(defn extract-coll [sql-map base field alias]
+  (let [prop-alias (make-field-alias base field)]
+    (-> (extract-prop sql-map base field prop-alias)
         (inner-join [[:jsonb_array_elements prop-alias] alias] true))))
 
-(defn extract-path [sql-map base path alias]
-  (let [[curr & more]   path
-        suffix          (when (:collection curr) "elem")
-        curr-alias      (if (empty? more) alias (make-prop-alias base curr suffix))]
+(defn extract-field [sql-map base path-elem alias]
+  (let [curr-name (:name path-elem)]
     (cond
-      (nil? curr)           sql-map
-      (:meta curr)          sql-map ;; TODO: implement meta fields access
-      (:collection curr)    (-> (identity sql-map)
-                                (extract-coll base curr curr-alias)
-                                (extract-path curr-alias more alias))
-      :else                 (-> (identity sql-map)
-                                (extract-prop base curr curr-alias)
-                                (extract-path curr-alias more alias)))))
+      (:meta path-elem)       sql-map ;; TODO: implement meta fields access
+      (:collection path-elem) (extract-coll sql-map base curr-name alias)
+      :else                   (extract-prop sql-map base curr-name alias))))
 
-(defn contains-text [sql-map req queryp]
+(defn extract-path [sql-map base path alias]
+  (let [[curr & more] path
+        curr-name (:name curr)
+        suffix (when (:collection curr) "elem")
+        curr-alias (if (empty? more) alias (make-field-alias base curr-name suffix))]
+    (if (nil? curr)
+      sql-map
+      (-> (extract-field sql-map base curr curr-alias)
+          (extract-path curr-alias more alias)))))
+
+(defn contains-text [sql-map queryp params]
   (let [name (-> queryp :name name)
         db-name (-> name (str/replace #"-" "_") keyword)
-        val (-> req :vamtyc/param (get name))]
+        val (get params name)]
     (where sql-map [:like [:cast db-name :text] (str "%" val "%")])))
 
 
-(defn match-exact [sql-map req queryp]
+(defn match-exact [sql-map queryp params]
   (let [name (-> queryp :name name)
         db-name (-> name (str/replace #"-" "_") keyword)
-        val (-> req :vamtyc/param (get name))]
+        val (get params name)]
     (where sql-map [:= [:cast db-name :text] (str "\"" val "\"")])))
 
 
-(defn page-offset [sql-map req _queryp]
-  (-> (:vamtyc/param req)
-      (param/get-value "/Coding/wellknown-params?code=offset")
-      (str)
-      (Integer/parseInt)
-      (#(offset sql-map %))))
+(defn page-offset [sql-map offset]
+  (->> (str offset)
+       (Integer/parseInt)
+       (offset sql-map)))
 
-(defn page-size [sql-map req _queryp]
-  (->> (-> req :vamtyc/param (param/get-value "/Coding/wellknown-params?code=limit"))
+(defn page-size [sql-map limit]
+  (->> (str limit)
+       (Integer/parseInt)
        (limit sql-map)))
 
-(defn order-by [sql-map _req _queryp]
+(defn order-by [sql-map _params]
   sql-map)
 
+(defn total [sql-map]
+  (-> sql-map
+      (dissoc :select :offset :limit)
+      (select [[:count :*] :count])))
+
 (def filters
-  {"/Coding/wellknown-params?code=limit"   page-size
-   "/Coding/wellknown-params?code=offset"  page-offset
-   "/Coding/wellknown-params?code=sort"    order-by
-   "/Coding/filters?code=text"             contains-text
+  {"/Coding/filters?code=text"             contains-text
    "/Coding/filters?code=keyword"          match-exact})
 
-(defn refine-query [req sql-map queryp]
+(defn refine-query [sql-map queryp params]
   (let [path (-> queryp :path (or []))
         db-name (-> queryp :name name (str/replace #"-" "_") keyword)
         refine (-> queryp :code (#(get filters %)) (or (fn [sql-map _ _] sql-map)))]
-    (-> (identity sql-map)
-        (extract-path :resource path db-name)
-        (refine req queryp))))
+    (-> (extract-path sql-map :resource path db-name)
+        (refine queryp params))))
 
-(defn search-query [req]
-  (let [queryp (-> req :vamtyc/queryp)
-        type (-> req :vamtyc/param (param/get-value "/Coding/wellknown-params?code=type"))
-        of (-> req :vamtyc/param (param/get-value "/Coding/wellknown-params?code=of"))
+(defn search-query [queryps params]
+  (let [type (param/get-value params "/Coding/wellknown-params?code=type")
+        of (param/get-value params "/Coding/wellknown-params?code=of")
         sql-map (make-sql-map (or of type))]
-    (reduce #(refine-query req %1 %2) sql-map queryp)))
+    (reduce #(refine-query %1 %2 params) sql-map queryps)))

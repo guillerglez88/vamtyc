@@ -1,15 +1,12 @@
 (ns vamtyc.nav
   (:require
-   [lambdaisland.uri :refer [assoc-query uri-str]]
-   [vamtyc.param :as param]))
+   [lambdaisland.uri :refer [assoc-query uri-str]]))
 
 (defn nav-uri [url offset]
   (-> url (assoc-query :_offset offset) uri-str))
 
-(defn result-set [req url total items]
-  (let [offset  (-> req :vamtyc/param (param/get-value "/Coding/wellknown-params?code=offset"))
-        limit   (-> req :vamtyc/param (param/get-value "/Coding/wellknown-params?code=limit"))
-        first   0
+(defn result-set [items url total offset limit]
+  (let [first   0
         last    (max first (- total limit))
         prev    (max first (- offset limit))
         next    (min last (+ offset limit))]

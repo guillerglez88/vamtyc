@@ -11,7 +11,8 @@
    [vamtyc.nav :as nav]
    [vamtyc.param :as param]
    [vamtyc.query :as query]
-   [vamtyc.trn :as trn]))
+   [vamtyc.trn :as trn]
+   [next.jdbc.sql :as sql]))
 
 (def handler-create      "/Coding/handlers?code=create")
 (def handler-read        "/Coding/handlers?code=read")
@@ -95,22 +96,29 @@
   ([req route]
    (jdbc/with-transaction [tx, ds]
      (let [db-search (partial store/search tx)
-           db-total (partial store/total tx)
+           db-total #(->> % (hsql/format) (sql/query tx) (first) (:count))
            db-queryps (partial queryp/load-queryps tx)]
        (search req route db-search db-total db-queryps))))
   ([req route db-search db-total db-queryps]
    (let [params (make-params req route db-queryps)
          type (param/get-value params param/wellknown-type)
          of (param/get-value params param/wellknown-of)
+         param-names (->> params keys (filter #(not (#{:vamtyc/url :vamtyc/codes} %))))
+         queryps (db-queryps [of type] param-names)
          fields (param/get-value params param/wellknown-fields)
          url (param/get-value params :vamtyc/url)
-         sql-map (query/search-query req)]
-     (->> (hsql/format sql-map)
-          (db-search (or of type))
-          (into [])
-          (nav/result-set req url (db-total sql-map))
-          (#(fields/select-fields % fields))
-          (response)))))
+         offset (param/get-value params param/wellknown-offset)
+         limit (param/get-value params param/wellknown-limit)
+         sql-map (query/search-query queryps params)
+         sql-map-paged (-> sql-map (query/page-offset offset) (query/page-size limit))
+         sql-map-total (query/total sql-map)
+         total (db-total sql-map-total)]
+     (-> (hsql/format sql-map-paged)
+         (#(db-search % (or of type)))
+         (vector)
+         (nav/result-set url total offset limit)
+         (fields/select-fields fields)
+         (response)))))
 
 (defn transaction [req _route]
   (jdbc/with-transaction [tx ds]

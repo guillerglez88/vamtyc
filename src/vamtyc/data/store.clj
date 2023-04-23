@@ -68,12 +68,3 @@
        (limit (-> env :LIMIT Integer/parseInt))
        (hsql/format)
        (#(search tx res-type %)))))
-
-(defn total [tx sql-map]
-  (-> sql-map
-      (dissoc :select :offset :limit)
-      (select [[:count :*] :count])
-      (hsql/format)
-      (->> (sql/query tx))
-      (first)
-      (:count)))
