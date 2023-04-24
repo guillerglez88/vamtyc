@@ -4,20 +4,28 @@
    [honey.sql :as hsql]
    [vamtyc.query :as sut]))
 
+(deftest make-field-test
+  (testing "Can make pg-sql compliant field name"
+    (is (= :path
+           (sut/make-field "path")))
+    (is (= :path_to_field
+           (sut/make-field "path-to-field")))
+    (is (= :path_to_field
+           (sut/make-field "path-to-field  ")))
+    (is (= :resource_code
+           (sut/make-field :resource "code")))
+    (is (= :resource_path_elem
+           (sut/make-field :resource "path" "elem ")))
+    (is (= :resource_path_elem
+           (sut/make-field :resource "path" :elem)))
+    (is (= :resource_path
+           (sut/make-field :resource "path" nil)))))
+
 (deftest make-sql-map-test
   (testing "Can make base sql map to filter results on"
     (is (= [(str "SELECT id, resource, created, modified "
                  "FROM Resource")]
            (-> :Resource sut/make-sql-map hsql/format)))))
-
-(deftest make-field-alias-test
-  (testing "Can build sql field alias"
-    (is (= :resource_code
-           (sut/make-field-alias :resource "code")))
-    (is (= :resource_path
-           (sut/make-field-alias :resource "path")))
-    (is (= :resource_path_elem
-           (sut/make-field-alias :resource "path" "elem")))))
 
 (deftest extract-prop-test
   (testing "Can expose jsonb prop for filtering"
@@ -40,7 +48,7 @@
                (sut/extract-coll :resource "path" :path)
                (hsql/format))))))
 
-(deftest jsonb-deep-access
+(deftest extract-path-test
   (testing "Can access deep jsonb property"
     (is (= [(str "SELECT id, resource, created, modified "
                  "FROM Route "
