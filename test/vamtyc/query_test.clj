@@ -94,3 +94,20 @@
                                  :of    :Resource}
                                 {"of" "Route"})
                (hsql/format))))))
+
+(deftest page-offset-test
+  (testing "Can set page offset"
+    (is (= [(str "SELECT id, resource, created, modified "
+                 "FROM Resource "
+                 "OFFSET ?")
+            20]
+           (-> (sut/make-sql-map :Resource)
+               (sut/page-offset 20)
+               (hsql/format))))
+    (is (= [(str "SELECT id, resource, created, modified "
+                 "FROM Resource "
+                 "OFFSET ?")
+            5]
+           (-> (sut/make-sql-map :Resource)
+               (sut/page-offset "5")
+               (hsql/format))))))
