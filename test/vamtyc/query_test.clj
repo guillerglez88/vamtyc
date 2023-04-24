@@ -62,3 +62,35 @@
                                   {:name "value"}]
                                  :res_type)
                (hsql/format))))))
+
+(deftest contains-text-test
+  (testing "Can filter for occurrence of term on text field"
+    (is (= [(str "SELECT id, resource, created, modified "
+                 "FROM Route "
+                 "WHERE CAST(name AS text) LIKE ?")
+            "%read-%"]
+           (-> (sut/make-sql-map :Route)
+               (sut/contains-text {:type  :Queryp
+                                   :code  "/Coding/filters?code=text"
+                                   :desc  "Filter Route by name"
+                                   :name  :name
+                                   :path  [{:name     "name"}]
+                                   :of    :Route}
+                                  {"name" "read-"})
+               (hsql/format))))))
+
+(deftest match-exact-test
+  (testing "Can filter for exact matching of term with text field"
+    (is (= [(str "SELECT id, resource, created, modified "
+                 "FROM Resource "
+                 "WHERE CAST(of AS text) = ?")
+            "\"Route\""]
+           (-> (sut/make-sql-map :Resource)
+               (sut/match-exact {:type  :Queryp
+                                 :code  "/Coding/filters?code=keyword"
+                                 :desc  "Filter Resource by of"
+                                 :name  :of
+                                 :path  [{:name     "of"}]
+                                 :of    :Resource}
+                                {"of" "Route"})
+               (hsql/format))))))

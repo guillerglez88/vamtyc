@@ -50,9 +50,9 @@
           (extract-path curr-alias more alias)))))
 
 (defn contains-text [sql-map queryp params]
-  (let [name (-> queryp :name name)
-        field (make-field name)
-        val (get params name)]
+  (let [key (-> queryp :name name)
+        val (-> params (get key) name)
+        field (make-field key)]
     (where sql-map [:like [:cast field :text] (str "%" val "%")])))
 
 (defn match-exact [sql-map queryp params]
@@ -95,7 +95,8 @@
         (refine queryp params))))
 
 (defn search-query [queryps params]
-  (let [type (param/get-value params param/wellknown-type)
-        of (param/get-value params param/wellknown-of)
+  (let [[of type] (param/get-values params
+                                    param/wellknown-of
+                                    param/wellknown-type)
         sql-map (make-sql-map (or of type))]
     (reduce #(refine-query %1 %2 params) sql-map queryps)))
