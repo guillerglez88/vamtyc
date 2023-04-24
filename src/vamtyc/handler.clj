@@ -51,9 +51,10 @@
        (rread req route db-fetch db-queryps))))
   ([req route db-fetch db-queryps]
    (let [params (make-params req route db-queryps)
-         type (param/get-value params param/wellknown-type)
-         id (param/get-value params param/wellknown-id)
-         fields (param/get-value params param/wellknown-fields)]
+         [type, id, fields] (param/get-values params
+                                              param/wellknown-type
+                                              param/wellknown-id
+                                              param/wellknown-fields)]
      (if-let [res (db-fetch type id)]
        (-> (fields/select-fields res fields)
            (response))
@@ -69,8 +70,9 @@
        (upsert req route db-fetch db-edit db-create db-queryps))))
   ([req route db-fetch db-edit db-create db-queryps]
    (let [params (make-params req route db-queryps)
-         type (param/get-value params param/wellknown-type)
-         id (param/get-value params param/wellknown-id)
+         [type id] (param/get-values params
+                                     param/wellknown-type
+                                     param/wellknown-id)
          body (:body req)]
      (if (db-fetch type id)
        (-> (db-edit type id body)
@@ -86,8 +88,9 @@
        (delete req route db-delete db-queryps))))
   ([req route db-delete db-queryps]
    (let [params (make-params req route db-queryps)
-         type (param/get-value params param/wellknown-type)
-         id (param/get-value params param/wellknown-id)]
+         [type id] (param/get-values params
+                                     param/wellknown-type
+                                     param/wellknown-id)]
      (if (db-delete type id)
        (status 204)
        (not-found "Not found")))))
@@ -101,14 +104,15 @@
        (search req route db-search db-total db-queryps))))
   ([req route db-search db-total db-queryps]
    (let [params (make-params req route db-queryps)
-         type (param/get-value params param/wellknown-type)
-         of (param/get-value params param/wellknown-of)
-         param-names (->> params keys (filter #(not (#{:vamtyc/url :vamtyc/codes} %))))
+         [type of fields offset limit url] (param/get-values params
+                                                             param/wellknown-type
+                                                             param/wellknown-of
+                                                             param/wellknown-fields
+                                                             param/wellknown-offset
+                                                             param/wellknown-limit
+                                                             :vamtyc/url)
+         param-names (->> params keys (filter (complement #{:vamtyc/url :vamtyc/codes})))
          queryps (db-queryps [of type] param-names)
-         fields (param/get-value params param/wellknown-fields)
-         url (param/get-value params :vamtyc/url)
-         offset (param/get-value params param/wellknown-offset)
-         limit (param/get-value params param/wellknown-limit)
          sql-map (query/search-query queryps params)
          sql-map-paged (-> sql-map (query/page-offset offset) (query/page-size limit))
          sql-map-total (query/total sql-map)

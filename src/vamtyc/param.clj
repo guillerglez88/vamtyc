@@ -64,3 +64,6 @@
        (map query-map)
        (map #(get param (-> % :name name)))
        (first)))
+
+(defn get-values [param & codes]
+  (map #(get-value param %) codes))

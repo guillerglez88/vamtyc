@@ -158,3 +158,21 @@
              (sut/get-value param "/Coding/wellknown-params?code=limit")))
       (is (= nil
              (sut/get-value param "/Coding/wellknown-params?code=fields"))))))
+
+(deftest get-values-test
+  (testing "Can resolve bulk params in a single function call"
+    (let [param {"_of" :List
+                 "_created" nil
+                 "_limit" 128
+                 "_type" "Resource"
+                 "_id" "ecf3cf94"
+                 :vamtyc/codes ["/Coding/wellknown-params?code=type&name=_type"
+                                "/Coding/wellknown-params?code=id&name=_id"
+                                "/Coding/wellknown-params?code=of&name=_of"
+                                "/Coding/wellknown-params?code=limit&name=_limit"
+                                "/Coding/filters?code=date&name=_created"]}]
+      (is (= ["Resource" "ecf3cf94" 128 nil]
+             (sut/get-values param "/Coding/wellknown-params?code=type"
+                                   "/Coding/wellknown-params?code=id"
+                                   "/Coding/wellknown-params?code=limit"
+                                   "/Coding/wellknown-params?code=fields"))))))
