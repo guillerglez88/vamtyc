@@ -114,7 +114,7 @@
          param-names (->> params keys (filter (complement #{:vamtyc/url :vamtyc/codes})))
          queryps (db-queryps [of type] param-names)
          sql-map (query/search-query queryps params)
-         sql-map-paged (-> sql-map (query/page-offset offset) (query/page-size limit))
+         sql-map-paged (-> sql-map (query/paginate (-> offset str Integer/parseInt) (-> limit str Integer/parseInt)))
          sql-map-total (query/total sql-map)
          total (db-total sql-map-total)]
      (-> (hsql/format sql-map-paged)

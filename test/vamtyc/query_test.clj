@@ -95,38 +95,14 @@
                                 {"of" "Route"})
                (hsql/format))))))
 
-(deftest page-offset-test
-  (testing "Can set page offset"
+(deftest paginate-test
+  (testing "Can paginate"
     (is (= [(str "SELECT id, resource, created, modified "
                  "FROM Resource "
-                 "OFFSET ?")
-            20]
+                 "LIMIT ? OFFSET ?")
+            128, 10]
            (-> (sut/make-sql-map :Resource)
-               (sut/page-offset 20)
-               (hsql/format))))
-    (is (= [(str "SELECT id, resource, created, modified "
-                 "FROM Resource "
-                 "OFFSET ?")
-            5]
-           (-> (sut/make-sql-map :Resource)
-               (sut/page-offset "5")
-               (hsql/format))))))
-
-(deftest page-size-test
-  (testing "Can set page size"
-    (is (= [(str "SELECT id, resource, created, modified "
-                 "FROM Resource "
-                 "LIMIT ?")
-            128]
-           (-> (sut/make-sql-map :Resource)
-               (sut/page-size 128)
-               (hsql/format))))
-    (is (= [(str "SELECT id, resource, created, modified "
-                 "FROM Resource "
-                 "LIMIT ?")
-            10]
-           (-> (sut/make-sql-map :Resource)
-               (sut/page-size "10")
+               (sut/paginate 10 128)
                (hsql/format))))))
 
 (deftest total-test

@@ -61,15 +61,10 @@
         val (get params name)]
     (where sql-map [:= [:cast field :text] (str "\"" val "\"")])))
 
-(defn page-offset [sql-map value]
-  (->> (str value)
-       (Integer/parseInt)
-       (offset sql-map)))
-
-(defn page-size [sql-map value]
-  (->> (str value)
-       (Integer/parseInt)
-       (limit sql-map)))
+(defn paginate [sql-map start count]
+  (-> sql-map
+      (offset start)
+      (limit count)))
 
 (defn total [sql-map]
   (-> sql-map
