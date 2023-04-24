@@ -99,26 +99,27 @@
   ([req route]
    (jdbc/with-transaction [tx, ds]
      (let [db-search (partial store/search tx)
-           db-total #(->> % (hsql/format) (sql/query tx) (first) (:count))
-           db-queryps (partial queryp/load-queryps tx)]
-       (search req route db-search db-total db-queryps))))
-  ([req route db-search db-total db-queryps]
+           db-queryps (partial queryp/load-queryps tx)
+           db-create (partial store/create tx)
+           db-total (fn [sql] (-> (sql/query tx sql) (first) (:count)))]
+       (search req route db-search db-total db-queryps db-create))))
+  ([req route db-search db-total db-queryps db-create]
    (let [params (make-params req route db-queryps)
-         [type of fields offset limit url] (param/get-values params
-                                                             param/wellknown-type
-                                                             param/wellknown-of
-                                                             param/wellknown-fields
-                                                             param/wellknown-offset
-                                                             param/wellknown-limit
-                                                             :vamtyc/url)
+         [type of fields offset limit] (param/get-values params
+                                                         param/wellknown-type
+                                                         param/wellknown-of
+                                                         param/wellknown-fields
+                                                         param/wellknown-offset
+                                                         param/wellknown-limit)
+         table (-> of (or type) keyword)
+         url (:vamtyc/url params)
          param-names (->> params keys (filter (complement #{:vamtyc/url :vamtyc/codes})))
          queryps (db-queryps [of type] param-names)
-         sql-map (query/search-query queryps params)
-         sql-map-paged (-> sql-map (query/paginate (-> offset str Integer/parseInt) (-> limit str Integer/parseInt)))
-         sql-map-total (query/total sql-map)
-         total (db-total sql-map-total)]
-     (-> (hsql/format sql-map-paged)
-         (#(db-search % (or of type)))
+         pg-query (query/make-pg-query queryps params)
+         total (-> pg-query :total db-total)]
+     (db-create :PgQuery pg-query)
+     (-> (:paginated pg-query)
+         ((partial db-search table))
          (vector)
          (nav/result-set url total offset limit)
          (fields/select-fields fields)

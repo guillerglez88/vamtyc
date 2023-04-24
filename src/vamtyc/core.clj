@@ -6,12 +6,25 @@
    [vamtyc.cpj-api :as api])
   (:gen-class))
 
-(defn start []
+(defonce server (atom nil))
+
+(defn start [join?]
   (let [port (-> env :PORT Integer/parseInt)]
     (seed/init)
     (-> (api/init)
-        (run-jetty {:port port}))
+        (run-jetty {:port port
+                    :join? join?})
+        (#(reset! server %)))
     (println (str "Server running at: http://localhost:" port "/"))))
 
+(defn stop []
+  (when @server
+    (.stop @server)
+    (println "Server stoped")))
+
 (defn -main [& _args]
-  (start))
+  (start true))
+
+(comment
+  (start false)
+  (stop))

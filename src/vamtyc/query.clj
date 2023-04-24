@@ -1,8 +1,12 @@
 (ns vamtyc.query
   (:require
    [clojure.string :as str]
+   [honey.sql :as hsql]
    [honey.sql.helpers :refer [from inner-join limit offset select where]]
-   [vamtyc.param :as param]))
+   [vamtyc.param :as param])
+  (:import
+   [java.security MessageDigest]
+   [java.util Base64]))
 
 (def filters-text     "/Coding/filters?code=text")
 (def filters-keyword  "/Coding/filters?code=keyword")
@@ -20,7 +24,7 @@
        (str/trimr)
        (keyword)))
 
-(defn select-all [type]
+(defn all-by-type [type]
     (-> (select :id :resource :created :modified)
         (from type)))
 
@@ -72,7 +76,7 @@
       (select [[:count :*] :count])))
 
 (defn not-implemented [sql-map _queryp _params]
-  (sql-map))
+  sql-map)
 
 (defn lookup [code]
   (-> {filters-text     contains-text
@@ -93,5 +97,30 @@
   (let [[of type] (param/get-values params
                                     param/wellknown-of
                                     param/wellknown-type)
-        sql-map (select-all (or of type))]
+        table (-> of (or type) keyword)
+        sql-map (all-by-type table)]
     (reduce #(refine-query %1 %2 params) sql-map queryps)))
+
+(defn calc-hash [payload]
+  (let [sha256 (MessageDigest/getInstance "SHA-256")
+        base64 (Base64/getEncoder)]
+    (->> (.getBytes payload "UTF-8")
+         (.digest sha256)
+         (.encode base64)
+         (String.))))
+
+(defn make-pg-query [queryps params]
+  (let [[offset limit] (param/get-values params
+                                         param/wellknown-offset
+                                         param/wellknown-limit)
+        start (-> offset str Integer/parseInt)
+        count (-> limit str Integer/parseInt)
+        query (search-query queryps params)
+        paginated (paginate query start count)
+        total (total query)
+        hash (-> query hsql/format first calc-hash)]
+    {:type :PgQuery
+     :hash hash
+     :query (hsql/format query)
+     :paginated (hsql/format paginated)
+     :total (hsql/format total)}))

@@ -549,7 +549,7 @@
              :resource  "/Resource/coding"}}
   ;; Creation of REST queryps valid of any resource type
   ;;
-  ;; ["?_fields=:path-array-expr"
+  ;; ["?_fields=:path-array-expr"]
   ;;
   {:method  :POST
    :url     "/Queryp"

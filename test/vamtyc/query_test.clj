@@ -25,7 +25,7 @@
   (testing "Can make base sql map to filter results on"
     (is (= [(str "SELECT id, resource, created, modified "
                  "FROM Resource")]
-           (-> :Resource sut/select-all hsql/format)))))
+           (-> :Resource sut/all-by-type hsql/format)))))
 
 (deftest extract-prop-test
   (testing "Can expose jsonb prop for filtering"
@@ -33,7 +33,7 @@
                  "FROM Resource "
                  "INNER JOIN JSONB_EXTRACT_PATH(resource, ?) AS code ON TRUE")
             "code"]
-           (-> (sut/select-all :Resource)
+           (-> (sut/all-by-type :Resource)
                (sut/extract-prop :resource "code" :code)
                (hsql/format))))))
 
@@ -44,7 +44,7 @@
                   "INNER JOIN JSONB_EXTRACT_PATH(resource, ?) AS resource_path ON TRUE "
                   "INNER JOIN JSONB_ARRAY_ELEMENTS(resource_path) AS path ON TRUE")
             "path"]
-           (-> (sut/select-all :Resource)
+           (-> (sut/all-by-type :Resource)
                (sut/extract-coll :resource "path" :path)
                (hsql/format))))))
 
@@ -56,7 +56,7 @@
                  "INNER JOIN JSONB_ARRAY_ELEMENTS(resource_path) AS resource_path_elem ON TRUE "
                  "INNER JOIN JSONB_EXTRACT_PATH(resource_path_elem, ?) AS res_type ON TRUE")
             "path" "value"]
-           (-> (sut/select-all :Route)
+           (-> (sut/all-by-type :Route)
                (sut/extract-path :resource
                                  [{:name "path" :collection true}
                                   {:name "value"}]
@@ -69,7 +69,7 @@
                  "FROM Route "
                  "WHERE CAST(name AS text) LIKE ?")
             "%read-%"]
-           (-> (sut/select-all :Route)
+           (-> (sut/all-by-type :Route)
                (sut/contains-text {:type  :Queryp
                                    :code  "/Coding/filters?code=text"
                                    :desc  "Filter Route by name"
@@ -85,7 +85,7 @@
                  "FROM Resource "
                  "WHERE CAST(of AS text) = ?")
             "\"Route\""]
-           (-> (sut/select-all :Resource)
+           (-> (sut/all-by-type :Resource)
                (sut/match-exact {:type  :Queryp
                                  :code  "/Coding/filters?code=keyword"
                                  :desc  "Filter Resource by of"
@@ -101,7 +101,7 @@
                  "FROM Resource "
                  "LIMIT ? OFFSET ?")
             128, 10]
-           (-> (sut/select-all :Resource)
+           (-> (sut/all-by-type :Resource)
                (sut/paginate 10 128)
                (hsql/format))))))
 
@@ -109,6 +109,11 @@
   (testing "Can calc total query items"
     (is (= [(str "SELECT COUNT(*) AS count "
                  "FROM Resource")]
-           (-> (sut/select-all :Resource)
+           (-> (sut/all-by-type :Resource)
                (sut/total)
                (hsql/format))))))
+
+(deftest calc-hash-test
+  (testing "Can calc digest from string"
+    (is (= "JO+kEGAUhfQ1yiplXuW8FHB/AwySOte+kynrRcB/xAw="
+           (sut/calc-hash "SELECT id, resource, created, modified FROM Resource LIMIT ? OFFSET ?")))))
