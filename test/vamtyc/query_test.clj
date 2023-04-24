@@ -111,3 +111,20 @@
            (-> (sut/make-sql-map :Resource)
                (sut/page-offset "5")
                (hsql/format))))))
+
+(deftest page-size-test
+  (testing "Can set page size"
+    (is (= [(str "SELECT id, resource, created, modified "
+                 "FROM Resource "
+                 "LIMIT ?")
+            128]
+           (-> (sut/make-sql-map :Resource)
+               (sut/page-size 128)
+               (hsql/format))))
+    (is (= [(str "SELECT id, resource, created, modified "
+                 "FROM Resource "
+                 "LIMIT ?")
+            10]
+           (-> (sut/make-sql-map :Resource)
+               (sut/page-size "10")
+               (hsql/format))))))
