@@ -128,3 +128,11 @@
            (-> (sut/make-sql-map :Resource)
                (sut/page-size "10")
                (hsql/format))))))
+
+(deftest total-test
+  (testing "Can calc total query items"
+    (is (= [(str "SELECT COUNT(*) AS count "
+                 "FROM Resource")]
+           (-> (sut/make-sql-map :Resource)
+               (sut/total)
+               (hsql/format))))))
