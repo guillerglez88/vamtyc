@@ -116,11 +116,11 @@
         start (-> offset str Integer/parseInt)
         count (-> limit str Integer/parseInt)
         query (search-query queryps params)
-        paginated (paginate query start count)
+        page (paginate query start count)
         total (total query)
         hash (-> query hsql/format first calc-hash)]
     {:type :PgQuery
      :hash hash
      :query (hsql/format query)
-     :paginated (hsql/format paginated)
+     :page (hsql/format page)
      :total (hsql/format total)}))

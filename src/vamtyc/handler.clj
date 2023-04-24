@@ -118,7 +118,7 @@
          pg-query (query/make-pg-query queryps params)
          total (-> pg-query :total db-total)]
      (db-create :PgQuery pg-query)
-     (-> (:paginated pg-query)
+     (-> (:page pg-query)
          ((partial db-search table))
          (vector)
          (nav/result-set url total offset limit)
