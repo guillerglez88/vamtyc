@@ -20,7 +20,7 @@
        (str/trimr)
        (keyword)))
 
-(defn make-sql-map [type]
+(defn select-all [type]
     (-> (select :id :resource :created :modified)
         (from type)))
 
@@ -93,5 +93,5 @@
   (let [[of type] (param/get-values params
                                     param/wellknown-of
                                     param/wellknown-type)
-        sql-map (make-sql-map (or of type))]
+        sql-map (select-all (or of type))]
     (reduce #(refine-query %1 %2 params) sql-map queryps)))
