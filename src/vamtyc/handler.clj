@@ -13,17 +13,17 @@
    [vamtyc.query :as query]
    [vamtyc.trn :as trn]))
 
-(def handler-create      "/Coding/handlers?code=create")
-(def handler-read        "/Coding/handlers?code=read")
-(def handler-upsert      "/Coding/handlers?code=upsert")
-(def handler-delete      "/Coding/handlers?code=delete")
-(def handler-search      "/Coding/handlers?code=search")
-(def handler-not-found   "/Coding/handlers?code=not-found")
+(def hdl-create      "/Coding/handlers?code=create")
+(def hdl-read        "/Coding/handlers?code=read")
+(def hdl-upsert      "/Coding/handlers?code=upsert")
+(def hdl-delete      "/Coding/handlers?code=delete")
+(def hdl-search      "/Coding/handlers?code=search")
+(def hdl-not-found   "/Coding/handlers?code=not-found")
 
 (defn make-params [req route db-queryps]
   (let [route-params (param/route->param route)
         req-params (param/req->param req)
-        type (param/get-value route-params param/wellknown-type)
+        type (param/get-value route-params param/wkp-type)
         param-names (->> req-params keys (filter #(not (#{:vamtyc/url :vamtyc/codes} %))))
         queryps (db-queryps [type] param-names)
         queryp-params (param/queryps->param queryps)]
@@ -37,7 +37,7 @@
        (create req route db-create db-queryps))))
   ([req route db-create db-queryps]
    (let [params (make-params req route db-queryps)
-         type (param/get-value params param/wellknown-type)]
+         type (param/get-value params param/wkp-type)]
      (->> (:body req)
           (db-create type)
           (#(created (:url %) %))))))
@@ -51,9 +51,9 @@
   ([req route db-fetch db-queryps]
    (let [params (make-params req route db-queryps)
          [type, id, fields] (param/get-values params
-                                              param/wellknown-type
-                                              param/wellknown-id
-                                              param/wellknown-fields)]
+                                              param/wkp-type
+                                              param/wkp-id
+                                              param/wkp-fields)]
      (if-let [res (db-fetch type id)]
        (-> (fields/select-fields res fields)
            (response))
@@ -70,8 +70,8 @@
   ([req route db-fetch db-edit db-create db-queryps]
    (let [params (make-params req route db-queryps)
          [type id] (param/get-values params
-                                     param/wellknown-type
-                                     param/wellknown-id)
+                                     param/wkp-type
+                                     param/wkp-id)
          body (:body req)]
      (if (db-fetch type id)
        (-> (db-edit type id body)
@@ -88,8 +88,8 @@
   ([req route db-delete db-queryps]
    (let [params (make-params req route db-queryps)
          [type id] (param/get-values params
-                                     param/wellknown-type
-                                     param/wellknown-id)]
+                                     param/wkp-type
+                                     param/wkp-id)]
      (if (db-delete type id)
        (status 204)
        (not-found "Not found")))))
@@ -105,11 +105,11 @@
   ([req route db-search db-total db-queryps db-create]
    (let [params (make-params req route db-queryps)
          [type of fields offset limit] (param/get-values params
-                                                         param/wellknown-type
-                                                         param/wellknown-of
-                                                         param/wellknown-fields
-                                                         param/wellknown-offset
-                                                         param/wellknown-limit)
+                                                         param/wkp-type
+                                                         param/wkp-of
+                                                         param/wkp-fields
+                                                         param/wkp-offset
+                                                         param/wkp-limit)
          table (-> of (or type) keyword)
          url (:vamtyc/url params)
          param-names (->> params keys (filter (complement #{:vamtyc/url :vamtyc/codes})))
@@ -140,10 +140,10 @@
         (not-found))))
 
 (defn lookup [code]
-  (-> {handler-create    create
-       handler-read      rread
-       handler-upsert    upsert
-       handler-delete    delete
-       handler-search    search
-       handler-not-found notfound}
+  (-> {hdl-create    create
+       hdl-read      rread
+       hdl-upsert    upsert
+       hdl-delete    delete
+       hdl-search    search
+       hdl-not-found notfound}
       (get code)))

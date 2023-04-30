@@ -96,8 +96,8 @@
 
 (defn search-query [queryps params]
   (let [[of type] (param/get-values params
-                                    param/wellknown-of
-                                    param/wellknown-type)
+                                    param/wkp-of
+                                    param/wkp-type)
         table (-> of (or type) keyword)
         sql-map (all-by-type table)]
     (reduce #(refine-query %1 %2 params) sql-map queryps)))
@@ -126,8 +126,8 @@
 
 (defn make-pg-query [queryps params]
   (let [[offset limit] (param/get-values params
-                                         param/wellknown-offset
-                                         param/wellknown-limit)
+                                         param/wkp-offset
+                                         param/wkp-limit)
         start (-> offset str Integer/parseInt)
         count (-> limit str Integer/parseInt)
         query (search-query queryps params)
