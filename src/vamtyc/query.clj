@@ -1,11 +1,11 @@
 (ns vamtyc.query
   (:require
+   [clojure.set :as set]
    [clojure.string :as str]
    [honey.sql :as hsql]
    [honey.sql.helpers :refer [from inner-join limit offset select where]]
-   [vamtyc.param :as param]
-   [lambdaisland.uri :as uri :refer [uri query-string->map map->query-string assoc-query*]]
-   [clojure.set :as set])
+   [lambdaisland.uri :as uri :refer [map->query-string query-string->map uri]]
+   [vamtyc.param :as param])
   (:import
    [java.security MessageDigest]
    [java.util Base64]))
@@ -136,7 +136,7 @@
          (map->query-string)
          (str "/" type "?"))))
 
-(defn make-pg-query [queryps params]
+(defn make-pg-query [queryps params url]
   (let [[offset limit] (param/get-values params
                                          param/wkp-offset
                                          param/wkp-limit)
@@ -145,9 +145,11 @@
         query (search-query queryps params)
         page (paginate query start count)
         total (total query)
-        hash (-> query hsql/format first calc-hash)]
+        param-url (make-url params)]
     {:type :PgQuery
-     :hash hash
+     :hash (-> param-url clean-url calc-hash)
+     :req-url url
+     :param-url param-url
      :query (hsql/format query)
      :page (hsql/format page)
      :total (hsql/format total)}))

@@ -111,10 +111,10 @@
                                                          param/wkp-offset
                                                          param/wkp-limit)
          table (-> of (or type) keyword)
-         url (:vamtyc/url params)
+         url (param/url req)
          param-names (->> params keys (filter (complement #{:vamtyc/url :vamtyc/codes})))
          queryps (db-queryps [of type] param-names)
-         pg-query (query/make-pg-query queryps params)
+         pg-query (query/make-pg-query queryps params url)
          total (-> pg-query :total db-total)]
      (db-create :PgQuery pg-query)
      (-> (:page pg-query)
