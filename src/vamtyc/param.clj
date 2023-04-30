@@ -16,14 +16,19 @@
   (let [key (-> queryp :name name)
         val (:value queryp)
         code (:code queryp)]
-    (hash-map key val
-              :vamtyc/codes [(str code "&name=" key)])))
+    [(hash-map key val)
+     (str code "&name=" key)]))
 
-(defn merge-param [params]
-  (reduce #(->> (concat (:vamtyc/codes %1) (:vamtyc/codes %2))
-                (vec)
-                (hash-map :vamtyc/codes)
-                (merge %1 %2)) {} params))
+(defn merge-param
+  ([params]
+   (reduce merge-param [{}] params))
+  ([st-params nd-params]
+   (let [[st-param & st-codes] st-params
+         [nd-param & nd-codes] nd-params]
+     (-> (merge st-param nd-param)
+         (vector)
+         (concat st-codes nd-codes)
+         (vec)))))
 
 (defn queryps->param [queryps]
   (->> (or queryps [])
@@ -34,8 +39,8 @@
   (let [key (-> cmp :name name)
         val (:value cmp)
         code (:code cmp)]
-    (hash-map key val
-              :vamtyc/codes [(str code "&name=" key)])))
+    [(hash-map key val)
+     (str code "&name=" key)]))
 
 (defn route->param [route]
   (->> (or (:path route) [])
@@ -57,14 +62,17 @@
        (seq)
        (map (fn [[key val]] (-> (sanityze-qs-name key)
                                 (vector val))))
-       (into {:vamtyc/url (url req)})))
+       (into {})
+       (vector)))
 
-(defn get-value [param code]
-  (->> (:vamtyc/codes param)
-       (filter #(str/starts-with? % code))
-       (map query-map)
-       (map #(get param (-> % :name name)))
-       (first)))
+(defn get-value [params code]
+  (let [[param & codes] params]
+    (->> (filter #(str/starts-with? % code) codes)
+         (map query-map)
+         (map #(get param (-> % :name name)))
+         (first))))
 
 (defn get-values [param & codes]
-  (map #(get-value param %) codes))
+  (-> (partial get-value param)
+      (map codes)
+      (vec)))

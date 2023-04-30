@@ -4,7 +4,7 @@
    [honey.sql :as hsql]
    [honey.sql.helpers :refer [from inner-join limit offset select where]]
    [vamtyc.param :as param]
-   [lambdaisland.uri :refer [uri query-string->map map->query-string]])
+   [lambdaisland.uri :as uri :refer [uri query-string->map map->query-string assoc-query*]])
   (:import
    [java.security MessageDigest]
    [java.util Base64]))
