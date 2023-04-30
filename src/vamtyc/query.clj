@@ -57,14 +57,14 @@
 
 (defn contains-text [sql-map queryp params]
   (let [key (-> queryp :name name)
-        val (-> params (get key) name)
+        val (-> params first (get key) name)
         field (make-field key)]
     (where sql-map [:like [:cast field :text] (str "%" val "%")])))
 
 (defn match-exact [sql-map queryp params]
   (let [name (-> queryp :name name)
         field (make-field name)
-        val (get params name)]
+        val (-> params first (get name))]
     (where sql-map [:= [:cast field :text] (str "\"" val "\"")])))
 
 (defn paginate [sql-map start count]

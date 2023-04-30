@@ -76,7 +76,7 @@
                                    :name  :name
                                    :path  [{:name     "name"}]
                                    :of    :Route}
-                                  {"name" "read-"})
+                                  [{"name" "read-"}])
                (hsql/format))))))
 
 (deftest match-exact-test
@@ -92,7 +92,7 @@
                                  :name  :of
                                  :path  [{:name     "of"}]
                                  :of    :Resource}
-                                {"of" "Route"})
+                                [{"of" "Route"}])
                (hsql/format))))))
 
 (deftest paginate-test

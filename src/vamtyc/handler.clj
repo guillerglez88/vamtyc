@@ -24,7 +24,7 @@
   (let [route-params (param/route->param route)
         req-params (param/req->param req)
         type (param/get-value route-params param/wkp-type)
-        param-names (->> req-params keys (filter #(not (#{:vamtyc/url :vamtyc/codes} %))))
+        param-names (->> req-params first keys)
         queryps (db-queryps [type] param-names)
         queryp-params (param/queryps->param queryps)]
     (param/merge-param [route-params queryp-params req-params])))
@@ -112,7 +112,7 @@
                                                          param/wkp-limit)
          table (-> of (or type) keyword)
          url (param/url req)
-         param-names (->> params keys (filter (complement #{:vamtyc/url :vamtyc/codes})))
+         param-names (->> params first keys)
          queryps (db-queryps [of type] param-names)
          pg-query (query/make-pg-query queryps params url)
          total (-> pg-query :total db-total)]
