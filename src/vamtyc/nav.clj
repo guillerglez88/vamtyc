@@ -6,10 +6,12 @@
   (-> url (assoc-query :_offset offset) uri-str))
 
 (defn result-set [items url total offset limit]
-  (let [first   0
-        last    (max first (- total limit))
-        prev    (max first (- offset limit))
-        next    (min last (+ offset limit))]
+  (let [first 0
+        start (-> offset str Integer/parseInt)
+        count (-> limit str Integer/parseInt)
+        last (max first (- total count))
+        prev (max first (- start count))
+        next (min last (+ start count))]
     {:type  :List
      :url   url
      :items items
