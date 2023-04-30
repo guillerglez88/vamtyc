@@ -115,12 +115,11 @@
          param-names (->> params first keys)
          queryps (db-queryps [of type] param-names)
          pg-query (query/make-pg-query queryps params url)
-         total (-> pg-query :total db-total)]
-     (db-create :PgQuery pg-query)
+         total (-> pg-query :total db-total)
+         entity (db-create :PgQuery pg-query)]
      (-> (:page pg-query)
          ((partial db-search table))
-         (vector)
-         (nav/result-set url total offset limit)
+         (nav/result-set url total offset limit entity)
          (fields/select-fields fields)
          (response)))))
 

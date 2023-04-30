@@ -5,7 +5,7 @@
 (defn nav-uri [url offset]
   (-> url (assoc-query :_offset offset) uri-str))
 
-(defn result-set [items url total offset limit]
+(defn result-set [items url total offset limit pg-query]
   (let [first 0
         start (-> offset str Integer/parseInt)
         count (-> limit str Integer/parseInt)
@@ -19,4 +19,5 @@
      :nav   {:first (nav-uri url first)
              :prev  (nav-uri url prev)
              :next  (nav-uri url next)
-             :last  (nav-uri url last)}}))
+             :last  (nav-uri url last)}
+     :pgquery (:url pg-query)}))
