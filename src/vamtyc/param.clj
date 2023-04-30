@@ -65,12 +65,22 @@
        (into {})
        (vector)))
 
-(defn get-value [params code]
-  (let [[param & codes] params]
+(defn get-name [params code]
+  (let [[& codes] params]
     (->> (filter #(str/starts-with? % code) codes)
          (map query-map)
-         (map #(get param (-> % :name name)))
+         (map :name)
          (first))))
+
+(defn get-names [params & codes]
+  (-> (partial get-name params)
+      (map codes)
+      (vec)))
+
+(defn get-value [params code]
+  (let [[param] params]
+    (->> (get-name params code)
+         (get param))))
 
 (defn get-values [param & codes]
   (-> (partial get-value param)

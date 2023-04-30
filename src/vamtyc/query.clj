@@ -4,7 +4,8 @@
    [honey.sql :as hsql]
    [honey.sql.helpers :refer [from inner-join limit offset select where]]
    [vamtyc.param :as param]
-   [lambdaisland.uri :as uri :refer [uri query-string->map map->query-string assoc-query*]])
+   [lambdaisland.uri :as uri :refer [uri query-string->map map->query-string assoc-query*]]
+   [clojure.set :as set])
   (:import
    [java.security MessageDigest]
    [java.util Base64]))
@@ -123,6 +124,17 @@
           (#(merge % keep-map))
           (map->query-string)
           (str (:path uri) "?")))))
+
+(defn make-url [params]
+  (let [type (param/get-value params param/wkp-type)
+        param (first params)
+        type-prop-name (param/get-name params param/wkp-type)]
+    (->> (set/difference (->> param keys (apply hash-set))
+                         (hash-set type-prop-name))
+         (select-keys param)
+         (into (sorted-map))
+         (map->query-string)
+         (str "/" type "?"))))
 
 (defn make-pg-query [queryps params]
   (let [[offset limit] (param/get-values params

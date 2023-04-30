@@ -128,3 +128,17 @@
     (is (= "/List?_of=Resource&code=&name="
            (sut/clean-url "/List?_of=Resource&name=read-resource&code=my-code"
                           #{:_of})))))
+
+(deftest make-url-test
+  (testing "Can make url from params"
+    (is (= "/List?_created=&_id=ecf3cf94&_limit=128&_of=Resource"
+           (sut/make-url [{"_of" "Resource"
+                           "_created" ""
+                           "_limit" 128
+                           "_type" "List"
+                           "_id" "ecf3cf94"}
+                          "/Coding/wellknown-params?code=type&name=_type"
+                          "/Coding/wellknown-params?code=id&name=_id"
+                          "/Coding/wellknown-params?code=of&name=_of"
+                          "/Coding/wellknown-params?code=limit&name=_limit"
+                          "/Coding/filters?code=date&name=_created"])))))
