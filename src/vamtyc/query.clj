@@ -9,11 +9,11 @@
    [java.security MessageDigest]
    [java.util Base64]))
 
-(def filters-text     "/Coding/filters?code=text")
-(def filters-keyword  "/Coding/filters?code=keyword")
-(def filters-url      "/Coding/filters?code=url")
-(def filters-number   "/Coding/filters?code=number")
-(def filters-date     "/Coding/filters?code=date")
+(def flt-text     "/Coding/filters?code=text")
+(def flt-keyword  "/Coding/filters?code=keyword")
+(def flt-url      "/Coding/filters?code=url")
+(def flt-number   "/Coding/filters?code=number")
+(def flt-date     "/Coding/filters?code=date")
 
 (defn make-field [& parts]
   (->> parts
@@ -80,11 +80,11 @@
   sql-map)
 
 (defn lookup [code]
-  (-> {filters-text     contains-text
-       filters-keyword  match-exact
-       filters-url      not-implemented
-       filters-number   not-implemented
-       filters-date     not-implemented}
+  (-> {flt-text     contains-text
+       flt-keyword  match-exact
+       flt-url      not-implemented
+       flt-number   not-implemented
+       flt-date     not-implemented}
       (get code)))
 
 (defn refine-query [sql-map queryp params]
