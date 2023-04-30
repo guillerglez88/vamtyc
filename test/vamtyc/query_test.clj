@@ -117,3 +117,14 @@
   (testing "Can calc digest from string"
     (is (= "JO+kEGAUhfQ1yiplXuW8FHB/AwySOte+kynrRcB/xAw="
            (sut/calc-hash "SELECT id, resource, created, modified FROM Resource LIMIT ? OFFSET ?")))))
+
+(deftest clean-url-test
+  (testing "Can clean url queryp values"
+    (is (= "/List?_of=&code=&name="
+           (sut/clean-url "/List?_of=Resource&name=read-resource&code=my-code")))
+    (is (= "/Resource/route?"
+           (sut/clean-url "/Resource/route"))))
+  (testing "Can clean url keeping some values"
+    (is (= "/List?_of=Resource&code=&name="
+           (sut/clean-url "/List?_of=Resource&name=read-resource&code=my-code"
+                          #{:_of})))))

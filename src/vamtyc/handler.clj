@@ -1,8 +1,8 @@
 (ns vamtyc.handler
   (:require
    [clojure.string :as str]
-   [honey.sql :as hsql]
    [next.jdbc :as jdbc]
+   [next.jdbc.sql :as sql]
    [ring.util.response :refer [created not-found response status]]
    [vamtyc.data.datasource :refer [ds]]
    [vamtyc.data.queryp :as queryp]
@@ -11,8 +11,7 @@
    [vamtyc.nav :as nav]
    [vamtyc.param :as param]
    [vamtyc.query :as query]
-   [vamtyc.trn :as trn]
-   [next.jdbc.sql :as sql]))
+   [vamtyc.trn :as trn]))
 
 (def handler-create      "/Coding/handlers?code=create")
 (def handler-read        "/Coding/handlers?code=read")
