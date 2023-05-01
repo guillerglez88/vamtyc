@@ -115,7 +115,7 @@
 
 (deftest calc-hash-test
   (testing "Can calc digest from string"
-    (is (= "JO+kEGAUhfQ1yiplXuW8FHB/AwySOte+kynrRcB/xAw="
+    (is (= "24efa410601485f435ca2a655ee5bc14707f030c923ad7be9329eb45c07fc40c"
            (sut/calc-hash "SELECT id, resource, created, modified FROM Resource LIMIT ? OFFSET ?")))))
 
 (deftest clean-url-test

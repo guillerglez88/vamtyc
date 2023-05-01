@@ -7,8 +7,7 @@
    [lambdaisland.uri :as uri :refer [map->query-string query-string->map uri]]
    [vamtyc.param :as param])
   (:import
-   [java.security MessageDigest]
-   [java.util Base64]))
+   [java.security MessageDigest]))
 
 (def flt-text     "/Coding/filters?code=text")
 (def flt-keyword  "/Coding/filters?code=keyword")
@@ -101,12 +100,11 @@
         (reduce sql-map queryps))))
 
 (defn calc-hash [payload]
-  (let [sha256 (MessageDigest/getInstance "SHA-256")
-        base64 (Base64/getEncoder)]
+  (let [sha256 (MessageDigest/getInstance "SHA-256")]
     (->> (.getBytes payload "UTF-8")
          (.digest sha256)
-         (.encode base64)
-         (String.))))
+         (map (partial format "%02x"))
+         (apply str))))
 
 (defn clean-url
   ([url]

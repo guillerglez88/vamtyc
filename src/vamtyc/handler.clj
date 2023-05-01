@@ -99,19 +99,19 @@
    (jdbc/with-transaction [tx, ds]
      (let [db-search (partial store/search tx)
            db-queryps (partial queryp/load-queryps tx)
-           db-create (partial store/create tx)
+           db-upsert (partial store/upsert tx)
            db-total (fn [sql] (-> (sql/query tx sql) (first) (:count)))]
-       (search req route db-search db-total db-queryps db-create))))
-  ([req route db-search db-total db-queryps db-create]
+       (search req route db-search db-total db-queryps db-upsert))))
+  ([req route db-search db-total db-queryps db-upsert]
    (let [params (make-params req route db-queryps)
-         [of type] (param/get-values params param/wkp-of param/wkp-type)
+         types (param/get-values params param/wkp-of param/wkp-type)
          param-names (->> params first keys)
-         queryps (db-queryps [of type] param-names)
-         [fields] (param/get-values params param/wkp-fields)
+         queryps (db-queryps types param-names)
+         fields (param/get-value params param/wkp-fields)
          url (param/url req)
          pg-query (query/make-pg-query queryps params url)
          total (db-total (:total pg-query))
-         entity (db-create :PgQuery pg-query)]
+         entity (db-upsert :PgQuery (:hash pg-query) pg-query)]
      (-> (:from pg-query)
          (db-search (:page pg-query))
          (nav/result-set total entity)
