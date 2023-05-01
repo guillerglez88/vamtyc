@@ -14,7 +14,7 @@
         next (min last (+ start count))]
     {:type  :List
      :url   url
-     :items items
+     :items (vec items)
      :total total
      :nav   {:first (nav-uri url first)
              :prev  (nav-uri url prev)
