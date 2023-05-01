@@ -88,20 +88,17 @@
        flt-date     not-implemented}
       (get code)))
 
-(defn refine-query [sql-map queryp params]
+(defn refine-query [params sql-map queryp]
   (let [path (-> queryp :path (or []))
         field (-> queryp :name (make-field))
         refine (-> queryp :code lookup (or not-implemented))]
     (-> (extract-path sql-map :resource path field)
         (refine queryp params))))
 
-(defn search-query [queryps params]
-  (let [[of type] (param/get-values params
-                                    param/wkp-of
-                                    param/wkp-type)
-        table (-> of (or type) keyword)
-        sql-map (all-by-type table)]
-    (reduce #(refine-query %1 %2 params) sql-map queryps)))
+(defn search-query [table queryps params]
+  (let [sql-map (all-by-type table)]
+    (-> (partial refine-query params)
+        (reduce sql-map queryps))))
 
 (defn calc-hash [payload]
   (let [sha256 (MessageDigest/getInstance "SHA-256")
@@ -137,20 +134,23 @@
          (str "/" type "?"))))
 
 (defn make-pg-query [queryps params url]
-  (let [[offset limit] (param/get-values params
-                                         param/wkp-offset
-                                         param/wkp-limit)
+  (let [[of type] (param/get-values params param/wkp-of param/wkp-type)
+        [offset limit] (param/get-values params param/wkp-offset param/wkp-limit)
+        table (-> of (or type) keyword)
         start (-> offset str Integer/parseInt)
         count (-> limit str Integer/parseInt)
-        query (search-query queryps params)
+        query (search-query table queryps params)
         page (paginate query start count)
         total (total query)
         param-url (make-url params)
         of-name (-> params (param/get-name param/wkp-of) keyword)]
     {:type :PgQuery
      :hash (-> param-url (clean-url #{of-name}) calc-hash)
-     :req-url url
-     :param-url param-url
+     :origin url
+     :expanded param-url
+     :from table
+     :offset start
+     :limit count
      :query (hsql/format query)
      :page (hsql/format page)
      :total (hsql/format total)}))

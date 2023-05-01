@@ -104,22 +104,17 @@
        (search req route db-search db-total db-queryps db-create))))
   ([req route db-search db-total db-queryps db-create]
    (let [params (make-params req route db-queryps)
-         [type of fields offset limit] (param/get-values params
-                                                         param/wkp-type
-                                                         param/wkp-of
-                                                         param/wkp-fields
-                                                         param/wkp-offset
-                                                         param/wkp-limit)
-         table (-> of (or type) keyword)
-         url (param/url req)
+         [of type] (param/get-values params param/wkp-of param/wkp-type)
          param-names (->> params first keys)
          queryps (db-queryps [of type] param-names)
+         [fields] (param/get-values params param/wkp-fields)
+         url (param/url req)
          pg-query (query/make-pg-query queryps params url)
-         total (-> pg-query :total db-total)
+         total (db-total (:total pg-query))
          entity (db-create :PgQuery pg-query)]
-     (-> (:page pg-query)
-         ((partial db-search table))
-         (nav/result-set url total offset limit entity)
+     (-> (:from pg-query)
+         (db-search (:page pg-query))
+         (nav/result-set total entity)
          (fields/select-fields fields)
          (response)))))
 
