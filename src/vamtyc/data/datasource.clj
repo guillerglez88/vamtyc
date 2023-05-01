@@ -2,10 +2,10 @@
   (:require
    [clojure.data.json :as json]
    [next.jdbc :as jdbc]
+   [next.jdbc.date-time] ;; Import-only, side effect!
    [next.jdbc.prepare :as prepare]
    [next.jdbc.result-set :as rs]
-   [next.jdbc.date-time] ;; Import-only, side effect!
-   [vamtyc.config.env :refer [env]]))
+   [vamtyc.env :refer [env]]))
 
 (import '(org.postgresql.util PGobject))
 (import '(java.sql PreparedStatement))
@@ -24,7 +24,7 @@
   [^org.postgresql.util.PGobject v]
   (let [type  (.getType v)
         value (.getValue v)]
-    (when (and (#{"json" "jsonb"} type) value )
+    (when (and (#{"json" "jsonb"} type) value)
       (-> value
           (json/read-str :key-fn keyword)
           (with-meta {:pgtype type})))))

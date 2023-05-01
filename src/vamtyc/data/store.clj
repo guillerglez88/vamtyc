@@ -4,7 +4,7 @@
    [next.jdbc.sql :as sql]
    [honey.sql :as hsql]
    [honey.sql.helpers :refer [select from limit]]
-   [vamtyc.config.env :refer [env]])
+   [vamtyc.env :refer [env]])
   (:import [java.time Instant]))
 
 (defn- process [entity res-type]

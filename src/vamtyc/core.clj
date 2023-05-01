@@ -1,9 +1,9 @@
 (ns vamtyc.core
   (:require
    [ring.adapter.jetty :refer [run-jetty]]
-   [vamtyc.config.env :refer [env]]
-   [vamtyc.seed :as seed]
-   [vamtyc.cpj-api :as api])
+   [vamtyc.cpj-api :as api]
+   [vamtyc.env :refer [env]]
+   [vamtyc.seed :as seed])
   (:gen-class))
 
 (defonce server (atom nil))

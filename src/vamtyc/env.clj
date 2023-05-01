@@ -1,4 +1,4 @@
-(ns vamtyc.config.env
+(ns vamtyc.env
   (:require
    [clojure.java.io :as io]
    [clojure.string :as str]))
@@ -40,6 +40,3 @@
         dot-env (load-dot-env)
         sys-env (load-sys-env)]
     (select-keys (merge def-env dot-env sys-env) keys)))
-
-(def sec-env
-  (select-keys env [:PORT :LIMIT]))
