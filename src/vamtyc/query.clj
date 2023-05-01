@@ -145,9 +145,10 @@
         query (search-query queryps params)
         page (paginate query start count)
         total (total query)
-        param-url (make-url params)]
+        param-url (make-url params)
+        of-name (-> params (param/get-name param/wkp-of) keyword)]
     {:type :PgQuery
-     :hash (-> param-url clean-url calc-hash)
+     :hash (-> param-url (clean-url #{of-name}) calc-hash)
      :req-url url
      :param-url param-url
      :query (hsql/format query)
