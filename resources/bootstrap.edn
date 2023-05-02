@@ -2,813 +2,878 @@
  :status "/Coding/transaction-statuses?code=active"
  :mode "/Coding/transaction-modes?code=sync"
  :items
- [;; Postgres Tables
+ [
+  ;; DDL
   ;;
-  ;; [:PgTable
-  ;;  ;PgQuery
-  ;;  :Coding
-  ;;  :Resource
-  ;;  :Route
-  ;;  :Queryp
-  ;;  :List]
-  ;;
+  ;; [:Ddl/table
+  ;;  :Ddl/sequence]
   {:method  :PUT
-   :url     "/PgTable/pgtable"
-   :body    {:type      :PgTable
-             :id        "pgtable"
-             :desc      "Postgres table for storing 'PgTable'"
-             :code      "/Coding/wellknown-resources?code=resource-storage"
-             :of        :PgTable
-             :sql       ["CREATE TABLE IF NOT EXISTS public.pgtable ("
-                         "    id          TEXT             NOT NULL,"
-                         "    resource    JSONB            NOT NULL,"
-                         "    created     timestamptz      NOT NULL,"
-                         "    modified    timestamptz      NOT NULL,"
-                         "CONSTRAINT pgtable_pk PRIMARY KEY (id));"]}}
-  {:method  :PUT
-   :url     "/PgTable/pgquery"
-   :body    {:type      :PgTable
-             :id        "pgquery"
-             :desc      "Postgres table for storing 'PgQuery'"
-             :code      "/Coding/wellknown-resources?code=resource-storage"
-             :of        :PgQuery
-             :sql       ["CREATE TABLE IF NOT EXISTS public.pgquery ("
-                         "    id          TEXT             NOT NULL,"
-                         "    resource    JSONB            NOT NULL,"
-                         "    created     timestamptz      NOT NULL,"
-                         "    modified    timestamptz      NOT NULL,"
-                         "CONSTRAINT pgquery_pk PRIMARY KEY (id));"]}}
-  {:method  :PUT
-   :url     "/PgTable/coding"
-   :body    {:type      :PgTable
-             :id        "coding"
-             :desc      "Postgres table for storing 'Coding'"
-             :code      "/Coding/wellknown-resources?code=resource-storage"
-             :of        :Coding
-             :sql       ["CREATE TABLE IF NOT EXISTS public.coding ("
-                         "    id          TEXT             NOT NULL,"
-                         "    resource    JSONB            NOT NULL,"
-                         "    created     timestamptz      NOT NULL,"
-                         "    modified    timestamptz      NOT NULL,"
-                         "CONSTRAINT coding_pk PRIMARY KEY (id));"]}}
-  {:method  :PUT
-   :url     "/PgTable/resource"
-   :body    {:type      :PgTable
-             :id        "resource"
-             :desc      "Postgres table for storing 'Resource'"
-             :code      "/Coding/wellknown-resources?code=resource-storage"
-             :of        :Resource
-             :sql       ["CREATE TABLE IF NOT EXISTS public.resource ("
-                         "    id          TEXT             NOT NULL,"
-                         "    resource    JSONB            NOT NULL,"
-                         "    created     timestamptz      NOT NULL,"
-                         "    modified    timestamptz      NOT NULL,"
-                         "CONSTRAINT resource_pk PRIMARY KEY (id));"]}}
-  {:method  :PUT
-   :url     "/PgTable/route"
-   :body    {:type      :PgTable
-             :id        "route"
-             :desc      "Postgres table for storing 'Route'"
-             :code      "/Coding/wellknown-resources?code=resource-storage"
-             :of        :Route
-             :sql       ["CREATE TABLE IF NOT EXISTS public.route ("
-                         "    id          TEXT             NOT NULL,"
-                         "    resource    JSONB            NOT NULL,"
-                         "    created     timestamptz      NOT NULL,"
-                         "    modified    timestamptz      NOT NULL,"
-                         "CONSTRAINT route_pk PRIMARY KEY (id));"]}}
-  {:method  :PUT
-   :url     "/PgTable/queryp"
-   :body    {:type      :PgTable
-             :id        "queryp"
-             :desc      "Postgres table for storing 'Queryp'"
-             :code      "/Coding/wellknown-resources?code=resource-storage"
-             :of        :Queryp
-             :sql       ["CREATE TABLE IF NOT EXISTS public.queryp ("
-                         "    id          TEXT             NOT NULL,"
-                         "    resource    JSONB            NOT NULL,"
-                         "    created     timestamptz      NOT NULL,"
-                         "    modified    timestamptz      NOT NULL,"
-                         "CONSTRAINT queryp_pk PRIMARY KEY (id));"]}}
-  {:method  :PUT
-   :url     "/PgTable/list"
-   :body    {:type      :PgTable
-             :id        "list"
-             :desc      "Postgres table for storing 'List'"
-             :code      "/Coding/wellknown-resources?code=resource-storage"
-             :of        :List
-             :sql       ["CREATE TABLE IF NOT EXISTS public.list ("
-                         "    id          TEXT             NOT NULL,"
-                         "    resource    JSONB            NOT NULL,"
-                         "    created     timestamptz      NOT NULL,"
-                         "    modified    timestamptz      NOT NULL,"
-                         "CONSTRAINT list_pk PRIMARY KEY (id));"]}}
-  ;; Base resources
-  ;;
-  ;; [:Resource
-  ;;  :Route
-  ;;  :List
-  ;;  :Transaction
-  ;;  :Queryp
-  ;;  :Coding]
-  ;;
-  {:method  :PUT
-   :url     "/Resource/resource"
-   :body    {:type      :Resource
-             :id        "resource"
-             :desc      "REST resource"
-             :status    "/Coding/resource-statuses?code=active"
-             :of        :Resource
-             :routes    "/List?_of=Route&res-type=Resource"}}
-  {:method  :PUT
-   :url     "/Resource/pgtable"
-   :body    {:type      :Resource
-             :id        "pgtable"
-             :desc      "Postgres table"
-             :status    "/Coding/resource-statuses?code=active"
-             :of        :PgTable
-             :routes    "/List?_of=Route&res-type=PgTable"}}
-  {:method  :PUT
-   :url     "/Resource/pgquery"
-   :body    {:type      :Resource
-             :id        "pgquery"
-             :desc      "Postgres query"
-             :status    "/Coding/resource-statuses?code=active"
-             :of        :PgQuery
-             :routes    "/List?_of=Route&res-type=PgQuery"}}
-  {:method  :PUT
-   :url     "/Resource/route"
-   :body    {:type      :Resource
-             :id        "route"
-             :desc      "REST route"
-             :status    "/Coding/resource-statuses?code=active"
-             :of        :Route
-             :routes    "/List?_of=Route&res-type=Route"}}
-  {:method  :PUT
-   :url     "/Resource/list"
-   :body    {:type      :Resource
-             :id        "list"
-             :desc      "Collection of data"
-             :status    "/Coding/resource-statuses?code=active"
-             :of        :List
-             :routes    "/List?_of=Route&res-type=List"}}
-  {:method  :PUT
-   :url     "/Resource/transaction"
-   :body    {:type      :Resource
-             :id        "transaction"
-             :desc      "Transaction of multiple http requests"
-             :status    "/Coding/resource-statuses?code=active"
-             :of        :Transaction
-             :routes    "/List?_of=Route&res-type=Transaction"}}
-  {:method  :PUT
-   :url     "/Resource/queryp"
-   :body    {:type      :Resource
-             :id        "queryp"
-             :desc      "REST queryp"
-             :status    "/Coding/resource-statuses?code=active"
-             :of        :Queryp
-             :routes    "/List?_of=Route&res-type=Queryp"}}
-  {:method  :PUT
-   :url     "/Resource/coding"
-   :body    {:type      :Resource
-             :id        "coding"
-             :desc      "Set of codes"
-             :status    "/Coding/resource-statuses?code=active"
-             :of        :Coding
-             :routes    "/List?_of=Route&res-type=Coding"}}
-  ;; Creation of default REST routes
-  ;;
-  ;; ["not-found"]
-  ;;
-  {:method  :POST
-   :url     "/Route"
-   :body    {:type      :Route
-             :name      :not-found
-             :code      "/Coding/handlers?code=not-found"
-             :routes    "/List?_of=Route"}}
-  ;; Creation of :Resource REST routes
-  ;;
-  ;; ["create"  :POST   "/Resource"
-  ;;  "read"    :GET    "/Resource/:id"
-  ;;  "upsert"  :PUT    "/Resource/:id"
-  ;;  "delete"  :DELETE "/Resource/:id"]
-  ;;
-  {:method  :POST
-   :url     "/Route"
-   :body    {:type      :Route
-             :method    :POST
-             :path      [{:name     "_type"
-                          :code     "/Coding/wellknown-params?code=type"
-                          :value    "Resource"}]
-             :name      :create-resource
-             :code      "/Coding/handlers?code=create"
-             :resource  "/Resource/resource"}}
-  {:method  :POST
-   :url     "/Route"
-   :body    {:type      :Route
-             :method    :GET
-             :path      [{:name     "_type"
-                          :code     "/Coding/wellknown-params?code=type"
-                          :value    "Resource"}
-                         {:name     "_id"
-                          :code     "/Coding/wellknown-params?code=id"}]
-             :name      :read-resource
-             :code      "/Coding/handlers?code=read"
-             :resource  "/Resource/resource"}}
-  {:method  :POST
-   :url     "/Route"
-   :body    {:type      :Route
-             :method    :PUT
-             :path      [{:name     "_type"
-                          :code     "/Coding/wellknown-params?code=type"
-                          :value    "Resource"}
-                         {:name     "_id"
-                          :code     "/Coding/wellknown-params?code=id"}]
-             :name      "upsert-resource"
-             :code      "/Coding/handlers?code=upsert"
-             :resource  "/Resource/resource"}}
-  {:method  :POST
-   :url     "/Route"
-   :body    {:type      :Route
-             :method    :DELETE
-             :path      [{:name     "_type"
-                          :code     "/Coding/wellknown-params?code=type"
-                          :value    "Resource"}
-                         {:name     "_id"
-                          :code     "/Coding/wellknown-params?code=id"}]
-             :name      :delete-resource
-             :code      "/Coding/handlers?code=delete"
-             :resource  "/Resource/resource"}}
-  ;; Creation of :PgTable REST routes
-  ;;
-  ;; ["read"    :GET    "/Resource/:id"
-  ;;
-  {:method  :POST
-   :url     "/Route"
-   :body    {:type      :Route
-             :method    :GET
-             :path      [{:name     "_type"
-                          :code     "/Coding/wellknown-params?code=type"
-                          :value    "PgTable"}
-                         {:name     "_id"
-                          :code     "/Coding/wellknown-params?code=id"}]
-             :name      :read-pg-table
-             :code      "/Coding/handlers?code=read"
-             :resource  "/Resource/pgtable"}}
-  ;; Creation of :PgQuery REST routes
-  ;;
-  ;; ["read"    :GET    "/Resource/:id"
-  ;;
-  {:method  :POST
-   :url     "/Route"
-   :body    {:type      :Route
-             :method    :GET
-             :path      [{:name     "_type"
-                          :code     "/Coding/wellknown-params?code=type"
-                          :value    "PgQuery"}
-                         {:name     "_id"
-                          :code     "/Coding/wellknown-params?code=id"}]
-             :name      :read-pg-query
-             :code      "/Coding/handlers?code=read"
-             :resource  "/Resource/pgquery"}}
-  ;; Creation of :Route REST routes
-  ;;
-  ;; ["create"  :POST   "/Route"
-  ;;  "read"    :GET    "/Route/:id"
-  ;;  "upsert"  :PUT    "/Route/:id"
-  ;;  "delete"  :DELETE "/Route/:id"]
-  ;;
-  {:method  :POST
-   :url     "/Route"
-   :body    {:type      :Route
-             :method    :POST
-             :path      [{:name     "_type"
-                          :code     "/Coding/wellknown-params?code=type"
-                          :value    "Route"}]
-             :name      :create-route
-             :code      "/Coding/handlers?code=create"
-             :resource  "/Resource/route"}}
-  {:method  :POST
-   :url     "/Route"
-   :body    {:type      :Route
-             :method    :GET
-             :path      [{:name     "_type"
-                          :code     "/Coding/wellknown-params?code=type"
-                          :value    "Route"}
-                         {:name     "_id"
-                          :code     "/Coding/wellknown-params?code=id"}]
-             :name      :read-route
-             :code      "/Coding/handlers?code=read"
-             :resource  "/Resource/route"}}
-  {:method  :POST
-   :url     "/Route"
-   :body    {:type      :Route
-             :method    :PUT
-             :path      [{:name     "_type"
-                          :code     "/Coding/wellknown-params?code=type"
-                          :value    "Route"}
-                         {:name     "_id"
-                          :code     "/Coding/wellknown-params?code=id"}]
-             :name      :upsert-route
-             :code      "/Coding/handlers?code=upsert"
-             :resource  "/Resource/route"}}
-  {:method  :POST
-   :url     "/Route"
-   :body    {:type      :Route
-             :method    :DELETE
-             :path      [{:name     "_type"
-                          :code     "/Coding/wellknown-params?code=type"
-                          :value    "Route"}
-                         {:name     "_id"
-                          :code     "/Coding/wellknown-params?code=id"}]
-             :name      :delete-route
-             :code      "/Coding/handlers?code=delete"
-             :resource  "/Resource/route"}}
-  ;; Creation of :List REST routes
-  ;;
-  ;; ["create"  :POST   "/List"
-  ;;  "read"    :GET    "/List/:id"
-  ;;  "upsert"  :PUT    "/List/:id"
-  ;;  "delete"  :DELETE "/List/:id"
-  ;;  "search"  :GET    "/List"]
-  ;;
-  {:method  :POST
-   :url     "/Route"
-   :body    {:type      :Route
-             :method    :POST
-             :path      [{:name     "_type"
-                          :code     "/Coding/wellknown-params?code=type"
-                          :value    "List"}]
-             :name      :create-list
-             :code      "/Coding/handlers?code=create"
-             :resource  "/Resource/list"}}
-  {:method  :POST
-   :url     "/Route"
-   :body    {:type      :Route
-             :method    :GET
-             :path      [{:name     "_type"
-                          :code     "/Coding/wellknown-params?code=type"
-                          :value    "List"}
-                         {:name     "_id"
-                          :code     "/Coding/wellknown-params?code=id"}]
-             :name      :read-list
-             :code      "/Coding/handlers?code=read"
-             :resource  "/Resource/list"}}
-  {:method  :POST
-   :url     "/Route"
-   :body    {:type      :Route
-             :method    :PUT
-             :path      [{:name     "_type"
-                          :code     "/Coding/wellknown-params?code=type"
-                          :value    "List"}
-                         {:name     "_id"
-                          :code     "/Coding/wellknown-params?code=id"}]
-             :name      :upsert-list
-             :code      "/Coding/handlers?code=upsert"
-             :resource  "/Resource/list"}}
-  {:method  :POST
-   :url     "/Route"
-   :body    {:type      :Route
-             :method    :DELETE
-             :path      [{:name     "_type"
-                          :code     "/Coding/wellknown-params?code=type"
-                          :value    "List"}
-                         {:name     "_id"
-                          :code     "/Coding/wellknown-params?code=id"}]
-             :name      :delete-list
-             :code      "/Coding/handlers?code=delete"
-             :resource  "/Resource/list"}}
-  {:method  :POST
-   :url     "/Route"
-   :body    {:type      :Route
-             :method    :GET
-             :path      [{:name     "_type"
-                          :code     "/Coding/wellknown-params?code=type"
-                          :value    "List"}]
-             :name      :search-list
-             :code      "/Coding/handlers?code=search"
-             :resource  "/Resource/list"}}
-  ;; Creation of :Transaction REST routes
-  ;;
-  ;; ["create"  :POST   "/Transaction"
-  ;;  "read"    :GET    "/Transaction/:id"
-  ;;  "upsert"  :PUT    "/Transaction/:id"
-  ;;  "delete"  :DELETE "/Transaction/:id"]
-  ;;
-  {:method  :POST
-   :url     "/Route"
-   :body    {:type      :Route
-             :method    :POST
-             :path      [{:name     "_type"
-                          :code     "/Coding/wellknown-params?code=type"
-                          :value    "Transaction"}]
-             :name      :create-transaction
-             :code      "/Coding/handlers?code=create"
-             :resource  "/Resource/transaction"}}
-  {:method  :POST
-   :url     "/Route"
-   :body    {:type      :Route
-             :method    :GET
-             :path      [{:name     "_type"
-                          :code     "/Coding/wellknown-params?code=type"
-                          :value    "Transaction"}
-                         {:name     "_id"
-                          :code     "/Coding/wellknown-params?code=id"}]
-             :name      :read-transaction
-             :code      "/Coding/handlers?code=read"
-             :resource  "/Resource/transaction"}}
-  {:method  :POST
-   :url     "/Route"
-   :body    {:type      :Route
-             :method    :PUT
-             :path      [{:name     "_type"
-                          :code     "/Coding/wellknown-params?code=type"
-                          :value    "Transaction"}
-                         {:name     "_id"
-                          :code     "/Coding/wellknown-params?code=id"}]
-             :name      :upsert-transaction
-             :code      "/Coding/handlers?code=upsert"
-             :resource  "/Resource/transaction"}}
-  {:method  :POST
-   :url     "/Route"
-   :body    {:type      :Route
-             :method    :DELETE
-             :path      [{:name     "_type"
-                          :code     "/Coding/wellknown-params?code=type"
-                          :value    "Transaction"}
-                         {:name     "_id"
-                          :code     "/Coding/wellknown-params?code=id"}]
-             :name      :delete-transaction
-             :code      "/Coding/handlers?code=delete"
-             :resource  "/Resource/transaction"}}
-  ;; Creation of :Queryp REST routes
-  ;;
-  ;; ["create"  :POST   "/Queryp"
-  ;;  "read"    :GET    "/Queryp/:id"
-  ;;  "upsert"  :PUT    "/Queryp/:id"
-  ;;  "delete"  :DELETE "/Queryp/:id"]
-  ;;
-  {:method  :POST
-   :url     "/Route"
-   :body    {:type      :Route
-             :method    :POST
-             :path      [{:name     "_type"
-                          :code     "/Coding/wellknown-params?code=type"
-                          :value    "Queryp"}]
-             :name      :create-queryp
-             :code      "/Coding/handlers?code=create"
-             :resource  "/Resource/queryp"}}
-  {:method  :POST
-   :url     "/Route"
-   :body    {:type      :Route
-             :method    :GET
-             :path      [{:name     "_type"
-                          :code     "/Coding/wellknown-params?code=type"
-                          :value    "Queryp"}
-                         {:name     "_id"
-                          :code     "/Coding/wellknown-params?code=id"}]
-             :name      :read-queryp
-             :code      "/Coding/handlers?code=read"
-             :resource  "/Resource/queryp"}}
-  {:method  :POST
-   :url     "/Route"
-   :body    {:type      :Route
-             :method    :PUT
-             :path      [{:name     "_type"
-                          :code     "/Coding/wellknown-params?code=type"
-                          :value    "Queryp"}
-                         {:name     "_id"
-                          :code     "/Coding/wellknown-params?code=id"}]
-             :name      :upsert-queryp
-             :code      "/Coding/handlers?code=upsert"
-             :resource  "/Resource/queryp"}}
-  {:method  :POST
-   :url     "/Route"
-   :body    {:type      :Route
-             :method    :DELETE
-             :path      [{:name     "_type"
-                          :code     "/Coding/wellknown-params?code=type"
-                          :value    "Queryp"}
-                         {:name     "_id"
-                          :code     "/Coding/wellknown-params?code=id"}]
-             :name      :delete-queryp
-             :code      "/Coding/handlers?code=delete"
-             :resource  "/Resource/queryp"}}
-  ;; Creation of :Coding REST routes
-  ;;
-  ;; ["create"  :POST   "/Coding"
-  ;;  "read"    :GET    "/Coding/:id"
-  ;;  "upsert"  :PUT    "/Coding/:id"
-  ;;  "delete"  :DELETE "/Coding/:id"]
-  ;;
-  {:method  :POST
-   :url     "/Route"
-   :body    {:type      :Route
-             :method    :POST
-             :path      [{:name     "_type"
-                          :code     "/Coding/wellknown-params?code=type"
-                          :value    "Coding"}]
-             :name      :create-coding
-             :code      "/Coding/handlers?code=create"
-             :resource  "/Resource/coding"}}
-  {:method  :POST
-   :url     "/Route"
-   :body    {:type      :Route
-             :method    :GET
-             :path      [{:name     "_type"
-                          :code     "/Coding/wellknown-params?code=type"
-                          :value    "Coding"}
-                         {:name     "_id"
-                          :code     "/Coding/wellknown-params?code=id"}]
-             :name      :read-coding
-             :code      "/Coding/handlers?code=read"
-             :resource  "/Resource/coding"}}
-  {:method  :POST
-   :url     "/Route"
-   :body    {:type      :Route
-             :method    :PUT
-             :path      [{:name     "_type"
-                          :code     "/Coding/wellknown-params?code=type"
-                          :value    "Coding"}
-                         {:name     "_id"
-                          :code     "/Coding/wellknown-params?code=id"}]
-             :name      :upsert-coding
-             :code      "/Coding/handlers?code=upsert"
-             :resource  "/Resource/coding"}}
-  {:method  :POST
-   :url     "/Route"
-   :body    {:type      :Route
-             :method    :DELETE
-             :path      [{:name     "_type"
-                          :code     "/Coding/wellknown-params?code=type"
-                          :value    "Coding"}
-                         {:name     "_id"
-                          :code     "/Coding/wellknown-params?code=id"}]
-             :name      :delete-coding
-             :code      "/Coding/handlers?code=delete"
-             :resource  "/Resource/coding"}}
-  ;; Creation of REST queryps valid of any resource type
-  ;;
-  ;; ["?_fields=:path-array-expr"]
-  ;;
-  {:method  :POST
-   :url     "/Queryp"
-   :body    {:type  :Queryp
-             :code  "/Coding/wellknown-params?code=fields"
-             :desc  "Reduce response payload by filtering properties"
-             :name  :_fields
-             :of    :*}}
-  ;; Creation of :Resource REST queryps
-  ;;
-  ;; ["?type=:keyword"]
-  ;;
-  {:method  :POST
-   :url     "/Queryp"
-   :body    {:type  :Queryp
-             :code  "/Coding/filters?code=keyword"
-             :desc  "Filter Resource by of"
-             :name  :of
-             :path  [{:name     "of"}]
-             :of    :Resource}}
-  ;; Creation of :Route REST queryps
-  ;;
-  ;; ["?method=:keyword"
-  ;;  "?name=:keyword"
-  ;;  "?res-type=:keyword"]
-  ;;
-  {:method  :POST
-   :url     "/Queryp"
-   :body    {:type  :Queryp
-             :code  "/Coding/filters?code=keyword"
-             :desc  "Filter Route by method"
-             :name  :method
-             :path  [{:name     "method"}]
-             :of    :Route}}
-  {:method  :POST
-   :url     "/Queryp"
-   :body    {:type  :Queryp
-             :code  "/Coding/filters?code=text"
-             :desc  "Filter Route by name"
-             :name  :name
-             :path  [{:name     "name"}]
-             :of    :Route}}
-  {:method  :POST
-   :url     "/Queryp"
-   :body    {:type  :Queryp
-             :code  "/Coding/filters?code=keyword"
-             :desc  "Filter Route by the _type part of the route"
-             :name  :res-type
-             :path  [{:name         "path"
-                      :collection   true
-                      :filter       {:code "/Coding/wellknown-params?code=type"}}
-                     {:name         "value"}]
-             :of    :Route}}
-  ;; Creation of :List REST queryps
-  ;;
-  ;; ["?_of=:keyword"
-  ;;  "?_limit=:number"
-  ;;  "?_offset=:number"
-  ;;  "?_created=:date"
-  ;;  "?_modified=:date"
-  ;;  "?_sort=:keyword"]
-  ;;
-  {:method  :POST
-   :url     "/Queryp"
-   :body    {:type      :Queryp
-             :code      "/Coding/wellknown-params?code=of"
-             :desc      "Type of resource to search for"
-             :name      :_of
-             :value     :List
-             :of        :List}}
-  {:method  :POST
-   :url     "/Queryp"
-   :body    {:type      :Queryp
-             :code      "/Coding/wellknown-params?code=limit"
-             :desc      "Limit items count in the result"
-             :name      :_limit
-             :value     128
-             :of        :List}}
-  {:method  :POST
-   :url     "/Queryp"
-   :body    {:type      :Queryp
-             :code      "/Coding/wellknown-params?code=offset"
-             :desc      "Skip that many items before starting to count result items"
-             :name      :_offset
-             :value     0
-             :of        :List}}
-  {:method  :POST
-   :url     "/Queryp"
-   :body    {:type  :Queryp
-             :code  "/Coding/filters?code=date"
-             :desc  "Filter results by creation date"
-             :name  :_created
-             :path  [{:name     "created"
-                      :meta     true}]
-             :of    :List}}
-  {:method  :POST
-   :url     "/Queryp"
-   :body    {:type  :Queryp
-             :code  "/Coding/filters?code=date"
-             :desc  "Filter result by last modified date"
-             :name  :_modified
-             :path  [{:name     "modified"
-                      :meta     true}]
-             :of    :List}}
-  {:method  :POST
-   :url     "/Queryp"
-   :body    {:type      :Queryp
-             :code      "/Coding/wellknown-params?code=sort"
-             :desc      "Order results by specified queryp"
-             :name      :_sort
-             :value     :_created
-             :of        :List}}
-  ;; Creation of :Transaction REST queryps
-  ;;
-  ;; ["?status=:code-url"]
-  ;;
-  {:method  :POST
-   :url     "/Queryp"
-   :body    {:type  :Queryp
-             :code  "/Coding/filters?code=url"
-             :desc  "Filter Transactions by status"
-             :name  :status
-             :path  [{:name     "status"}]
-             :of    :Transaction}}
-  ;; Creation of :Queryp REST queryps
-  ;;
-  ;; ["?name=:keyword"
-  ;;  "?type=:keyword"]
-  ;;
-  {:method  :POST
-   :url     "/Queryp"
-   :body    {:type  :Queryp
-             :code  "/Coding/filters?code=keyword"
-             :desc  "Filter Queryps by name"
-             :name  :name
-             :path  [{:name     "name"}]
-             :of    :Queryp}}
-  {:method  :POST
-   :url     "/Queryp"
-   :body    {:type  :Queryp
-             :code  "/Coding/filters?code=keyword"
-             :desc  "Filter Queryps by type"
-             :name  :of
-             :path  [{:name     "of"}]
-             :of    :Queryp}}
-  ;; Creation of :Coding REST queryps
-  ;;
-  ;; ["?code=:keyword"]
-  ;;
-  {:method  :POST
-   :url     "/Queryp"
-   :body    {:type  :Queryp
-             :code  "/Coding/filters?code=keyword"
-             :desc  "Filter Coding by code"
-             :name  :code
-             :path  [{:name         "codes"
-                      :collection   true}
-                     {:name         "code"}]
-             :of    :Coding}}
-  ;; Creation of core :Coding list
-  ;;
-  ;; ["/Coding/resource-statuses"]}}
-  ;;  "/Coding/handlers"
-  ;;  "/Coding/filters" ]
-  ;;
-  {:method  :PUT
-   :url     "/Coding/wellknown-resources"
-   :body    {:type  :Coding
-             :id    "wellknown-resources"
-             :codes [{:code "/Coding/wellknown-resources?code=resource-storage"
-                      :desc "Resource storage allocation"}
-                     {:code "/Coding/wellknown-resources?code=resource"
-                      :desc "REST resource"}
-                     {:code "/Coding/wellknown-resources?code=route"
-                      :desc "REST route"}
-                     {:code "/Coding/wellknown-resources?code=queryp"
-                      :desc "REST query param"}
-                     {:code "/Coding/wellknown-resources?code=list"
-                      :desc "REST result set"}]}}
-  {:method  :PUT
-   :url     "/Coding/resource-statuses"
-   :body    {:type  :Coding
-             :id    "resource-statuses"
-             :codes [{:code "/Coding/resource-statuses?code=pending"
-                      :desc "Pending storage allocation"}
-                     {:code "/Coding/resource-statuses?code=active"
-                      :desc "Storage allocated"}]}}
-  {:method  :PUT
-   :url     "/Coding/handlers"
-   :body    {:type  :Coding
-             :id    "handlers"
-             :codes [{:code "/Coding/handlers?code=create"
-                      :desc "Triggers the creation of resource"}
+       :url     "/Ddl/table"
+       :body    {:type      :Ddl
+                 :id        "table"
+                 :desc      "Create postgres table DDL"
+                 :code      ["/Coding/wellknown-resources?code=ddl"
+                             "/Coding/wellknown-ddl?code=create-storage"
+                             "/Coding/ddl-langs?code=pg-sql"]
+                 :template  ["
+                              CREATE TABLE IF NOT EXISTS public.%1$s (
+                                id          TEXT             NOT NULL,
+                                resource    JSONB            NOT NULL,
+                                created     timestamptz      NOT NULL,
+                                modified    timestamptz      NOT NULL,
+                              CONSTRAINT %1$s_pk PRIMARY KEY (id));"
+                             "/Coding/ddl-params?code=res-type"]}
+      {:method  :PUT
+       :url     "/Ddl/sequence"
+       :body    {:type      :Ddl
+                 :id        "sequence"
+                 :desc      "Create postgres sequence DDL"
+                 :code      ["/Coding/wellknown-resources?code=ddl"
+                             "/Coding/wellknown-ddl?code=create-sequence"
+                             "/Coding/ddl-langs?code=pg-sql"]
+                 :template  ["
+                              CREATE SEQUENCE IF NOT EXISTS public.%1$s
+                                MINVALUE 1
+                                NO MAXVALUE
+                                START %2$d
+                                INCREMENT BY %3$d
+                                CACHE %4$d
+                                NO CYCLE"
+                             "/Coding/ddl-params?code=seq-id"
+                             "/Coding/ddl-params?code=seq-start"
+                             "/Coding/ddl-params?code=seq-inc"
+                             "/Coding/ddl-params?code=seq-cache"]}}
+      ;; Postgres Tables
+      ;;
+      ;; [:PgTable
+      ;;  ;PgQuery
+      ;;  :Coding
+      ;;  :Resource
+      ;;  :Route
+      ;;  :Queryp
+      ;;  :List]
+      ;;
+      {:method  :PUT
+       :url     "/PgTable/pgtable"
+       :body    {:type      :PgTable
+                 :id        "pgtable"
+                 :desc      "Postgres table for storing 'PgTable'"
+                 :code      "/Coding/wellknown-resources?code=resource-storage"
+                 :of        :PgTable
+                 :sql       ["CREATE TABLE IF NOT EXISTS public.pgtable ("
+                             "    id          TEXT             NOT NULL,"
+                             "    resource    JSONB            NOT NULL,"
+                             "    created     timestamptz      NOT NULL,"
+                             "    modified    timestamptz      NOT NULL,"
+                             "CONSTRAINT pgtable_pk PRIMARY KEY (id));"]}}
+      {:method  :PUT
+       :url     "/PgTable/pgquery"
+       :body    {:type      :PgTable
+                 :id        "pgquery"
+                 :desc      "Postgres table for storing 'PgQuery'"
+                 :code      "/Coding/wellknown-resources?code=resource-storage"
+                 :of        :PgQuery
+                 :sql       ["CREATE TABLE IF NOT EXISTS public.pgquery ("
+                             "    id          TEXT             NOT NULL,"
+                             "    resource    JSONB            NOT NULL,"
+                             "    created     timestamptz      NOT NULL,"
+                             "    modified    timestamptz      NOT NULL,"
+                             "CONSTRAINT pgquery_pk PRIMARY KEY (id));"]}}
+      {:method  :PUT
+       :url     "/PgTable/coding"
+       :body    {:type      :PgTable
+                 :id        "coding"
+                 :desc      "Postgres table for storing 'Coding'"
+                 :code      "/Coding/wellknown-resources?code=resource-storage"
+                 :of        :Coding
+                 :sql       ["CREATE TABLE IF NOT EXISTS public.coding ("
+                             "    id          TEXT             NOT NULL,"
+                             "    resource    JSONB            NOT NULL,"
+                             "    created     timestamptz      NOT NULL,"
+                             "    modified    timestamptz      NOT NULL,"
+                             "CONSTRAINT coding_pk PRIMARY KEY (id));"]}}
+      {:method  :PUT
+       :url     "/PgTable/resource"
+       :body    {:type      :PgTable
+                 :id        "resource"
+                 :desc      "Postgres table for storing 'Resource'"
+                 :code      "/Coding/wellknown-resources?code=resource-storage"
+                 :of        :Resource
+                 :sql       ["CREATE TABLE IF NOT EXISTS public.resource ("
+                             "    id          TEXT             NOT NULL,"
+                             "    resource    JSONB            NOT NULL,"
+                             "    created     timestamptz      NOT NULL,"
+                             "    modified    timestamptz      NOT NULL,"
+                             "CONSTRAINT resource_pk PRIMARY KEY (id));"]}}
+      {:method  :PUT
+       :url     "/PgTable/route"
+       :body    {:type      :PgTable
+                 :id        "route"
+                 :desc      "Postgres table for storing 'Route'"
+                 :code      "/Coding/wellknown-resources?code=resource-storage"
+                 :of        :Route
+                 :sql       ["CREATE TABLE IF NOT EXISTS public.route ("
+                             "    id          TEXT             NOT NULL,"
+                             "    resource    JSONB            NOT NULL,"
+                             "    created     timestamptz      NOT NULL,"
+                             "    modified    timestamptz      NOT NULL,"
+                             "CONSTRAINT route_pk PRIMARY KEY (id));"]}}
+      {:method  :PUT
+       :url     "/PgTable/queryp"
+       :body    {:type      :PgTable
+                 :id        "queryp"
+                 :desc      "Postgres table for storing 'Queryp'"
+                 :code      "/Coding/wellknown-resources?code=resource-storage"
+                 :of        :Queryp
+                 :sql       ["CREATE TABLE IF NOT EXISTS public.queryp ("
+                             "    id          TEXT             NOT NULL,"
+                             "    resource    JSONB            NOT NULL,"
+                             "    created     timestamptz      NOT NULL,"
+                             "    modified    timestamptz      NOT NULL,"
+                             "CONSTRAINT queryp_pk PRIMARY KEY (id));"]}}
+      {:method  :PUT
+       :url     "/PgTable/list"
+       :body    {:type      :PgTable
+                 :id        "list"
+                 :desc      "Postgres table for storing 'List'"
+                 :code      "/Coding/wellknown-resources?code=resource-storage"
+                 :of        :List
+                 :sql       ["CREATE TABLE IF NOT EXISTS public.list ("
+                             "    id          TEXT             NOT NULL,"
+                             "    resource    JSONB            NOT NULL,"
+                             "    created     timestamptz      NOT NULL,"
+                             "    modified    timestamptz      NOT NULL,"
+                             "CONSTRAINT list_pk PRIMARY KEY (id));"]}}
+      ;; Base resources
+      ;;
+      ;; [:Resource
+      ;;  :Route
+      ;;  :List
+      ;;  :Transaction
+      ;;  :Queryp
+      ;;  :Coding]
+      ;;
+      {:method  :PUT
+       :url     "/Resource/resource"
+       :body    {:type      :Resource
+                 :id        "resource"
+                 :desc      "REST resource"
+                 :status    "/Coding/resource-statuses?code=active"
+                 :of        :Resource
+                 :routes    "/List?_of=Route&res-type=Resource"}}
+      {:method  :PUT
+       :url     "/Resource/pgtable"
+       :body    {:type      :Resource
+                 :id        "pgtable"
+                 :desc      "Postgres table"
+                 :status    "/Coding/resource-statuses?code=active"
+                 :of        :PgTable
+                 :routes    "/List?_of=Route&res-type=PgTable"}}
+      {:method  :PUT
+       :url     "/Resource/pgquery"
+       :body    {:type      :Resource
+                 :id        "pgquery"
+                 :desc      "Postgres query"
+                 :status    "/Coding/resource-statuses?code=active"
+                 :of        :PgQuery
+                 :routes    "/List?_of=Route&res-type=PgQuery"}}
+      {:method  :PUT
+       :url     "/Resource/route"
+       :body    {:type      :Resource
+                 :id        "route"
+                 :desc      "REST route"
+                 :status    "/Coding/resource-statuses?code=active"
+                 :of        :Route
+                 :routes    "/List?_of=Route&res-type=Route"}}
+      {:method  :PUT
+       :url     "/Resource/list"
+       :body    {:type      :Resource
+                 :id        "list"
+                 :desc      "Collection of data"
+                 :status    "/Coding/resource-statuses?code=active"
+                 :of        :List
+                 :routes    "/List?_of=Route&res-type=List"}}
+      {:method  :PUT
+       :url     "/Resource/transaction"
+       :body    {:type      :Resource
+                 :id        "transaction"
+                 :desc      "Transaction of multiple http requests"
+                 :status    "/Coding/resource-statuses?code=active"
+                 :of        :Transaction
+                 :routes    "/List?_of=Route&res-type=Transaction"}}
+      {:method  :PUT
+       :url     "/Resource/queryp"
+       :body    {:type      :Resource
+                 :id        "queryp"
+                 :desc      "REST queryp"
+                 :status    "/Coding/resource-statuses?code=active"
+                 :of        :Queryp
+                 :routes    "/List?_of=Route&res-type=Queryp"}}
+      {:method  :PUT
+       :url     "/Resource/coding"
+       :body    {:type      :Resource
+                 :id        "coding"
+                 :desc      "Set of codes"
+                 :status    "/Coding/resource-statuses?code=active"
+                 :of        :Coding
+                 :routes    "/List?_of=Route&res-type=Coding"}}
+      ;; Creation of default REST routes
+      ;;
+      ;; ["not-found"]
+      ;;
+      {:method  :POST
+       :url     "/Route"
+       :body    {:type      :Route
+                 :name      :not-found
+                 :code      "/Coding/handlers?code=not-found"
+                 :routes    "/List?_of=Route"}}
+      ;; Creation of :Resource REST routes
+      ;;
+      ;; ["create"  :POST   "/Resource"
+      ;;  "read"    :GET    "/Resource/:id"
+      ;;  "upsert"  :PUT    "/Resource/:id"
+      ;;  "delete"  :DELETE "/Resource/:id"]
+      ;;
+      {:method  :POST
+       :url     "/Route"
+       :body    {:type      :Route
+                 :method    :POST
+                 :path      [{:name     "_type"
+                              :code     "/Coding/wellknown-params?code=type"
+                              :value    "Resource"}]
+                 :name      :create-resource
+                 :code      "/Coding/handlers?code=create"
+                 :resource  "/Resource/resource"}}
+      {:method  :POST
+       :url     "/Route"
+       :body    {:type      :Route
+                 :method    :GET
+                 :path      [{:name     "_type"
+                              :code     "/Coding/wellknown-params?code=type"
+                              :value    "Resource"}
+                             {:name     "_id"
+                              :code     "/Coding/wellknown-params?code=id"}]
+                 :name      :read-resource
+                 :code      "/Coding/handlers?code=read"
+                 :resource  "/Resource/resource"}}
+      {:method  :POST
+       :url     "/Route"
+       :body    {:type      :Route
+                 :method    :PUT
+                 :path      [{:name     "_type"
+                              :code     "/Coding/wellknown-params?code=type"
+                              :value    "Resource"}
+                             {:name     "_id"
+                              :code     "/Coding/wellknown-params?code=id"}]
+                 :name      "upsert-resource"
+                 :code      "/Coding/handlers?code=upsert"
+                 :resource  "/Resource/resource"}}
+      {:method  :POST
+       :url     "/Route"
+       :body    {:type      :Route
+                 :method    :DELETE
+                 :path      [{:name     "_type"
+                              :code     "/Coding/wellknown-params?code=type"
+                              :value    "Resource"}
+                             {:name     "_id"
+                              :code     "/Coding/wellknown-params?code=id"}]
+                 :name      :delete-resource
+                 :code      "/Coding/handlers?code=delete"
+                 :resource  "/Resource/resource"}}
+      ;; Creation of :PgTable REST routes
+      ;;
+      ;; ["read"    :GET    "/Resource/:id"
+      ;;
+      {:method  :POST
+       :url     "/Route"
+       :body    {:type      :Route
+                 :method    :GET
+                 :path      [{:name     "_type"
+                              :code     "/Coding/wellknown-params?code=type"
+                              :value    "PgTable"}
+                             {:name     "_id"
+                              :code     "/Coding/wellknown-params?code=id"}]
+                 :name      :read-pg-table
+                 :code      "/Coding/handlers?code=read"
+                 :resource  "/Resource/pgtable"}}
+      ;; Creation of :PgQuery REST routes
+      ;;
+      ;; ["read"    :GET    "/Resource/:id"
+      ;;
+      {:method  :POST
+       :url     "/Route"
+       :body    {:type      :Route
+                 :method    :GET
+                 :path      [{:name     "_type"
+                              :code     "/Coding/wellknown-params?code=type"
+                              :value    "PgQuery"}
+                             {:name     "_id"
+                              :code     "/Coding/wellknown-params?code=id"}]
+                 :name      :read-pg-query
+                 :code      "/Coding/handlers?code=read"
+                 :resource  "/Resource/pgquery"}}
+      ;; Creation of :Route REST routes
+      ;;
+      ;; ["create"  :POST   "/Route"
+      ;;  "read"    :GET    "/Route/:id"
+      ;;  "upsert"  :PUT    "/Route/:id"
+      ;;  "delete"  :DELETE "/Route/:id"]
+      ;;
+      {:method  :POST
+       :url     "/Route"
+       :body    {:type      :Route
+                 :method    :POST
+                 :path      [{:name     "_type"
+                              :code     "/Coding/wellknown-params?code=type"
+                              :value    "Route"}]
+                 :name      :create-route
+                 :code      "/Coding/handlers?code=create"
+                 :resource  "/Resource/route"}}
+      {:method  :POST
+       :url     "/Route"
+       :body    {:type      :Route
+                 :method    :GET
+                 :path      [{:name     "_type"
+                              :code     "/Coding/wellknown-params?code=type"
+                              :value    "Route"}
+                             {:name     "_id"
+                              :code     "/Coding/wellknown-params?code=id"}]
+                 :name      :read-route
+                 :code      "/Coding/handlers?code=read"
+                 :resource  "/Resource/route"}}
+      {:method  :POST
+       :url     "/Route"
+       :body    {:type      :Route
+                 :method    :PUT
+                 :path      [{:name     "_type"
+                              :code     "/Coding/wellknown-params?code=type"
+                              :value    "Route"}
+                             {:name     "_id"
+                              :code     "/Coding/wellknown-params?code=id"}]
+                 :name      :upsert-route
+                 :code      "/Coding/handlers?code=upsert"
+                 :resource  "/Resource/route"}}
+      {:method  :POST
+       :url     "/Route"
+       :body    {:type      :Route
+                 :method    :DELETE
+                 :path      [{:name     "_type"
+                              :code     "/Coding/wellknown-params?code=type"
+                              :value    "Route"}
+                             {:name     "_id"
+                              :code     "/Coding/wellknown-params?code=id"}]
+                 :name      :delete-route
+                 :code      "/Coding/handlers?code=delete"
+                 :resource  "/Resource/route"}}
+      ;; Creation of :List REST routes
+      ;;
+      ;; ["create"  :POST   "/List"
+      ;;  "read"    :GET    "/List/:id"
+      ;;  "upsert"  :PUT    "/List/:id"
+      ;;  "delete"  :DELETE "/List/:id"
+      ;;  "search"  :GET    "/List"]
+      ;;
+      {:method  :POST
+       :url     "/Route"
+       :body    {:type      :Route
+                 :method    :POST
+                 :path      [{:name     "_type"
+                              :code     "/Coding/wellknown-params?code=type"
+                              :value    "List"}]
+                 :name      :create-list
+                 :code      "/Coding/handlers?code=create"
+                 :resource  "/Resource/list"}}
+      {:method  :POST
+       :url     "/Route"
+       :body    {:type      :Route
+                 :method    :GET
+                 :path      [{:name     "_type"
+                              :code     "/Coding/wellknown-params?code=type"
+                              :value    "List"}
+                             {:name     "_id"
+                              :code     "/Coding/wellknown-params?code=id"}]
+                 :name      :read-list
+                 :code      "/Coding/handlers?code=read"
+                 :resource  "/Resource/list"}}
+      {:method  :POST
+       :url     "/Route"
+       :body    {:type      :Route
+                 :method    :PUT
+                 :path      [{:name     "_type"
+                              :code     "/Coding/wellknown-params?code=type"
+                              :value    "List"}
+                             {:name     "_id"
+                              :code     "/Coding/wellknown-params?code=id"}]
+                 :name      :upsert-list
+                 :code      "/Coding/handlers?code=upsert"
+                 :resource  "/Resource/list"}}
+      {:method  :POST
+       :url     "/Route"
+       :body    {:type      :Route
+                 :method    :DELETE
+                 :path      [{:name     "_type"
+                              :code     "/Coding/wellknown-params?code=type"
+                              :value    "List"}
+                             {:name     "_id"
+                              :code     "/Coding/wellknown-params?code=id"}]
+                 :name      :delete-list
+                 :code      "/Coding/handlers?code=delete"
+                 :resource  "/Resource/list"}}
+      {:method  :POST
+       :url     "/Route"
+       :body    {:type      :Route
+                 :method    :GET
+                 :path      [{:name     "_type"
+                              :code     "/Coding/wellknown-params?code=type"
+                              :value    "List"}]
+                 :name      :search-list
+                 :code      "/Coding/handlers?code=search"
+                 :resource  "/Resource/list"}}
+      ;; Creation of :Transaction REST routes
+      ;;
+      ;; ["create"  :POST   "/Transaction"
+      ;;  "read"    :GET    "/Transaction/:id"
+      ;;  "upsert"  :PUT    "/Transaction/:id"
+      ;;  "delete"  :DELETE "/Transaction/:id"]
+      ;;
+      {:method  :POST
+       :url     "/Route"
+       :body    {:type      :Route
+                 :method    :POST
+                 :path      [{:name     "_type"
+                              :code     "/Coding/wellknown-params?code=type"
+                              :value    "Transaction"}]
+                 :name      :create-transaction
+                 :code      "/Coding/handlers?code=create"
+                 :resource  "/Resource/transaction"}}
+      {:method  :POST
+       :url     "/Route"
+       :body    {:type      :Route
+                 :method    :GET
+                 :path      [{:name     "_type"
+                              :code     "/Coding/wellknown-params?code=type"
+                              :value    "Transaction"}
+                             {:name     "_id"
+                              :code     "/Coding/wellknown-params?code=id"}]
+                 :name      :read-transaction
+                 :code      "/Coding/handlers?code=read"
+                 :resource  "/Resource/transaction"}}
+      {:method  :POST
+       :url     "/Route"
+       :body    {:type      :Route
+                 :method    :PUT
+                 :path      [{:name     "_type"
+                              :code     "/Coding/wellknown-params?code=type"
+                              :value    "Transaction"}
+                             {:name     "_id"
+                              :code     "/Coding/wellknown-params?code=id"}]
+                 :name      :upsert-transaction
+                 :code      "/Coding/handlers?code=upsert"
+                 :resource  "/Resource/transaction"}}
+      {:method  :POST
+       :url     "/Route"
+       :body    {:type      :Route
+                 :method    :DELETE
+                 :path      [{:name     "_type"
+                              :code     "/Coding/wellknown-params?code=type"
+                              :value    "Transaction"}
+                             {:name     "_id"
+                              :code     "/Coding/wellknown-params?code=id"}]
+                 :name      :delete-transaction
+                 :code      "/Coding/handlers?code=delete"
+                 :resource  "/Resource/transaction"}}
+      ;; Creation of :Queryp REST routes
+      ;;
+      ;; ["create"  :POST   "/Queryp"
+      ;;  "read"    :GET    "/Queryp/:id"
+      ;;  "upsert"  :PUT    "/Queryp/:id"
+      ;;  "delete"  :DELETE "/Queryp/:id"]
+      ;;
+      {:method  :POST
+       :url     "/Route"
+       :body    {:type      :Route
+                 :method    :POST
+                 :path      [{:name     "_type"
+                              :code     "/Coding/wellknown-params?code=type"
+                              :value    "Queryp"}]
+                 :name      :create-queryp
+                 :code      "/Coding/handlers?code=create"
+                 :resource  "/Resource/queryp"}}
+      {:method  :POST
+       :url     "/Route"
+       :body    {:type      :Route
+                 :method    :GET
+                 :path      [{:name     "_type"
+                              :code     "/Coding/wellknown-params?code=type"
+                              :value    "Queryp"}
+                             {:name     "_id"
+                              :code     "/Coding/wellknown-params?code=id"}]
+                 :name      :read-queryp
+                 :code      "/Coding/handlers?code=read"
+                 :resource  "/Resource/queryp"}}
+      {:method  :POST
+       :url     "/Route"
+       :body    {:type      :Route
+                 :method    :PUT
+                 :path      [{:name     "_type"
+                              :code     "/Coding/wellknown-params?code=type"
+                              :value    "Queryp"}
+                             {:name     "_id"
+                              :code     "/Coding/wellknown-params?code=id"}]
+                 :name      :upsert-queryp
+                 :code      "/Coding/handlers?code=upsert"
+                 :resource  "/Resource/queryp"}}
+      {:method  :POST
+       :url     "/Route"
+       :body    {:type      :Route
+                 :method    :DELETE
+                 :path      [{:name     "_type"
+                              :code     "/Coding/wellknown-params?code=type"
+                              :value    "Queryp"}
+                             {:name     "_id"
+                              :code     "/Coding/wellknown-params?code=id"}]
+                 :name      :delete-queryp
+                 :code      "/Coding/handlers?code=delete"
+                 :resource  "/Resource/queryp"}}
+      ;; Creation of :Coding REST routes
+      ;;
+      ;; ["create"  :POST   "/Coding"
+      ;;  "read"    :GET    "/Coding/:id"
+      ;;  "upsert"  :PUT    "/Coding/:id"
+      ;;  "delete"  :DELETE "/Coding/:id"]
+      ;;
+      {:method  :POST
+       :url     "/Route"
+       :body    {:type      :Route
+                 :method    :POST
+                 :path      [{:name     "_type"
+                              :code     "/Coding/wellknown-params?code=type"
+                              :value    "Coding"}]
+                 :name      :create-coding
+                 :code      "/Coding/handlers?code=create"
+                 :resource  "/Resource/coding"}}
+      {:method  :POST
+       :url     "/Route"
+       :body    {:type      :Route
+                 :method    :GET
+                 :path      [{:name     "_type"
+                              :code     "/Coding/wellknown-params?code=type"
+                              :value    "Coding"}
+                             {:name     "_id"
+                              :code     "/Coding/wellknown-params?code=id"}]
+                 :name      :read-coding
+                 :code      "/Coding/handlers?code=read"
+                 :resource  "/Resource/coding"}}
+      {:method  :POST
+       :url     "/Route"
+       :body    {:type      :Route
+                 :method    :PUT
+                 :path      [{:name     "_type"
+                              :code     "/Coding/wellknown-params?code=type"
+                              :value    "Coding"}
+                             {:name     "_id"
+                              :code     "/Coding/wellknown-params?code=id"}]
+                 :name      :upsert-coding
+                 :code      "/Coding/handlers?code=upsert"
+                 :resource  "/Resource/coding"}}
+      {:method  :POST
+       :url     "/Route"
+       :body    {:type      :Route
+                 :method    :DELETE
+                 :path      [{:name     "_type"
+                              :code     "/Coding/wellknown-params?code=type"
+                              :value    "Coding"}
+                             {:name     "_id"
+                              :code     "/Coding/wellknown-params?code=id"}]
+                 :name      :delete-coding
+                 :code      "/Coding/handlers?code=delete"
+                 :resource  "/Resource/coding"}}
+      ;; Creation of REST queryps valid of any resource type
+      ;;
+      ;; ["?_fields=:path-array-expr"]
+      ;;
+      {:method  :POST
+       :url     "/Queryp"
+       :body    {:type  :Queryp
+                 :code  "/Coding/wellknown-params?code=fields"
+                 :desc  "Reduce response payload by filtering properties"
+                 :name  :_fields
+                 :of    :*}}
+      ;; Creation of :Resource REST queryps
+      ;;
+      ;; ["?type=:keyword"]
+      ;;
+      {:method  :POST
+       :url     "/Queryp"
+       :body    {:type  :Queryp
+                 :code  "/Coding/filters?code=keyword"
+                 :desc  "Filter Resource by of"
+                 :name  :of
+                 :path  [{:name     "of"}]
+                 :of    :Resource}}
+      ;; Creation of :Route REST queryps
+      ;;
+      ;; ["?method=:keyword"
+      ;;  "?name=:keyword"
+      ;;  "?res-type=:keyword"]
+      ;;
+      {:method  :POST
+       :url     "/Queryp"
+       :body    {:type  :Queryp
+                 :code  "/Coding/filters?code=keyword"
+                 :desc  "Filter Route by method"
+                 :name  :method
+                 :path  [{:name     "method"}]
+                 :of    :Route}}
+      {:method  :POST
+       :url     "/Queryp"
+       :body    {:type  :Queryp
+                 :code  "/Coding/filters?code=text"
+                 :desc  "Filter Route by name"
+                 :name  :name
+                 :path  [{:name     "name"}]
+                 :of    :Route}}
+      {:method  :POST
+       :url     "/Queryp"
+       :body    {:type  :Queryp
+                 :code  "/Coding/filters?code=keyword"
+                 :desc  "Filter Route by the _type part of the route"
+                 :name  :res-type
+                 :path  [{:name         "path"
+                          :collection   true
+                          :filter       {:code "/Coding/wellknown-params?code=type"}}
+                         {:name         "value"}]
+                 :of    :Route}}
+      ;; Creation of :List REST queryps
+      ;;
+      ;; ["?_of=:keyword"
+      ;;  "?_limit=:number"
+      ;;  "?_offset=:number"
+      ;;  "?_created=:date"
+      ;;  "?_modified=:date"
+      ;;  "?_sort=:keyword"]
+      ;;
+      {:method  :POST
+       :url     "/Queryp"
+       :body    {:type      :Queryp
+                 :code      "/Coding/wellknown-params?code=of"
+                 :desc      "Type of resource to search for"
+                 :name      :_of
+                 :value     :List
+                 :of        :List}}
+      {:method  :POST
+       :url     "/Queryp"
+       :body    {:type      :Queryp
+                 :code      "/Coding/wellknown-params?code=limit"
+                 :desc      "Limit items count in the result"
+                 :name      :_limit
+                 :value     128
+                 :of        :List}}
+      {:method  :POST
+       :url     "/Queryp"
+       :body    {:type      :Queryp
+                 :code      "/Coding/wellknown-params?code=offset"
+                 :desc      "Skip that many items before starting to count result items"
+                 :name      :_offset
+                 :value     0
+                 :of        :List}}
+      {:method  :POST
+       :url     "/Queryp"
+       :body    {:type  :Queryp
+                 :code  "/Coding/filters?code=date"
+                 :desc  "Filter results by creation date"
+                 :name  :_created
+                 :path  [{:name     "created"
+                          :meta     true}]
+                 :of    :List}}
+      {:method  :POST
+       :url     "/Queryp"
+       :body    {:type  :Queryp
+                 :code  "/Coding/filters?code=date"
+                 :desc  "Filter result by last modified date"
+                 :name  :_modified
+                 :path  [{:name     "modified"
+                          :meta     true}]
+                 :of    :List}}
+      {:method  :POST
+       :url     "/Queryp"
+       :body    {:type      :Queryp
+                 :code      "/Coding/wellknown-params?code=sort"
+                 :desc      "Order results by specified queryp"
+                 :name      :_sort
+                 :value     :_created
+                 :of        :List}}
+      ;; Creation of :Transaction REST queryps
+      ;;
+      ;; ["?status=:code-url"]
+      ;;
+      {:method  :POST
+       :url     "/Queryp"
+       :body    {:type  :Queryp
+                 :code  "/Coding/filters?code=url"
+                 :desc  "Filter Transactions by status"
+                 :name  :status
+                 :path  [{:name     "status"}]
+                 :of    :Transaction}}
+      ;; Creation of :Queryp REST queryps
+      ;;
+      ;; ["?name=:keyword"
+      ;;  "?type=:keyword"]
+      ;;
+      {:method  :POST
+       :url     "/Queryp"
+       :body    {:type  :Queryp
+                 :code  "/Coding/filters?code=keyword"
+                 :desc  "Filter Queryps by name"
+                 :name  :name
+                 :path  [{:name     "name"}]
+                 :of    :Queryp}}
+      {:method  :POST
+       :url     "/Queryp"
+       :body    {:type  :Queryp
+                 :code  "/Coding/filters?code=keyword"
+                 :desc  "Filter Queryps by type"
+                 :name  :of
+                 :path  [{:name     "of"}]
+                 :of    :Queryp}}
+      ;; Creation of :Coding REST queryps
+      ;;
+      ;; ["?code=:keyword"]
+      ;;
+      {:method  :POST
+       :url     "/Queryp"
+       :body    {:type  :Queryp
+                 :code  "/Coding/filters?code=keyword"
+                 :desc  "Filter Coding by code"
+                 :name  :code
+                 :path  [{:name         "codes"
+                          :collection   true}
+                         {:name         "code"}]
+                 :of    :Coding}}
+      ;; Creation of core :Coding list
+      ;;
+      ;; ["/Coding/resource-statuses"]}}
+      ;;  "/Coding/handlers"
+      ;;  "/Coding/filters" ]
+      ;;
+      {:method  :PUT
+       :url     "/Coding/wellknown-resources"
+       :body    {:type  :Coding
+                 :id    "wellknown-resources"
+                 :codes [{:code "/Coding/wellknown-resources?code=ddl"
+                          :desc "DDL resource"}
+                         {:code "/Coding/wellknown-resources?code=resource"
+                          :desc "REST resource"}
+                         {:code "/Coding/wellknown-resources?code=route"
+                          :desc "REST route"}
+                         {:code "/Coding/wellknown-resources?code=queryp"
+                          :desc "REST query param"}
+                         {:code "/Coding/wellknown-resources?code=list"
+                          :desc "REST result set"}
+                         {:code "/Coding/wellknown-resources?code=seq"
+                          :desc "Sequence resource"}]}}
+      {:method  :PUT
+       :url     "/Coding/resource-statuses"
+       :body    {:type  :Coding
+                 :id    "resource-statuses"
+                 :codes [{:code "/Coding/resource-statuses?code=pending"
+                          :desc "Pending storage allocation"}
+                         {:code "/Coding/resource-statuses?code=active"
+                          :desc "Storage allocated"}]}}
+      {:method  :PUT
+       :url     "/Coding/handlers"
+       :body    {:type  :Coding
+                 :id    "handlers"
+                 :codes [{:code "/Coding/handlers?code=create"
+                          :desc "Triggers the creation of resource"}
 
-                     {:code "/Coding/handlers?code=read"
-                      :desc "Triggers the retrieval of resource matching by id"}
-                     {:code "/Coding/handlers?code=upsert"
-                      :desc "Triggers the creation of resource or update matching by id"}
-                     {:code "/Coding/handlers?code=delete"
-                      :desc "Triggers the removal of resource matching by id"}
-                     {:code "/Coding/handlers?code=search"
-                      :desc "Triggers the search of resources"}
-                     {:code "/Coding/handlers?code=not-found"
-                      :desc "Produces a not-found HTTP response"}]}}
-  {:method  :PUT
-   :url     "/Coding/filters"
-   :body    {:type  :Coding
-             :id    "filters"
-             :codes [{:code "/Coding/filters?code=keyword"
-                      :desc "Filter results by matching exact"}
-                     {:code "/Coding/filters?code=text"
-                      :desc "Filter results by matching substring/contains"}
-                     {:code "/Coding/filters?code=url"
-                      :desc "Filter results by matching url path and querie-strings"}
-                     {:code "/Coding/filters?code=number"
-                      :desc "Filter results by comparing numbers"}
-                     {:code "/Coding/filters?code=date"
-                      :desc "Filter results by comparing dates"}]}}
-  {:method  :PUT
-   :url     "/Coding/wellknown-params"
-   :body    {:type  :Coding
-             :id    "wellknown-params"
-             :codes [{:code "/Coding/wellknown-params?code=type"
-                      :desc "Route path relative to resource type"}
-                     {:code "/Coding/wellknown-params?code=id"
-                      :desc "Route path relative to resource id"}
-                     {:code "/Coding/wellknown-params?code=of"
-                      :desc "Query string param for type"}
-                     {:code "/Coding/wellknown-params?code=fields"
-                      :desc "Query string param for selecting and mapping result props"}
-                     {:code "/Coding/wellknown-params?code=limit"
-                      :desc "Query param for limitting result items count"}
-                     {:code "/Coding/wellknown-params?code=offset"
-                      :desc "Query param for skipping first 'n' items of result"}
-                     {:code "/Coding/wellknown-params?code=sort"
-                      :desc "Query param for ordering result items"}]}}
-  {:method  :PUT
-   :url     "/Coding/transaction-statuses"
-   :body    {:type  :Coding
-             :id    "transaction-statuses"
-             :codes [{:code "/Coding/transaction-statuses?code=draft"
-                      :desc "Transaction beign constructed, DO NOT try commit"}
-                     {:code "/Coding/transaction-statuses?code=active"
-                      :desc "Transaction ready to be commited"}
-                     {:code "/Coding/transaction-statuses?code=in-progress"
-                      :desc "Transaction beign commited"}
-                     {:code "/Coding/transaction-statuses?code=completed"
-                      :desc "Transaction successfully commited"}
-                     {:code "/Coding/transaction-statuses?code=failed"
-                      :desc "Transaction failed"}]}}
-  {:method  :PUT
-   :url     "/Coding/transaction-modes"
-   :body    {:type  :Coding
-             :id    "transaction-modes"
-             :codes [{:code "/Coding/transaction-modes?code=sync"
-                      :desc "Execute transaction immediately and wait for completion before responding"}
-                     {:code "/Coding/transaction-modes?code=async"
-                      :desc "Place transaction and don't wait for completion before responding"}
-                     {:code "/Coding/transaction-modes?code=scheduled"
-                      :desc "Along with schedule cron expression, dalays execution of transaction"}
-                     {:code "/Coding/transaction-modes?code=recurring"
-                      :desc "Along with schedule cron expression, defines recurring execution of transaction"}]}}]}
+                         {:code "/Coding/handlers?code=read"
+                          :desc "Triggers the retrieval of resource matching by id"}
+                         {:code "/Coding/handlers?code=upsert"
+                          :desc "Triggers the creation of resource or update matching by id"}
+                         {:code "/Coding/handlers?code=delete"
+                          :desc "Triggers the removal of resource matching by id"}
+                         {:code "/Coding/handlers?code=search"
+                          :desc "Triggers the search of resources"}
+                         {:code "/Coding/handlers?code=not-found"
+                          :desc "Produces a not-found HTTP response"}]}}
+      {:method  :PUT
+       :url     "/Coding/filters"
+       :body    {:type  :Coding
+                 :id    "filters"
+                 :codes [{:code "/Coding/filters?code=keyword"
+                          :desc "Filter results by matching exact"}
+                         {:code "/Coding/filters?code=text"
+                          :desc "Filter results by matching substring/contains"}
+                         {:code "/Coding/filters?code=url"
+                          :desc "Filter results by matching url path and querie-strings"}
+                         {:code "/Coding/filters?code=number"
+                          :desc "Filter results by comparing numbers"}
+                         {:code "/Coding/filters?code=date"
+                          :desc "Filter results by comparing dates"}]}}
+      {:method  :PUT
+       :url     "/Coding/wellknown-params"
+       :body    {:type  :Coding
+                 :id    "wellknown-params"
+                 :codes [{:code "/Coding/wellknown-params?code=type"
+                          :desc "Route path relative to resource type"}
+                         {:code "/Coding/wellknown-params?code=id"
+                          :desc "Route path relative to resource id"}
+                         {:code "/Coding/wellknown-params?code=of"
+                          :desc "Query string param for type"}
+                         {:code "/Coding/wellknown-params?code=fields"
+                          :desc "Query string param for selecting and mapping result props"}
+                         {:code "/Coding/wellknown-params?code=limit"
+                          :desc "Query param for limitting result items count"}
+                         {:code "/Coding/wellknown-params?code=offset"
+                          :desc "Query param for skipping first 'n' items of result"}
+                         {:code "/Coding/wellknown-params?code=sort"
+                          :desc "Query param for ordering result items"}]}}
+      {:method  :PUT
+       :url     "/Coding/transaction-statuses"
+       :body    {:type  :Coding
+                 :id    "transaction-statuses"
+                 :codes [{:code "/Coding/transaction-statuses?code=draft"
+                          :desc "Transaction beign constructed, DO NOT try commit"}
+                         {:code "/Coding/transaction-statuses?code=active"
+                          :desc "Transaction ready to be commited"}
+                         {:code "/Coding/transaction-statuses?code=in-progress"
+                          :desc "Transaction beign commited"}
+                         {:code "/Coding/transaction-statuses?code=completed"
+                          :desc "Transaction successfully commited"}
+                         {:code "/Coding/transaction-statuses?code=failed"
+                          :desc "Transaction failed"}]}}
+      {:method  :PUT
+       :url     "/Coding/transaction-modes"
+       :body    {:type  :Coding
+                 :id    "transaction-modes"
+                 :codes [{:code "/Coding/transaction-modes?code=sync"
+                          :desc "Execute transaction immediately and wait for completion before responding"}
+                         {:code "/Coding/transaction-modes?code=async"
+                          :desc "Place transaction and don't wait for completion before responding"}
+                         {:code "/Coding/transaction-modes?code=scheduled"
+                          :desc "Along with schedule cron expression, dalays execution of transaction"}
+                         {:code "/Coding/transaction-modes?code=recurring"
+                          :desc "Along with schedule cron expression, defines recurring execution of transaction"}]}}
+      {:method  :PUT
+       :url     "/Coding/wellknown-ddl"
+       :body    {:type  :Coding
+                 :id    "wellknown-ddl"
+                 :codes [{:code "/Coding/wellknown-ddl?code=create-storage"
+                          :desc "Storage allocation DDL, for sql: create-table"}
+                         {:code "/Coding/wellknown-ddl?code=create-sequence"
+                          :desc "Autoincremental number generator"}]}}
+      {:method  :PUT
+       :url     "/Coding/ddl-params"
+       :body    {:type  :Coding
+                 :id    "ddl-params"
+                 :codes [{:code "/Coding/ddl-params?code=res-type"
+                          :desc "Resource type name(lower-case) the storage is being allocated for"}
+                         {:code "/Coding/ddl-params?code=seq-id"
+                          :desc "Sequence identifier"}]}}
+      {:method  :PUT
+       :url     "/Coding/ddl-langs"
+       :body    {:type  :Coding
+                 :id    "ddl-langs"
+                 :codes [{:code "/Coding/ddl-langs?code=pg-sql"
+                          :desc "Postgres SQL"}]}}}]}
