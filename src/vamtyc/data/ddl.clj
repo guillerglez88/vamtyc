@@ -2,6 +2,9 @@
   (:require
     [clojure.string :as str]))
 
+(def wk-create-storage    "/Coding/wellknown-ddl?code=create-storage")
+(def wk-create-sequence   "/Coding/wellknown-ddl?code=create-sequence")
+
 (def tpl-param-res-type   "/Coding/ddl-params?code=res-type")
 
 (def tpl-param-seq-id     "/Coding/ddl-params?code=seq-id")

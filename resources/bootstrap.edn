@@ -57,122 +57,21 @@
              :start     1
              :inc       1
              :cache     12}}
+  ;; Base resources
   ;;
-  ;; Postgres Tables
-  ;;
-  ;; [:PgTable
-  ;;  ;PgQuery
-  ;;  :Coding
-  ;;  :Resource
+  ;; [:Resource
   ;;  :Route
+  ;;  :List
+  ;;  :Transaction
   ;;  :Queryp
-  ;;  :List]
+  ;;  :Coding]
   ;;
-  {:method  :PUT
-   :url     "/PgTable/pgtable"
-   :body    {:type      :PgTable
-             :id        "pgtable"
-             :desc      "Postgres table for storing 'PgTable'"
-             :code      "/Coding/wellknown-resources?code=resource-storage"
-             :of        :PgTable
-             :sql       ["CREATE TABLE IF NOT EXISTS public.pgtable ("
-                         "    id          TEXT             NOT NULL,"
-                         "    resource    JSONB            NOT NULL,"
-                         "    created     timestamptz      NOT NULL,"
-                         "    modified    timestamptz      NOT NULL,"
-                         "CONSTRAINT pgtable_pk PRIMARY KEY (id));"]}}
-  {:method  :PUT
-   :url     "/PgTable/pgquery"
-   :body    {:type      :PgTable
-             :id        "pgquery"
-             :desc      "Postgres table for storing 'PgQuery'"
-             :code      "/Coding/wellknown-resources?code=resource-storage"
-             :of        :PgQuery
-             :sql       ["CREATE TABLE IF NOT EXISTS public.pgquery ("
-                         "    id          TEXT             NOT NULL,"
-                         "    resource    JSONB            NOT NULL,"
-                         "    created     timestamptz      NOT NULL,"
-                         "    modified    timestamptz      NOT NULL,"
-                         "CONSTRAINT pgquery_pk PRIMARY KEY (id));"]}}
-  {:method  :PUT
-   :url     "/PgTable/coding"
-   :body    {:type      :PgTable
-             :id        "coding"
-             :desc      "Postgres table for storing 'Coding'"
-             :code      "/Coding/wellknown-resources?code=resource-storage"
-             :of        :Coding
-             :sql       ["CREATE TABLE IF NOT EXISTS public.coding ("
-                         "    id          TEXT             NOT NULL,"
-                         "    resource    JSONB            NOT NULL,"
-                         "    created     timestamptz      NOT NULL,"
-                         "    modified    timestamptz      NOT NULL,"
-                         "CONSTRAINT coding_pk PRIMARY KEY (id));"]}}
-  {:method  :PUT
-   :url     "/PgTable/resource"
-   :body    {:type      :PgTable
-             :id        "resource"
-             :desc      "Postgres table for storing 'Resource'"
-             :code      "/Coding/wellknown-resources?code=resource-storage"
-             :of        :Resource
-             :sql       ["CREATE TABLE IF NOT EXISTS public.resource ("
-                         "    id          TEXT             NOT NULL,"
-                         "    resource    JSONB            NOT NULL,"
-                         "    created     timestamptz      NOT NULL,"
-                         "    modified    timestamptz      NOT NULL,"
-                         "CONSTRAINT resource_pk PRIMARY KEY (id));"]}}
-  {:method  :PUT
-   :url     "/PgTable/route"
-   :body    {:type      :PgTable
-             :id        "route"
-             :desc      "Postgres table for storing 'Route'"
-             :code      "/Coding/wellknown-resources?code=resource-storage"
-             :of        :Route
-             :sql       ["CREATE TABLE IF NOT EXISTS public.route ("
-                         "    id          TEXT             NOT NULL,"
-                         "    resource    JSONB            NOT NULL,"
-                         "    created     timestamptz      NOT NULL,"
-                         "    modified    timestamptz      NOT NULL,"
-                         "CONSTRAINT route_pk PRIMARY KEY (id));"]}}
-  {:method  :PUT
-   :url     "/PgTable/queryp"
-   :body    {:type      :PgTable
-             :id        "queryp"
-             :desc      "Postgres table for storing 'Queryp'"
-             :code      "/Coding/wellknown-resources?code=resource-storage"
-             :of        :Queryp
-             :sql       ["CREATE TABLE IF NOT EXISTS public.queryp ("
-                         "    id          TEXT             NOT NULL,"
-                         "    resource    JSONB            NOT NULL,"
-                         "    created     timestamptz      NOT NULL,"
-                         "    modified    timestamptz      NOT NULL,"
-                         "CONSTRAINT queryp_pk PRIMARY KEY (id));"]}}
-  {:method  :PUT
-   :url     "/PgTable/list"
-   :body    {:type      :PgTable
-             :id        "list"
-             :desc      "Postgres table for storing 'List'"
-             :code      "/Coding/wellknown-resources?code=resource-storage"
-             :of        :List
-             :sql       ["CREATE TABLE IF NOT EXISTS public.list ("
-                         "    id          TEXT             NOT NULL,"
-                         "    resource    JSONB            NOT NULL,"
-                         "    created     timestamptz      NOT NULL,"
-                         "    modified    timestamptz      NOT NULL,"
-                         "CONSTRAINT list_pk PRIMARY KEY (id));"]}}
-      ;; Base resources
-      ;;
-      ;; [:Resource
-      ;;  :Route
-      ;;  :List
-      ;;  :Transaction
-      ;;  :Queryp
-      ;;  :Coding]
-      ;;
   {:method  :PUT
    :url     "/Resource/resource"
    :body    {:type      :Resource
              :id        "resource"
              :desc      "REST resource"
+             :code      "/Coding/wellknown-resources?code=resource"
              :status    "/Coding/resource-statuses?code=active"
              :of        :Resource
              :routes    "/List?_of=Route&res-type=Resource"}}
@@ -181,6 +80,7 @@
    :body    {:type      :Resource
              :id        "pgtable"
              :desc      "Postgres table"
+             :code      "/Coding/wellknown-resources?code=resource"
              :status    "/Coding/resource-statuses?code=active"
              :of        :PgTable
              :routes    "/List?_of=Route&res-type=PgTable"}}
@@ -189,6 +89,7 @@
    :body    {:type      :Resource
              :id        "pgquery"
              :desc      "Postgres query"
+             :code      "/Coding/wellknown-resources?code=resource"
              :status    "/Coding/resource-statuses?code=active"
              :of        :PgQuery
              :routes    "/List?_of=Route&res-type=PgQuery"}}
@@ -197,6 +98,7 @@
    :body    {:type      :Resource
              :id        "route"
              :desc      "REST route"
+             :code      "/Coding/wellknown-resources?code=resource"
              :status    "/Coding/resource-statuses?code=active"
              :of        :Route
              :routes    "/List?_of=Route&res-type=Route"}}
@@ -205,6 +107,7 @@
    :body    {:type      :Resource
              :id        "list"
              :desc      "Collection of data"
+             :code      "/Coding/wellknown-resources?code=resource"
              :status    "/Coding/resource-statuses?code=active"
              :of        :List
              :routes    "/List?_of=Route&res-type=List"}}
@@ -213,6 +116,7 @@
    :body    {:type      :Resource
              :id        "transaction"
              :desc      "Transaction of multiple http requests"
+             :code      "/Coding/wellknown-resources?code=resource"
              :status    "/Coding/resource-statuses?code=active"
              :of        :Transaction
              :routes    "/List?_of=Route&res-type=Transaction"}}
@@ -221,6 +125,7 @@
    :body    {:type      :Resource
              :id        "queryp"
              :desc      "REST queryp"
+             :code      "/Coding/wellknown-resources?code=resource"
              :status    "/Coding/resource-statuses?code=active"
              :of        :Queryp
              :routes    "/List?_of=Route&res-type=Queryp"}}
@@ -229,6 +134,7 @@
    :body    {:type      :Resource
              :id        "coding"
              :desc      "Set of codes"
+             :code      "/Coding/wellknown-resources?code=resource"
              :status    "/Coding/resource-statuses?code=active"
              :of        :Coding
              :routes    "/List?_of=Route&res-type=Coding"}}
