@@ -26,12 +26,24 @@
                   :created  (.toString created)
                   :modified (.toString modified)}))))
 
+(defn next-etag [tx]
+  (->> (select [[:nextval "etag"] "etag"])
+       (hsql/format)
+       (sql/query tx)
+       (first)
+       (:etag)))
+
 (defn create
   ([tx res-type id res]
    (let [now    (Instant/now)
-         entity {:id id :resource res :created now :modified now}]
-    (sql/insert! tx res-type entity)
-    (process entity res-type)))
+         entity {:id id
+                 :resource res
+                 :created now
+                 :modified now}]
+     (->> (or (:etag res) (next-etag tx))
+          (assoc entity :etag)
+          (sql/insert! tx res-type)
+          (#(process % res-type)))))
   ([tx res-type, res]
    (let [id (str (java.util.UUID/randomUUID))]
      (create tx res-type id res))))
@@ -41,12 +53,10 @@
       (process res-type)))
 
 (defn edit [tx res-type id res]
-  (let [stored  (fetch tx res-type id)
-        created (-> stored :created)
-        now     (Instant/now)]
-    (sql/update! tx res-type {:resource res :modified now} {:id id})
-    (-> {:id id :resource res :modified now :created created}
-        (process res-type))))
+  (->> (next-etag tx)
+       (assoc {:resource res :modified (Instant/now)} :etag)
+       (#(sql/update! tx res-type % {:id id}))
+       (#(process % res-type))))
 
 (defn upsert [tx res-type id res]
   (if (fetch tx res-type id)
