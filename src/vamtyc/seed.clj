@@ -54,11 +54,13 @@
         storage-ddl (get ddls ddl/wk-create-storage)
         sequence-ddl (get ddls ddl/wk-create-sequence)]
     (create-storage tx res storage-ddl)
-    (cond
-      (code-set wk-res-seq) (create-sequence tx res sequence-ddl)
-      (code-set wk-res-res) (create-storage tx {:type of} storage-ddl)
-      (nil? id)             (store/create tx res-type res)
-      :else                 (store/create tx res-type id res))))
+    (when (code-set wk-res-seq)
+      (create-sequence tx res sequence-ddl))
+    (when (code-set wk-res-res)
+      (create-storage tx {:type of} storage-ddl))
+    (if (nil? id)
+      (store/create tx res-type res)
+      (store/create tx res-type id res))))
 
 (defn commit-trn [trn]
   (jdbc/with-transaction [tx ds]
@@ -72,7 +74,6 @@
           (not method-allowed?) (throw (Exception. (str  "Method " (:method curr) " not allowed while booting app")))
           :else                 (do (commit-trn-item tx ddls body)
                                     (recur rest ddls)))))))
-        
 
 (defn init []
   (when-not (is-already-init?)
