@@ -78,6 +78,24 @@ CREATE SEQUENCE IF NOT EXISTS public.%1$s
              :of        :Resource
              :routes    "/List?_of=Route&res-type=Resource"}}
   {:method  :PUT
+   :url     "/Resource/ddl"
+   :body    {:type      :Resource
+             :id        "ddl"
+             :desc      "Postgres DDL resource"
+             :code      "/Coding/wellknown-resources?code=resource"
+             :status    "/Coding/resource-statuses?code=active"
+             :of        :Ddl
+             :routes    "/List?_of=Route&res-type=Ddl"}}
+  {:method  :PUT
+   :url     "/Resource/seq"
+   :body    {:type      :Resource
+             :id        "seq"
+             :desc      "Sequence resource"
+             :code      "/Coding/wellknown-resources?code=resource"
+             :status    "/Coding/resource-statuses?code=active"
+             :of        :Seq
+             :routes    "/List?_of=Route&res-type=Seq"}}
+  {:method  :PUT
    :url     "/Resource/pgquery"
    :body    {:type      :Resource
              :id        "pgquery"
@@ -141,6 +159,112 @@ CREATE SEQUENCE IF NOT EXISTS public.%1$s
              :name      :not-found
              :code      "/Coding/handlers?code=not-found"
              :routes    "/List?_of=Route"}}
+  ;; Creation of :Ddl REST routes
+  ;;
+  ;; ["create"  :POST   "/Ddl"
+  ;;  "read"    :GET    "/Ddl/:id"
+  ;;  "upsert"  :PUT    "/Ddl/:id"
+  ;;  "delete"  :DELETE "/Ddl/:id"]
+  ;;
+  {:method  :POST
+   :url     "/Route"
+   :body    {:type      :Route
+             :method    :POST
+             :path      [{:name     "_type"
+                          :code     "/Coding/wellknown-params?code=type"
+                          :value    "Ddl"}]
+             :name      :create-ddl
+             :code      "/Coding/handlers?code=create"
+             :resource  "/Resource/ddl"}}
+  {:method  :POST
+   :url     "/Route"
+   :body    {:type      :Route
+             :method    :GET
+             :path      [{:name     "_type"
+                          :code     "/Coding/wellknown-params?code=type"
+                          :value    "Ddl"}
+                         {:name     "_id"
+                          :code     "/Coding/wellknown-params?code=id"}]
+             :name      :read-ddl
+             :code      "/Coding/handlers?code=read"
+             :resource  "/Resource/ddl"}}
+  {:method  :POST
+   :url     "/Route"
+   :body    {:type      :Route
+             :method    :PUT
+             :path      [{:name     "_type"
+                          :code     "/Coding/wellknown-params?code=type"
+                          :value    "Ddl"}
+                         {:name     "_id"
+                          :code     "/Coding/wellknown-params?code=id"}]
+             :name      "upsert-ddl"
+             :code      "/Coding/handlers?code=upsert"
+             :resource  "/Resource/ddl"}}
+  {:method  :POST
+   :url     "/Route"
+   :body    {:type      :Route
+             :method    :DELETE
+             :path      [{:name     "_type"
+                          :code     "/Coding/wellknown-params?code=type"
+                          :value    "Ddl"}
+                         {:name     "_id"
+                          :code     "/Coding/wellknown-params?code=id"}]
+             :name      :delete-ddl
+             :code      "/Coding/handlers?code=delete"
+             :resource  "/Resource/ddl"}}
+  ;; Creation of :Seq REST routes
+  ;;
+  ;; ["create"  :POST   "/Seq"
+  ;;  "read"    :GET    "/Seq/:id"
+  ;;  "upsert"  :PUT    "/Seq/:id"
+  ;;  "delete"  :DELETE "/Seq/:id"]
+  ;;
+  {:method  :POST
+   :url     "/Route"
+   :body    {:type      :Route
+             :method    :POST
+             :path      [{:name     "_type"
+                          :code     "/Coding/wellknown-params?code=type"
+                          :value    "Seq"}]
+             :name      :create-seq
+             :code      "/Coding/handlers?code=create"
+             :resource  "/Resource/seq"}}
+  {:method  :POST
+   :url     "/Route"
+   :body    {:type      :Route
+             :method    :GET
+             :path      [{:name     "_type"
+                          :code     "/Coding/wellknown-params?code=type"
+                          :value    "Seq"}
+                         {:name     "_id"
+                          :code     "/Coding/wellknown-params?code=id"}]
+             :name      :read-seq
+             :code      "/Coding/handlers?code=read"
+             :resource  "/Resource/seq"}}
+  {:method  :POST
+   :url     "/Route"
+   :body    {:type      :Route
+             :method    :PUT
+             :path      [{:name     "_type"
+                          :code     "/Coding/wellknown-params?code=type"
+                          :value    "Seq"}
+                         {:name     "_id"
+                          :code     "/Coding/wellknown-params?code=id"}]
+             :name      "upsert-seq"
+             :code      "/Coding/handlers?code=upsert"
+             :resource  "/Resource/seq"}}
+  {:method  :POST
+   :url     "/Route"
+   :body    {:type      :Route
+             :method    :DELETE
+             :path      [{:name     "_type"
+                          :code     "/Coding/wellknown-params?code=type"
+                          :value    "Seq"}
+                         {:name     "_id"
+                          :code     "/Coding/wellknown-params?code=id"}]
+             :name      :delete-seq
+             :code      "/Coding/handlers?code=delete"
+             :resource  "/Resource/seq"}}
   ;; Creation of :Resource REST routes
   ;;
   ;; ["create"  :POST   "/Resource"
