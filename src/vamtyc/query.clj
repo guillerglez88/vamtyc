@@ -26,7 +26,7 @@
        (keyword)))
 
 (defn all-by-type [type]
-    (-> (select :id :resource :created :modified)
+    (-> (select :*)
         (from type)))
 
 (defn extract-prop [sql-map base field alias]

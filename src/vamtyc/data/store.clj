@@ -22,7 +22,7 @@
                   :id       id
                   :url      (str "/" res-name "/" id)
                   :created  (-> (created-key entity) (or (:created entity)) .toString)
-                  :modified (-> (modified-key entity) (or  (:modified entity)) .toString)
+                  :modified (-> (modified-key entity) (or (:modified entity)) .toString)
                   :etag     (-> (etag-key entity) (or (:etag entity)) .toString)}))))
 
 (defn next-etag [tx]
