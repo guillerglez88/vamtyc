@@ -78,15 +78,6 @@ CREATE SEQUENCE IF NOT EXISTS public.%1$s
              :of        :Resource
              :routes    "/List?_of=Route&res-type=Resource"}}
   {:method  :PUT
-   :url     "/Resource/pgtable"
-   :body    {:type      :Resource
-             :id        "pgtable"
-             :desc      "Postgres table"
-             :code      "/Coding/wellknown-resources?code=resource"
-             :status    "/Coding/resource-statuses?code=active"
-             :of        :PgTable
-             :routes    "/List?_of=Route&res-type=PgTable"}}
-  {:method  :PUT
    :url     "/Resource/pgquery"
    :body    {:type      :Resource
              :id        "pgquery"
@@ -203,22 +194,6 @@ CREATE SEQUENCE IF NOT EXISTS public.%1$s
              :name      :delete-resource
              :code      "/Coding/handlers?code=delete"
              :resource  "/Resource/resource"}}
-  ;; Creation of :PgTable REST routes
-  ;;
-  ;; ["read"    :GET    "/Resource/:id"
-  ;;
-  {:method  :POST
-   :url     "/Route"
-   :body    {:type      :Route
-             :method    :GET
-             :path      [{:name     "_type"
-                          :code     "/Coding/wellknown-params?code=type"
-                          :value    "PgTable"}
-                         {:name     "_id"
-                          :code     "/Coding/wellknown-params?code=id"}]
-             :name      :read-pg-table
-             :code      "/Coding/handlers?code=read"
-             :resource  "/Resource/pgtable"}}
   ;; Creation of :PgQuery REST routes
   ;;
   ;; ["read"    :GET    "/Resource/:id"

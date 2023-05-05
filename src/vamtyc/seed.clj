@@ -7,6 +7,7 @@
    [clojure.java.io :as io]
    [vamtyc.data.ddl :as ddl]))
 
+(def wk-res-res "/Coding/wellknown-resources?code=resource")
 (def wk-res-seq "/Coding/wellknown-resources?code=seq")
 (def allowed-methods #{:POST :PUT})
 
@@ -48,15 +49,16 @@
 (defn commit-trn-item [tx ddls res]
   (let [res-type (:type res)
         id (:id res)
+        of (:of res)
         code-set (-> res :code hset-code)
         storage-ddl (get ddls ddl/wk-create-storage)
         sequence-ddl (get ddls ddl/wk-create-sequence)]
     (create-storage tx res storage-ddl)
-    (when (code-set wk-res-seq)
-      (create-sequence tx res sequence-ddl))
-    (if (nil? id)
-      (store/create tx res-type res)
-      (store/create tx res-type id res))))
+    (cond
+      (code-set wk-res-seq) (create-sequence tx res sequence-ddl)
+      (code-set wk-res-res) (create-storage tx {:type of} storage-ddl)
+      (nil? id)             (store/create tx res-type res)
+      :else                 (store/create tx res-type id res))))
 
 (defn commit-trn [trn]
   (jdbc/with-transaction [tx ds]
