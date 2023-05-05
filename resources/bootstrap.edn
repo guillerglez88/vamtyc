@@ -16,13 +16,13 @@
                          "/Coding/wellknown-ddl?code=create-storage"
                          "/Coding/ddl-langs?code=pg-sql"]
              :template  ["
-                         CREATE TABLE IF NOT EXISTS public.%1$s (
-                           id          TEXT             NOT NULL,
-                           resource    JSONB            NOT NULL,
-                           created     timestamptz      NOT NULL,
-                           modified    timestamptz      NOT NULL,
-                           etag        TEXT             NOT NULL,
-                         CONSTRAINT %1$s_pk PRIMARY KEY (id));"
+CREATE TABLE IF NOT EXISTS public.%1$s (
+  id          TEXT             NOT NULL,
+  resource    JSONB            NOT NULL,
+  created     timestamptz      NOT NULL,
+  modified    timestamptz      NOT NULL,
+  etag        TEXT             NOT NULL,
+CONSTRAINT %1$s_pk PRIMARY KEY (id));"
                          "/Coding/ddl-params?code=res-type"]}}
   {:method  :PUT
    :url     "/Ddl/sequence"
@@ -34,13 +34,13 @@
                          "/Coding/wellknown-ddl?code=create-sequence"
                          "/Coding/ddl-langs?code=pg-sql"]
              :template  ["
-                          CREATE SEQUENCE IF NOT EXISTS public.%1$s
-                            MINVALUE 1
-                            NO MAXVALUE
-                            START %2$d
-                            INCREMENT BY %3$d
-                            CACHE %4$d
-                            NO CYCLE"
+CREATE SEQUENCE IF NOT EXISTS public.%1$s
+  MINVALUE 1
+  NO MAXVALUE
+  START %2$d
+  INCREMENT BY %3$d
+  CACHE %4$d
+  NO CYCLE"
                          "/Coding/ddl-params?code=seq-id"
                          "/Coding/ddl-params?code=seq-start"
                          "/Coding/ddl-params?code=seq-inc"
@@ -140,23 +140,23 @@
              :status    "/Coding/resource-statuses?code=active"
              :of        :Coding
              :routes    "/List?_of=Route&res-type=Coding"}}
-      ;; Creation of default REST routes
-      ;;
-      ;; ["not-found"]
-      ;;
+  ;; Creation of default REST routes
+  ;;
+  ;; ["not-found"]
+  ;;
   {:method  :POST
    :url     "/Route"
    :body    {:type      :Route
              :name      :not-found
              :code      "/Coding/handlers?code=not-found"
              :routes    "/List?_of=Route"}}
-      ;; Creation of :Resource REST routes
-      ;;
-      ;; ["create"  :POST   "/Resource"
-      ;;  "read"    :GET    "/Resource/:id"
-      ;;  "upsert"  :PUT    "/Resource/:id"
-      ;;  "delete"  :DELETE "/Resource/:id"]
-      ;;
+  ;; Creation of :Resource REST routes
+  ;;
+  ;; ["create"  :POST   "/Resource"
+  ;;  "read"    :GET    "/Resource/:id"
+  ;;  "upsert"  :PUT    "/Resource/:id"
+  ;;  "delete"  :DELETE "/Resource/:id"]
+  ;;
   {:method  :POST
    :url     "/Route"
    :body    {:type      :Route
@@ -203,10 +203,10 @@
              :name      :delete-resource
              :code      "/Coding/handlers?code=delete"
              :resource  "/Resource/resource"}}
-      ;; Creation of :PgTable REST routes
-      ;;
-      ;; ["read"    :GET    "/Resource/:id"
-      ;;
+  ;; Creation of :PgTable REST routes
+  ;;
+  ;; ["read"    :GET    "/Resource/:id"
+  ;;
   {:method  :POST
    :url     "/Route"
    :body    {:type      :Route
@@ -219,10 +219,10 @@
              :name      :read-pg-table
              :code      "/Coding/handlers?code=read"
              :resource  "/Resource/pgtable"}}
-      ;; Creation of :PgQuery REST routes
-      ;;
-      ;; ["read"    :GET    "/Resource/:id"
-      ;;
+  ;; Creation of :PgQuery REST routes
+  ;;
+  ;; ["read"    :GET    "/Resource/:id"
+  ;;
   {:method  :POST
    :url     "/Route"
    :body    {:type      :Route
@@ -235,13 +235,13 @@
              :name      :read-pg-query
              :code      "/Coding/handlers?code=read"
              :resource  "/Resource/pgquery"}}
-      ;; Creation of :Route REST routes
-      ;;
-      ;; ["create"  :POST   "/Route"
-      ;;  "read"    :GET    "/Route/:id"
-      ;;  "upsert"  :PUT    "/Route/:id"
-      ;;  "delete"  :DELETE "/Route/:id"]
-      ;;
+  ;; Creation of :Route REST routes
+  ;;
+  ;; ["create"  :POST   "/Route"
+  ;;  "read"    :GET    "/Route/:id"
+  ;;  "upsert"  :PUT    "/Route/:id"
+  ;;  "delete"  :DELETE "/Route/:id"]
+  ;;
   {:method  :POST
    :url     "/Route"
    :body    {:type      :Route
@@ -288,14 +288,14 @@
              :name      :delete-route
              :code      "/Coding/handlers?code=delete"
              :resource  "/Resource/route"}}
-      ;; Creation of :List REST routes
-      ;;
-      ;; ["create"  :POST   "/List"
-      ;;  "read"    :GET    "/List/:id"
-      ;;  "upsert"  :PUT    "/List/:id"
-      ;;  "delete"  :DELETE "/List/:id"
-      ;;  "search"  :GET    "/List"]
-      ;;
+  ;; Creation of :List REST routes
+  ;;
+  ;; ["create"  :POST   "/List"
+  ;;  "read"    :GET    "/List/:id"
+  ;;  "upsert"  :PUT    "/List/:id"
+  ;;  "delete"  :DELETE "/List/:id"
+  ;;  "search"  :GET    "/List"]
+  ;;
   {:method  :POST
    :url     "/Route"
    :body    {:type      :Route
@@ -352,13 +352,13 @@
              :name      :search-list
              :code      "/Coding/handlers?code=search"
              :resource  "/Resource/list"}}
-      ;; Creation of :Transaction REST routes
-      ;;
-      ;; ["create"  :POST   "/Transaction"
-      ;;  "read"    :GET    "/Transaction/:id"
-      ;;  "upsert"  :PUT    "/Transaction/:id"
-      ;;  "delete"  :DELETE "/Transaction/:id"]
-      ;;
+  ;; Creation of :Transaction REST routes
+  ;;
+  ;; ["create"  :POST   "/Transaction"
+  ;;  "read"    :GET    "/Transaction/:id"
+  ;;  "upsert"  :PUT    "/Transaction/:id"
+  ;;  "delete"  :DELETE "/Transaction/:id"]
+  ;;
   {:method  :POST
    :url     "/Route"
    :body    {:type      :Route
@@ -405,13 +405,13 @@
              :name      :delete-transaction
              :code      "/Coding/handlers?code=delete"
              :resource  "/Resource/transaction"}}
-      ;; Creation of :Queryp REST routes
-      ;;
-      ;; ["create"  :POST   "/Queryp"
-      ;;  "read"    :GET    "/Queryp/:id"
-      ;;  "upsert"  :PUT    "/Queryp/:id"
-      ;;  "delete"  :DELETE "/Queryp/:id"]
-      ;;
+  ;; Creation of :Queryp REST routes
+  ;;
+  ;; ["create"  :POST   "/Queryp"
+  ;;  "read"    :GET    "/Queryp/:id"
+  ;;  "upsert"  :PUT    "/Queryp/:id"
+  ;;  "delete"  :DELETE "/Queryp/:id"]
+  ;;
   {:method  :POST
    :url     "/Route"
    :body    {:type      :Route
@@ -458,13 +458,13 @@
              :name      :delete-queryp
              :code      "/Coding/handlers?code=delete"
              :resource  "/Resource/queryp"}}
-      ;; Creation of :Coding REST routes
-      ;;
-      ;; ["create"  :POST   "/Coding"
-      ;;  "read"    :GET    "/Coding/:id"
-      ;;  "upsert"  :PUT    "/Coding/:id"
-      ;;  "delete"  :DELETE "/Coding/:id"]
-      ;;
+  ;; Creation of :Coding REST routes
+  ;;
+  ;; ["create"  :POST   "/Coding"
+  ;;  "read"    :GET    "/Coding/:id"
+  ;;  "upsert"  :PUT    "/Coding/:id"
+  ;;  "delete"  :DELETE "/Coding/:id"]
+  ;;
   {:method  :POST
    :url     "/Route"
    :body    {:type      :Route
@@ -511,10 +511,10 @@
              :name      :delete-coding
              :code      "/Coding/handlers?code=delete"
              :resource  "/Resource/coding"}}
-      ;; Creation of REST queryps valid of any resource type
-      ;;
-      ;; ["?_fields=:path-array-expr"]
-      ;;
+  ;; Creation of REST queryps valid of any resource type
+  ;;
+  ;; ["?_fields=:path-array-expr"]
+  ;;
   {:method  :POST
    :url     "/Queryp"
    :body    {:type  :Queryp
@@ -522,10 +522,10 @@
              :desc  "Reduce response payload by filtering properties"
              :name  :_fields
              :of    :*}}
-      ;; Creation of :Resource REST queryps
-      ;;
-      ;; ["?type=:keyword"]
-      ;;
+  ;; Creation of :Resource REST queryps
+  ;;
+  ;; ["?type=:keyword"]
+  ;;
   {:method  :POST
    :url     "/Queryp"
    :body    {:type  :Queryp
@@ -534,12 +534,12 @@
              :name  :of
              :path  [{:name     "of"}]
              :of    :Resource}}
-      ;; Creation of :Route REST queryps
-      ;;
-      ;; ["?method=:keyword"
-      ;;  "?name=:keyword"
-      ;;  "?res-type=:keyword"]
-      ;;
+  ;; Creation of :Route REST queryps
+  ;;
+  ;; ["?method=:keyword"
+  ;;  "?name=:keyword"
+  ;;  "?res-type=:keyword"]
+  ;;
   {:method  :POST
    :url     "/Queryp"
    :body    {:type  :Queryp
@@ -567,15 +567,15 @@
                       :filter       {:code "/Coding/wellknown-params?code=type"}}
                      {:name         "value"}]
              :of    :Route}}
-      ;; Creation of :List REST queryps
-      ;;
-      ;; ["?_of=:keyword"
-      ;;  "?_limit=:number"
-      ;;  "?_offset=:number"
-      ;;  "?_created=:date"
-      ;;  "?_modified=:date"
-      ;;  "?_sort=:keyword"]
-      ;;
+  ;; Creation of :List REST queryps
+  ;;
+  ;; ["?_of=:keyword"
+  ;;  "?_limit=:number"
+  ;;  "?_offset=:number"
+  ;;  "?_created=:date"
+  ;;  "?_modified=:date"
+  ;;  "?_sort=:keyword"]
+  ;;
   {:method  :POST
    :url     "/Queryp"
    :body    {:type      :Queryp
@@ -626,10 +626,10 @@
              :name      :_sort
              :value     :_created
              :of        :List}}
-      ;; Creation of :Transaction REST queryps
-      ;;
-      ;; ["?status=:code-url"]
-      ;;
+  ;; Creation of :Transaction REST queryps
+  ;;
+  ;; ["?status=:code-url"]
+  ;;
   {:method  :POST
    :url     "/Queryp"
    :body    {:type  :Queryp
@@ -638,11 +638,11 @@
              :name  :status
              :path  [{:name     "status"}]
              :of    :Transaction}}
-      ;; Creation of :Queryp REST queryps
-      ;;
-      ;; ["?name=:keyword"
-      ;;  "?type=:keyword"]
-      ;;
+  ;; Creation of :Queryp REST queryps
+  ;;
+  ;; ["?name=:keyword"
+  ;;  "?type=:keyword"]
+  ;;
   {:method  :POST
    :url     "/Queryp"
    :body    {:type  :Queryp
@@ -659,10 +659,10 @@
              :name  :of
              :path  [{:name     "of"}]
              :of    :Queryp}}
-      ;; Creation of :Coding REST queryps
-      ;;
-      ;; ["?code=:keyword"]
-      ;;
+  ;; Creation of :Coding REST queryps
+  ;;
+  ;; ["?code=:keyword"]
+  ;;
   {:method  :POST
    :url     "/Queryp"
    :body    {:type  :Queryp
@@ -673,12 +673,12 @@
                       :collection   true}
                      {:name         "code"}]
              :of    :Coding}}
-      ;; Creation of core :Coding list
-      ;;
-      ;; ["/Coding/resource-statuses"]}}
-      ;;  "/Coding/handlers"
-      ;;  "/Coding/filters" ]
-      ;;
+  ;; Creation of core :Coding list
+  ;;
+  ;; ["/Coding/resource-statuses"]}}
+  ;;  "/Coding/handlers"
+  ;;  "/Coding/filters" ]
+  ;;
   {:method  :PUT
    :url     "/Coding/wellknown-resources"
    :body    {:type  :Coding

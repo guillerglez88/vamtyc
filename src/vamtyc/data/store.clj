@@ -15,16 +15,15 @@
           res-key       (keyword res-name-lc "resource")
           created-key   (keyword res-name-lc "created")
           modified-key  (keyword res-name-lc "modified")
+          etag-key      (keyword res-name-lc "etag")
           id            (or (id-key entity) (:id entity))
-          res           (or (res-key entity) (:resource entity))
-          created       (or (created-key entity) (:created entity))
-          modified      (or (modified-key entity) (:modified entity))
-          url           (str "/" res-name "/" id)]
+          res           (or (res-key entity) (:resource entity))]
       (merge res {:type     res-name
                   :id       id
-                  :url      url
-                  :created  (.toString created)
-                  :modified (.toString modified)}))))
+                  :url      (str "/" res-name "/" id)
+                  :created  (-> (created-key entity) (or (:created entity)) .toString)
+                  :modified (-> (modified-key entity) (or  (:modified entity)) .toString)
+                  :etag     (-> (etag-key entity) (or (:etag entity)) .toString)}))))
 
 (defn next-etag [tx]
   (->> (select [[:nextval "etag"] "etag"])

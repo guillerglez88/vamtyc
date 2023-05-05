@@ -8,6 +8,7 @@
    [vamtyc.data.ddl :as ddl]))
 
 (def wk-res-seq "/Coding/wellknown-resources?code=seq")
+(def allowed-methods #{:POST :PUT})
 
 (defn hset-code [code]
   (-> (vector? code)
@@ -61,12 +62,15 @@
   (jdbc/with-transaction [tx ds]
     (loop [[curr & rest] (:items trn)
            acc {}]
-      (let [ddls (collect-ddls acc curr)]
-        (if (contains? #{:POST :PUT} (:method curr))
-          (->> (:body curr)
-               (commit-trn-item tx ddls))
-          (throw (Exception. (str  "Method " (:method curr) " not allowed while booting app"))))
-        (recur rest ddls)))))
+      (let [ddls (collect-ddls acc curr)
+            method-allowed? (->> curr :method (contains? allowed-methods))
+            body (-> curr (or {}) :body)]
+        (cond
+          (nil? curr)           (hash-map :status :ok)
+          (not method-allowed?) (throw (Exception. (str  "Method " (:method curr) " not allowed while booting app")))
+          :else                 (do (commit-trn-item tx ddls body)
+                                    (recur rest ddls)))))))
+        
 
 (defn init []
   (when-not (is-already-init?)
