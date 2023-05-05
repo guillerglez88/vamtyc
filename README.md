@@ -26,7 +26,7 @@ REST on values
   - Resources
     - Coding
     - List
-    - PgTable
+    - Seq
     - PgQuery
 
 ## TODO
