@@ -15,23 +15,34 @@
           res-key       (keyword res-name-lc "resource")
           created-key   (keyword res-name-lc "created")
           modified-key  (keyword res-name-lc "modified")
+          etag-key      (keyword res-name-lc "etag")
           id            (or (id-key entity) (:id entity))
-          res           (or (res-key entity) (:resource entity))
-          created       (or (created-key entity) (:created entity))
-          modified      (or (modified-key entity) (:modified entity))
-          url           (str "/" res-name "/" id)]
+          res           (or (res-key entity) (:resource entity))]
       (merge res {:type     res-name
                   :id       id
-                  :url      url
-                  :created  (.toString created)
-                  :modified (.toString modified)}))))
+                  :url      (str "/" res-name "/" id)
+                  :created  (-> (created-key entity) (or (:created entity)) .toString)
+                  :modified (-> (modified-key entity) (or (:modified entity)) .toString)
+                  :etag     (-> (etag-key entity) (or (:etag entity)) .toString)}))))
+
+(defn next-etag [tx]
+  (->> (select [[:nextval "etag"] "etag"])
+       (hsql/format)
+       (sql/query tx)
+       (first)
+       (:etag)))
 
 (defn create
   ([tx res-type id res]
    (let [now    (Instant/now)
-         entity {:id id :resource res :created now :modified now}]
-    (sql/insert! tx res-type entity)
-    (process entity res-type)))
+         entity {:id id
+                 :resource res
+                 :created now
+                 :modified now}]
+     (->> (or (:etag res) (next-etag tx))
+          (assoc entity :etag)
+          (sql/insert! tx res-type)
+          (#(process % res-type)))))
   ([tx res-type, res]
    (let [id (str (java.util.UUID/randomUUID))]
      (create tx res-type id res))))
@@ -41,12 +52,10 @@
       (process res-type)))
 
 (defn edit [tx res-type id res]
-  (let [stored  (fetch tx res-type id)
-        created (-> stored :created)
-        now     (Instant/now)]
-    (sql/update! tx res-type {:resource res :modified now} {:id id})
-    (-> {:id id :resource res :modified now :created created}
-        (process res-type))))
+  (->> (next-etag tx)
+       (assoc {:resource res :modified (Instant/now)} :etag)
+       (#(sql/update! tx res-type % {:id id}))
+       (#(process % res-type))))
 
 (defn upsert [tx res-type id res]
   (if (fetch tx res-type id)

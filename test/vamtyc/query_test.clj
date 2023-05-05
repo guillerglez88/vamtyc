@@ -23,13 +23,13 @@
 
 (deftest select-all-test
   (testing "Can make base sql map to filter results on"
-    (is (= [(str "SELECT id, resource, created, modified "
+    (is (= [(str "SELECT * "
                  "FROM Resource")]
            (-> :Resource sut/all-by-type hsql/format)))))
 
 (deftest extract-prop-test
   (testing "Can expose jsonb prop for filtering"
-    (is (= [(str "SELECT id, resource, created, modified "
+    (is (= [(str "SELECT * "
                  "FROM Resource "
                  "INNER JOIN JSONB_EXTRACT_PATH(resource, ?) AS code ON TRUE")
             "code"]
@@ -39,7 +39,7 @@
 
 (deftest extract-coll-test
   (testing "Can expose jsonb prop collection elements for filtering"
-    (is (= [(str "SELECT id, resource, created, modified "
+    (is (= [(str "SELECT * "
                   "FROM Resource "
                   "INNER JOIN JSONB_EXTRACT_PATH(resource, ?) AS resource_path ON TRUE "
                   "INNER JOIN JSONB_ARRAY_ELEMENTS(resource_path) AS path ON TRUE")
@@ -50,7 +50,7 @@
 
 (deftest extract-path-test
   (testing "Can access deep jsonb property"
-    (is (= [(str "SELECT id, resource, created, modified "
+    (is (= [(str "SELECT * "
                  "FROM Route "
                  "INNER JOIN JSONB_EXTRACT_PATH(resource, ?) AS resource_path ON TRUE "
                  "INNER JOIN JSONB_ARRAY_ELEMENTS(resource_path) AS resource_path_elem ON TRUE "
@@ -65,7 +65,7 @@
 
 (deftest contains-text-test
   (testing "Can filter for occurrence of term on text field"
-    (is (= [(str "SELECT id, resource, created, modified "
+    (is (= [(str "SELECT * "
                  "FROM Route "
                  "WHERE CAST(name AS text) LIKE ?")
             "%read-%"]
@@ -81,7 +81,7 @@
 
 (deftest match-exact-test
   (testing "Can filter for exact matching of term with text field"
-    (is (= [(str "SELECT id, resource, created, modified "
+    (is (= [(str "SELECT * "
                  "FROM Resource "
                  "WHERE CAST(of AS text) = ?")
             "\"Route\""]
@@ -97,7 +97,7 @@
 
 (deftest paginate-test
   (testing "Can paginate"
-    (is (= [(str "SELECT id, resource, created, modified "
+    (is (= [(str "SELECT * "
                  "FROM Resource "
                  "LIMIT ? OFFSET ?")
             128, 10]
