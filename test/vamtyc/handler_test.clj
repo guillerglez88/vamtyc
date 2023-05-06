@@ -66,6 +66,7 @@
                     :url "/Resource/person"
                     :created "2023-04-16 16:36:14.291 +0200"
                     :modified "2023-04-16 16:36:14.291 +0200"
+                    :etag "999"
                     :desc "Human being"
                     :of :Person
                     :status "/Coding/resource-statuses?code=pending"
@@ -73,14 +74,14 @@
           db-fetch (fn [_type id] (if (= "person" id) resource nil))
           db-queryp (fn [_types _params] [fields-queryp])]
       (is (= {:status 200
-              :headers {}
+              :headers {"ETag" "999"}
               :body resource}
              (sut/rread {:params {"_id" "person"}}
                         route
                         db-fetch
                         db-queryp)))
       (is (= {:status 200
-              :headers {}
+              :headers {"ETag" "999"}
               :body {:type "Resource", :id "person"}}
              (sut/rread {:params {"_id" "person", "_fields" "id,type"}}
                         route

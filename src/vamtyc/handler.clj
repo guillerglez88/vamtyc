@@ -57,7 +57,8 @@
                                               param/wkp-fields)]
      (if-let [res (db-fetch type id)]
        (-> (fields/select-fields res fields)
-           (response))
+           (response)
+           (header "ETag" (:etag res)))
        (not-found "Not found")))))
 
 (defn upsert
