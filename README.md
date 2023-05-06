@@ -7,31 +7,26 @@ REST on values
 ## Features
 
 - REST 
-  - Methods
-    - GET
-    - POST
-    - PUT
-    - DELETE
-  - Resources
-    - Resource
-    - Route
-    - Queryp
+  - Methods: GET, POST, PUT, DELETE
+  - Headers: ETag
 
-- Custom
-  - Url search via query-strings
-    - match exact
-    - match contains
-  - Pagination via `_offset` & `_limit` queryps
-  - Reduce payload via `_fields` queryp
-  - Resources
-    - Coding
-    - List
-    - Seq
-    - PgQuery
+- Resources
+  - Resource
+  - Route
+  - Queryp
+  - Coding
+  - List
+  - Seq
+  - PgQuery
+
+- Url search via query-strings
+  - match exact
+  - match contains
+- Pagination via `_offset` & `_limit` queryps
+- Reduce payload via `_fields` queryp
 
 ## TODO
 
-- etag: rest e-tag header
 - profile: validation based on spec
 - history: request history by entity
 - browser: vamptyc client
