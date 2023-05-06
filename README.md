@@ -8,7 +8,7 @@ REST on values
 
 - REST 
   - Methods: GET, POST, PUT, DELETE
-  - Headers: ETag
+  - Headers: Location, ETag
 
 - Resources
   - Resource

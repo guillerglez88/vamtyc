@@ -894,7 +894,13 @@ CREATE SEQUENCE IF NOT EXISTS public.%1$s
              :codes [{:code "/Coding/ddl-params?code=res-type"
                       :desc "Resource type name(lower-case) the storage is being allocated for"}
                      {:code "/Coding/ddl-params?code=seq-id"
-                      :desc "Sequence identifier"}]}}
+                      :desc "Sequence identifier"}
+                     {:code "/Coding/ddl-params?code=seq-start"
+                      :desc "Sequence beginning value"}
+                     {:code "/Coding/ddl-params?code=seq-inc"
+                      :desc "Sequence increment, number added to the current value in order to generate next value"}
+                     {:code "/Coding/ddl-params?code=seq-cache"
+                      :desc "Sequence cache, pre-allocated values for faster access"}]}}
   {:method  :PUT
    :url     "/Coding/ddl-langs"
    :body    {:type  :Coding
