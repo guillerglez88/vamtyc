@@ -3,7 +3,7 @@
    [clojure.string :as str]
    [next.jdbc :as jdbc]
    [next.jdbc.sql :as sql]
-   [ring.util.response :refer [created not-found response status header]]
+   [ring.util.response :refer [created header not-found response status]]
    [vamtyc.data.datasource :refer [ds]]
    [vamtyc.data.queryp :as queryp]
    [vamtyc.data.store :as store]
@@ -71,15 +71,15 @@
        (upsert req route db-fetch db-edit db-create db-queryps))))
   ([req route db-fetch db-edit db-create db-queryps]
    (let [params (make-params req route db-queryps)
-         [type id] (param/get-values params
-                                     param/wkp-type
-                                     param/wkp-id)
+         [type id] (param/get-values params param/wkp-type param/wkp-id)
          body (:body req)]
      (if (db-fetch type id)
-       (-> (db-edit type id body)
-           (response))
-       (-> (db-create type id body)
-           (#(created (:url %) %)))))))
+       (let [res (db-edit type id body)]
+         (-> (response res)
+             (header "ETag" (:etag res))))
+       (let [res (db-create type id body)]
+         (-> (created (:url res) res)
+             (header "ETag" (:etag res))))))))
 
 (defn delete
   ([req route]

@@ -121,20 +121,24 @@
                                                :id id
                                                :url (str "/" type "/" id)
                                                :created "2023-04-16 16:36:14.291 +0200"
-                                               :modified "2023-04-16 16:36:14.291 +0200"}
+                                               :modified "2023-04-16 16:36:14.291 +0200"
+                                               :etag "999"}
                                               body))
           db-edit (fn [_type _id body] (merge resource
                                               body
-                                              {:modified "2023-04-17 16:36:14.291 +0200"}))
+                                              {:modified "2023-04-17 16:36:14.291 +0200"
+                                               :etag "1000"}))
           db-fetch (fn [_type id] (if (= "person" id) resource nil))]
 
       (is (= {:status 201
-              :headers {"Location" "/Resource/new-person"}
+              :headers {"Location" "/Resource/new-person"
+                        "ETag" "999"}
               :body {:type "Resource"
                      :id "new-person"
                      :url "/Resource/new-person"
                      :created "2023-04-16 16:36:14.291 +0200"
                      :modified "2023-04-16 16:36:14.291 +0200"
+                     :etag "999"
                      :desc "Human being"
                      :of :Person
                      :status "/Coding/resource-statuses?code=pending"
@@ -150,12 +154,13 @@
                          db-create
                          db-queryps)))
       (is (= {:status 200
-              :headers {}
+              :headers {"ETag" "1000"}
               :body {:type "Resource"
                      :id "person"
                      :url "/Resource/person"
                      :created "2023-04-16 16:36:14.291 +0200"
                      :modified "2023-04-17 16:36:14.291 +0200"
+                     :etag "1000"
                      :desc "Existing person"
                      :of :Person
                      :status "/Coding/resource-statuses?code=pending"
