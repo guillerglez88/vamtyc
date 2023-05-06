@@ -3,7 +3,7 @@
    [clojure.string :as str]
    [next.jdbc :as jdbc]
    [next.jdbc.sql :as sql]
-   [ring.util.response :refer [created not-found response status]]
+   [ring.util.response :refer [created not-found response status header]]
    [vamtyc.data.datasource :refer [ds]]
    [vamtyc.data.queryp :as queryp]
    [vamtyc.data.store :as store]
@@ -37,10 +37,11 @@
        (create req route db-create db-queryps))))
   ([req route db-create db-queryps]
    (let [params (make-params req route db-queryps)
-         type (param/get-value params param/wkp-type)]
-     (->> (:body req)
-          (db-create type)
-          (#(created (:url %) %))))))
+         type (param/get-value params param/wkp-type)
+         body (:body req)
+         res (db-create type body)]
+     (-> (created (:url res) res)
+         (header "ETag" (:etag res))))))
 
 (defn rread
   ([req route]

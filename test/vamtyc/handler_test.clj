@@ -18,16 +18,19 @@
                                             :id "person"
                                             :url (str "/" type "/person")
                                             :created "2023-04-16 16:36:14.291 +0200"
-                                            :modified "2023-04-16 16:36:14.291 +0200"}
+                                            :modified "2023-04-16 16:36:14.291 +0200"
+                                            :etag "999"}
                                            body))]
 
       (is (= {:status 201
-              :headers {"Location" "/Resource/person"}
+              :headers {"Location" "/Resource/person"
+                        "ETag" "999"}
               :body {:type "Resource"
                      :id "person"
                      :url "/Resource/person"
                      :created "2023-04-16 16:36:14.291 +0200"
                      :modified "2023-04-16 16:36:14.291 +0200"
+                     :etag "999"
                      :desc "Human being"
                      :of :Person
                      :status "/Coding/resource-statuses?code=pending"
