@@ -23,35 +23,48 @@
 
 (deftest select-all-test
   (testing "Can make base sql map to filter results on"
-    (is (= [(str "SELECT * "
-                 "FROM Resource")]
+    (is (= [(str "SELECT res.* "
+                 "FROM Resource AS res")]
            (-> :Resource sut/all-by-type hsql/format)))))
 
 (deftest extract-prop-test
   (testing "Can expose jsonb prop for filtering"
-    (is (= [(str "SELECT * "
-                 "FROM Resource "
+    (is (= [(str "SELECT res.* "
+                 "FROM Resource AS res "
                  "INNER JOIN JSONB_EXTRACT_PATH(resource, ?) AS code ON TRUE")
             "code"]
            (-> (sut/all-by-type :Resource)
-               (sut/extract-prop :resource "code" :code)
+               (sut/extract-prop :resource {:name "code"} :code)
                (hsql/format))))))
 
 (deftest extract-coll-test
   (testing "Can expose jsonb prop collection elements for filtering"
-    (is (= [(str "SELECT * "
-                  "FROM Resource "
+    (is (= [(str "SELECT res.* "
+                  "FROM Resource AS res "
                   "INNER JOIN JSONB_EXTRACT_PATH(resource, ?) AS resource_path ON TRUE "
                   "INNER JOIN JSONB_ARRAY_ELEMENTS(resource_path) AS path ON TRUE")
             "path"]
            (-> (sut/all-by-type :Resource)
-               (sut/extract-coll :resource "path" :path)
+               (sut/extract-coll :resource {:name "path" :collection true} :path)
+               (hsql/format))))
+    (is (= [(str "SELECT res.* "
+                "FROM Resource AS res "
+                "INNER JOIN JSONB_EXTRACT_PATH(resource, ?) AS resource_path ON TRUE "
+                "INNER JOIN JSONB_ARRAY_ELEMENTS(resource_path) AS path_elem ON (path_elem @> ?)")
+            "path"
+            {:code "code"}]
+           (-> (sut/all-by-type :Resource)
+               (sut/extract-coll :resource
+                                 {:name "path"
+                                  :collection true
+                                  :filter {:code "code"}}
+                                 :path-elem)
                (hsql/format))))))
 
 (deftest extract-path-test
   (testing "Can access deep jsonb property"
-    (is (= [(str "SELECT * "
-                 "FROM Route "
+    (is (= [(str "SELECT res.* "
+                 "FROM Route AS res "
                  "INNER JOIN JSONB_EXTRACT_PATH(resource, ?) AS resource_path ON TRUE "
                  "INNER JOIN JSONB_ARRAY_ELEMENTS(resource_path) AS resource_path_elem ON TRUE "
                  "INNER JOIN JSONB_EXTRACT_PATH(resource_path_elem, ?) AS res_type ON TRUE")
@@ -65,8 +78,8 @@
 
 (deftest contains-text-test
   (testing "Can filter for occurrence of term on text field"
-    (is (= [(str "SELECT * "
-                 "FROM Route "
+    (is (= [(str "SELECT res.* "
+                 "FROM Route AS res "
                  "WHERE CAST(name AS text) LIKE ?")
             "%read-%"]
            (-> (sut/all-by-type :Route)
@@ -81,8 +94,8 @@
 
 (deftest match-exact-test
   (testing "Can filter for exact matching of term with text field"
-    (is (= [(str "SELECT * "
-                 "FROM Resource "
+    (is (= [(str "SELECT res.* "
+                 "FROM Resource AS res "
                  "WHERE CAST(of AS text) = ?")
             "\"Route\""]
            (-> (sut/all-by-type :Resource)
@@ -97,8 +110,8 @@
 
 (deftest paginate-test
   (testing "Can paginate"
-    (is (= [(str "SELECT * "
-                 "FROM Resource "
+    (is (= [(str "SELECT res.* "
+                 "FROM Resource AS res "
                  "LIMIT ? OFFSET ?")
             128, 10]
            (-> (sut/all-by-type :Resource)
@@ -108,7 +121,7 @@
 (deftest total-test
   (testing "Can calc total query items"
     (is (= [(str "SELECT COUNT(*) AS count "
-                 "FROM Resource")]
+                 "FROM Resource AS res")]
            (-> (sut/all-by-type :Resource)
                (sut/total)
                (hsql/format))))))

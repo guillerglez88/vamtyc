@@ -4,6 +4,7 @@
    [clojure.string :as str]
    [honey.sql :as hsql]
    [honey.sql.helpers :refer [from inner-join limit offset select where]]
+   [honey.sql.pg-ops :refer [at>]]
    [lambdaisland.uri :as uri :refer [map->query-string query-string->map uri]]
    [vamtyc.param :as param])
   (:import
@@ -26,23 +27,27 @@
        (keyword)))
 
 (defn all-by-type [type]
-    (-> (select :*)
-        (from type)))
+    (-> (select :res.*)
+        (from [type :res])))
 
-(defn extract-prop [sql-map base field alias]
-  (inner-join sql-map [[:jsonb_extract_path base field] alias] true))
+(defn extract-prop [sql-map base path-elem alias]
+  (let [field (:name path-elem)]
+    (inner-join sql-map [[:jsonb_extract_path base field] alias] true)))
 
-(defn extract-coll [sql-map base field alias]
-  (let [prop-alias (make-field base field)]
-    (-> (extract-prop sql-map base field prop-alias)
-        (inner-join [[:jsonb_array_elements prop-alias] alias] true))))
+(defn extract-coll [sql-map base path-elem alias]
+  (let [field (:name path-elem)
+        prop-alias (make-field base field)]
+    (-> (extract-prop sql-map base path-elem prop-alias)
+        (inner-join [[:jsonb_array_elements prop-alias] alias]
+                    (if-let [filter (:filter path-elem)]
+                      [[at> alias [:lift filter]]]
+                      true)))))
 
 (defn extract-field [sql-map base path-elem alias]
-  (let [curr-name (:name path-elem)]
-    (cond
-      (:meta path-elem)       sql-map ;; TODO: implement meta fields access
-      (:collection path-elem) (extract-coll sql-map base curr-name alias)
-      :else                   (extract-prop sql-map base curr-name alias))))
+  (cond
+    (:meta path-elem)       sql-map ;; TODO: implement meta fields access
+    (:collection path-elem) (extract-coll sql-map base path-elem alias)
+    :else                   (extract-prop sql-map base path-elem alias)))
 
 (defn extract-path [sql-map base path alias]
   (let [[curr & more] path

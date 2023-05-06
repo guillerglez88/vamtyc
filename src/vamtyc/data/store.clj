@@ -52,10 +52,11 @@
       (process res-type)))
 
 (defn edit [tx res-type id res]
-  (->> (next-etag tx)
-       (assoc {:resource res :modified (Instant/now)} :etag)
-       (#(sql/update! tx res-type % {:id id}))
-       (#(process % res-type))))
+  (let [row {:resource res
+             :modified (Instant/now)
+             :etag (next-etag tx)}]
+    (sql/update! tx res-type row {:id id})
+    (fetch tx res-type id)))
 
 (defn upsert [tx res-type id res]
   (if (fetch tx res-type id)
