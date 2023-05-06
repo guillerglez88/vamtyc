@@ -34,7 +34,7 @@
                  "INNER JOIN JSONB_EXTRACT_PATH(resource, ?) AS code ON TRUE")
             "code"]
            (-> (sut/all-by-type :Resource)
-               (sut/extract-prop :resource "code" :code)
+               (sut/extract-prop :resource {:name "code"} :code)
                (hsql/format))))))
 
 (deftest extract-coll-test
@@ -45,7 +45,7 @@
                   "INNER JOIN JSONB_ARRAY_ELEMENTS(resource_path) AS path ON TRUE")
             "path"]
            (-> (sut/all-by-type :Resource)
-               (sut/extract-coll :resource "path" :path)
+               (sut/extract-coll :resource {:name "path" :collection true} :path)
                (hsql/format))))))
 
 (deftest extract-path-test

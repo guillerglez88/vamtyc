@@ -29,20 +29,21 @@
     (-> (select :*)
         (from type)))
 
-(defn extract-prop [sql-map base field alias]
-  (inner-join sql-map [[:jsonb_extract_path base field] alias] true))
+(defn extract-prop [sql-map base path-elem alias]
+  (let [field (:name path-elem)]
+    (inner-join sql-map [[:jsonb_extract_path base field] alias] true)))
 
-(defn extract-coll [sql-map base field alias]
-  (let [prop-alias (make-field base field)]
-    (-> (extract-prop sql-map base field prop-alias)
+(defn extract-coll [sql-map base path-elem alias]
+  (let [field (:name path-elem)
+        prop-alias (make-field base field)]
+    (-> (extract-prop sql-map base path-elem prop-alias)
         (inner-join [[:jsonb_array_elements prop-alias] alias] true))))
 
 (defn extract-field [sql-map base path-elem alias]
-  (let [curr-name (:name path-elem)]
-    (cond
-      (:meta path-elem)       sql-map ;; TODO: implement meta fields access
-      (:collection path-elem) (extract-coll sql-map base curr-name alias)
-      :else                   (extract-prop sql-map base curr-name alias))))
+  (cond
+    (:meta path-elem)       sql-map ;; TODO: implement meta fields access
+    (:collection path-elem) (extract-coll sql-map base path-elem alias)
+    :else                   (extract-prop sql-map base path-elem alias)))
 
 (defn extract-path [sql-map base path alias]
   (let [[curr & more] path
