@@ -35,4 +35,5 @@ REST on values
 - result fields path remapping
 - date search
 - number search
-- redefine PgQuery sql
+- redefine PgQuery sql: user query optimizations
+- subscriptions: extensibility via webhooks
