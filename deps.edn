@@ -14,7 +14,8 @@
   com.github.seancorfield/honeysql              {:git/tag "v2.4.947" :git/sha "fd64353"}
   org.postgresql/postgresql                     {:mvn/version "42.5.0"}
   lambdaisland/uri                              {:mvn/version "1.13.95"}
-  clj-http/clj-http                             {:mvn/version "3.12.3"}}
+  clj-http/clj-http                             {:mvn/version "3.12.3"}
+  ring-cors/ring-cors                           {:mvn/version "0.1.13"}}
  ;;
  ;; cmd:
  ;;

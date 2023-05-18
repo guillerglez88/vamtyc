@@ -8,7 +8,8 @@
    [ring.util.response :refer [content-type]]
    [vamtyc.data.datasource :refer [ds]]
    [vamtyc.data.store :as store]
-   [vamtyc.handler :as handler]))
+   [vamtyc.handler :as handler]
+   [ring.middleware.cors :refer [wrap-cors]]))
 
 (defn make-http-response [resp]
   (let [body (-> resp :body json/write-str)]
@@ -53,7 +54,10 @@
 (defonce app (atom nil))
 
 (defn init []
-  (->> (load-cpj-routes)
-       (wrap-params)
-       (wrap-json-body)
-       (reset! app)))
+  (reset! app
+          (-> (load-cpj-routes)
+              (wrap-params)
+              (wrap-json-body)
+              (wrap-cors :access-control-allow-origin   [#"http://localhost:9500"]
+                         :access-control-allow-headers  ["Origin" "X-Requested-With" "Content-Type" "Accept"]
+                         :access-control-allow-methods  [:get :put :post :delete]))))
