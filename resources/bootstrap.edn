@@ -631,7 +631,8 @@ CREATE SEQUENCE IF NOT EXISTS public.%1$s
              :code  "/Coding/filters?code=keyword"
              :desc  "Filter Resource by of"
              :name  :of
-             :path  [{:name     "of"}]
+             :path  [{:field "resource"}
+                     {:field "of"}]
              :of    :Resource}}
   ;; Creation of :Route REST queryps
   ;;
@@ -645,7 +646,8 @@ CREATE SEQUENCE IF NOT EXISTS public.%1$s
              :code  "/Coding/filters?code=keyword"
              :desc  "Filter Route by method"
              :name  :method
-             :path  [{:name     "method"}]
+             :path  [{:field "resource"}
+                     {:field "method"}]
              :of    :Route}}
   {:method  :POST
    :url     "/Queryp"
@@ -653,7 +655,8 @@ CREATE SEQUENCE IF NOT EXISTS public.%1$s
              :code  "/Coding/filters?code=text"
              :desc  "Filter Route by name"
              :name  :name
-             :path  [{:name     "name"}]
+             :path  [{:field "resource"}
+                     {:field "name"}]
              :of    :Route}}
   {:method  :POST
    :url     "/Queryp"
@@ -661,10 +664,9 @@ CREATE SEQUENCE IF NOT EXISTS public.%1$s
              :code  "/Coding/filters?code=keyword"
              :desc  "Filter Route by the _type part of the route"
              :name  :res-type
-             :path  [{:name         "path"
-                      :collection   true
-                      :filter       {:code "/Coding/wellknown-params?code=type"}}
-                     {:name         "value"}]
+             :path  [{:field "resource"}
+                     {:field "path", :coll true, :filter {:code "/Coding/wellknown-params?code=type"}}
+                     {:field "value"}]
              :of    :Route}}
   ;; Creation of :List REST queryps
   ;;
@@ -681,7 +683,7 @@ CREATE SEQUENCE IF NOT EXISTS public.%1$s
              :code      "/Coding/wellknown-params?code=of"
              :desc      "Type of resource to search for"
              :name      :_of
-             :value     :List
+             :default   :List
              :of        :List}}
   {:method  :POST
    :url     "/Queryp"
@@ -689,7 +691,7 @@ CREATE SEQUENCE IF NOT EXISTS public.%1$s
              :code      "/Coding/wellknown-params?code=limit"
              :desc      "Limit items count in the result"
              :name      :_limit
-             :value     128
+             :default   128
              :of        :List}}
   {:method  :POST
    :url     "/Queryp"
@@ -697,7 +699,7 @@ CREATE SEQUENCE IF NOT EXISTS public.%1$s
              :code      "/Coding/wellknown-params?code=offset"
              :desc      "Skip that many items before starting to count result items"
              :name      :_offset
-             :value     0
+             :default   0
              :of        :List}}
   {:method  :POST
    :url     "/Queryp"
@@ -705,8 +707,7 @@ CREATE SEQUENCE IF NOT EXISTS public.%1$s
              :code  "/Coding/filters?code=date"
              :desc  "Filter results by creation date"
              :name  :_created
-             :path  [{:name     "created"
-                      :meta     true}]
+             :path  [{:field "created"}]
              :of    :List}}
   {:method  :POST
    :url     "/Queryp"
@@ -714,8 +715,7 @@ CREATE SEQUENCE IF NOT EXISTS public.%1$s
              :code  "/Coding/filters?code=date"
              :desc  "Filter result by last modified date"
              :name  :_modified
-             :path  [{:name     "modified"
-                      :meta     true}]
+             :path  [{:field "modified"}]
              :of    :List}}
   {:method  :POST
    :url     "/Queryp"
@@ -723,7 +723,7 @@ CREATE SEQUENCE IF NOT EXISTS public.%1$s
              :code      "/Coding/wellknown-params?code=sort"
              :desc      "Order results by specified queryp"
              :name      :_sort
-             :value     :_created
+             :default   :_created
              :of        :List}}
   ;; Creation of :Transaction REST queryps
   ;;
@@ -735,7 +735,8 @@ CREATE SEQUENCE IF NOT EXISTS public.%1$s
              :code  "/Coding/filters?code=url"
              :desc  "Filter Transactions by status"
              :name  :status
-             :path  [{:name     "status"}]
+             :path  [{:field "resource"}
+                     {:field "status"}]
              :of    :Transaction}}
   ;; Creation of :Queryp REST queryps
   ;;
@@ -748,7 +749,8 @@ CREATE SEQUENCE IF NOT EXISTS public.%1$s
              :code  "/Coding/filters?code=keyword"
              :desc  "Filter Queryps by name"
              :name  :name
-             :path  [{:name     "name"}]
+             :path  [{:field "resource"}
+                     {:field "name"}]
              :of    :Queryp}}
   {:method  :POST
    :url     "/Queryp"
@@ -756,7 +758,8 @@ CREATE SEQUENCE IF NOT EXISTS public.%1$s
              :code  "/Coding/filters?code=keyword"
              :desc  "Filter Queryps by type"
              :name  :of
-             :path  [{:name     "of"}]
+             :path  [{:field "resource"}
+                     {:field "of"}]
              :of    :Queryp}}
   ;; Creation of :Coding REST queryps
   ;;
@@ -768,9 +771,9 @@ CREATE SEQUENCE IF NOT EXISTS public.%1$s
              :code  "/Coding/filters?code=keyword"
              :desc  "Filter Coding by code"
              :name  :code
-             :path  [{:name         "codes"
-                      :collection   true}
-                     {:name         "code"}]
+             :path  [{:field "resource"}
+                     {:field "codes", :coll true}
+                     {:field "code"}]
              :of    :Coding}}
   ;; Creation of core :Coding list
   ;;

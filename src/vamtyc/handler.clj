@@ -110,8 +110,7 @@
          param-names (->> params first keys)
          queryps (db-queryps types param-names)
          fields (param/get-value params param/wkp-fields)
-         url (param/url req)
-         pg-query (query/make-pg-query queryps params url)
+         pg-query (query/make-pg-query queryps params)
          total (db-total (:total pg-query))
          entity (db-upsert :PgQuery (:hash pg-query) pg-query)]
      (-> (:from pg-query)
