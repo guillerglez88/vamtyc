@@ -9,7 +9,7 @@
                  "WHERE ((JSONB_EXTRACT_PATH_TEXT(resource, ?) IN (?, ?, ?)) "
                  "AND (JSONB_EXTRACT_PATH_TEXT(resource, ?) IN (?, ?))) "
                  "OR (JSONB_EXTRACT_PATH_TEXT(resource, ?) IS NOT NULL)")
-            "of" "List" "Routes" "*" "name" "_of" "_limit" "value"]
+            "of" "List" "Routes" "*" "name" "_of" "_limit" "default"]
 
            (sut/queryps-sql ["List" "Routes" "*" nil]
                             ["_of" "_limit"])))))

@@ -10,13 +10,13 @@
            (sut/queryp->param {:type :Queryp
                                :code "/Coding/wellknown-params?code=of"
                                :name :_of
-                               :value :List})))
+                               :default :List})))
     (is (= [{"_limit" 128}
             "/Coding/wellknown-params?code=limit&name=_limit"]
            (sut/queryp->param {:type :Queryp
                                :code "/Coding/wellknown-params?code=limit"
                                :name :_limit
-                               :value 128})))
+                               :default 128})))
     (is (= [{"_created" nil}
             "/Coding/filters?code=date&name=_created"]
            (sut/queryp->param {:type :Queryp
@@ -46,11 +46,11 @@
            (sut/queryps->param [{:type :Queryp
                                  :code "/Coding/wellknown-params?code=of"
                                  :name :_of
-                                 :value :List}
+                                 :default :List}
                                 {:type :Queryp
                                  :code "/Coding/wellknown-params?code=limit"
                                  :name :_limit
-                                 :value 128}
+                                 :default 128}
                                 {:type :Queryp
                                  :code "/Coding/filters?code=date"
                                  :name :_created}])))))

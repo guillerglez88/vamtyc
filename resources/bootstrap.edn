@@ -621,6 +621,15 @@ CREATE SEQUENCE IF NOT EXISTS public.%1$s
              :desc  "Reduce response payload by filtering properties"
              :name  :_fields
              :of    :*}}
+  {:method  :POST
+   :url     "/Queryp"
+   :body    {:type    :Queryp
+             :code    "/Coding/filters?code=date"
+             :desc    "Filter by creation date"
+             :name    :_created
+             :path    [{:field "created"}]
+             :default []
+             :of      :*}}
   ;; Creation of :Resource REST queryps
   ;;
   ;; ["?type=:keyword"]
@@ -683,7 +692,6 @@ CREATE SEQUENCE IF NOT EXISTS public.%1$s
              :code      "/Coding/wellknown-params?code=of"
              :desc      "Type of resource to search for"
              :name      :_of
-             :default   :List
              :of        :List}}
   {:method  :POST
    :url     "/Queryp"

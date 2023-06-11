@@ -10,7 +10,7 @@
         (from :Queryp)
         (where [:or [:and [:in [:jsonb_extract_path_text :resource "of"] of-list]
                           [:in [:jsonb_extract_path_text :resource "name"] names]]
-                    [:<> [:jsonb_extract_path_text :resource "value"] nil]])
+                    [:<> [:jsonb_extract_path_text :resource "default"] nil]])
         (sql/format))))
 
 (defn or-something [param-names]

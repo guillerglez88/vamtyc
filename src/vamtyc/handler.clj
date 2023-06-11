@@ -11,7 +11,8 @@
    [vamtyc.nav :as nav]
    [vamtyc.param :as param]
    [vamtyc.query :as query]
-   [vamtyc.trn :as trn]))
+   [vamtyc.trn :as trn]
+   [clojure.set :as set]))
 
 (def hdl-create      "/Coding/handlers?code=create")
 (def hdl-read        "/Coding/handlers?code=read")
@@ -23,9 +24,10 @@
 (defn make-params [req route db-queryps]
   (let [route-params (param/route->param route)
         req-params (param/req->param req)
+        of (param/get-value req-params param/wkp-of)
         type (param/get-value route-params param/wkp-type)
         param-names (->> req-params first keys)
-        queryps (db-queryps [type] param-names)
+        queryps (db-queryps [of type] param-names)
         queryp-params (param/queryps->param queryps)]
     (param/merge-param [route-params queryp-params req-params])))
 
@@ -106,16 +108,22 @@
        (search req route db-search db-total db-queryps db-upsert))))
   ([req route db-search db-total db-queryps db-upsert]
    (let [params (make-params req route db-queryps)
-         types (param/get-values params param/wkp-of param/wkp-type)
+         [of type] (param/get-values params param/wkp-of param/wkp-type)
+         [offset limit] (param/get-values params param/wkp-offset param/wkp-limit)
+         start (-> offset str Integer/parseInt)
+         count (-> limit str Integer/parseInt)
          param-names (->> params first keys)
-         queryps (db-queryps types param-names)
+         queryps (db-queryps (vector of type) param-names)
          fields (param/get-value params param/wkp-fields)
-         pg-query (query/make-pg-query queryps params)
-         total (db-total (:total pg-query))
-         entity (db-upsert :PgQuery (:hash pg-query) pg-query)]
-     (-> (:from pg-query)
-         (db-search (:page pg-query))
-         (nav/result-set total entity)
+         ignore-params (->> queryps (filter #(#{param/wkp-type param/wkp-of} (:code %))) (map #(-> % :name name)) (into #{}))
+         req-params (-> (keys (:params req)) hash-set (set/difference ignore-params) (#(select-keys (:params req) %)))
+         table (-> of (or type) keyword)
+         query (query/make-pg-query table req-params queryps)
+         total (db-total (:total query))
+         pgquery (db-upsert :PgQuery (:hash query) query)]
+     (-> (:from query)
+         (db-search (:page query))
+         (nav/result-set (param/url req) start count total (:url pgquery))
          (fields/select-fields fields)
          (response)))))
 

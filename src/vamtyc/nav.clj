@@ -5,11 +5,8 @@
 (defn nav-uri [url offset]
   (-> url (assoc-query :_offset offset) uri-str))
 
-(defn result-set [items total pg-query]
+(defn result-set [items url offset limit total query-link]
   (let [first 0
-        url (:origin pg-query)
-        offset (:offset pg-query)
-        limit (:limit pg-query)
         last (max first (- total limit))
         prev (max first (- offset limit))
         next (min last (+ offset limit))]
@@ -21,4 +18,4 @@
              :prev  (nav-uri url prev)
              :next  (nav-uri url next)
              :last  (nav-uri url last)}
-     :pgquery (:url pg-query)}))
+     :query query-link}))

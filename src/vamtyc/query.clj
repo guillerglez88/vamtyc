@@ -10,19 +10,16 @@
 (def flt-date     "/Coding/filters?code=date")
 
 (def coding-map
-  {flt-text     rq/flt-text
-   flt-keyword  rq/flt-keyword
-   flt-url      rq/flt-url
-   flt-number   rq/flt-number
-   flt-date     rq/flt-date})
+  {flt-text         rq/flt-text
+   flt-keyword      rq/flt-keyword
+   flt-url          rq/flt-url
+   flt-number       rq/flt-number
+   flt-date         rq/flt-date
+   param/wkp-offset rq/pag-offset
+   param/wkp-limit  rq/pag-limit
+   param/wkp-sort   rq/pag-sort})
 
-(defn search-query [table queryps params]
+(defn make-pg-query [table params queryps]
   (let [url-map (hash-map :from table :params params)
         rq-queryps (map #(assoc % :code (get coding-map (:code %))) queryps)]
     (rq/make-query url-map rq-queryps)))
-
-(defn make-pg-query [queryps params]
-  (let [[of type] (param/get-values params param/wkp-of param/wkp-type)
-        table (-> of (or type) keyword)]
-    (-> (search-query table queryps params)
-        (assoc :type :PgQuery))))
