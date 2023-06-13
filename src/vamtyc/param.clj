@@ -14,7 +14,7 @@
 
 (defn queryp->param [queryp]
   (let [key (-> queryp :name name)
-        val (:value queryp)
+        val (:default queryp)
         code (:code queryp)]
     [(hash-map key val)
      (str code "&name=" key)]))

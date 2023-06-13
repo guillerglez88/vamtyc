@@ -6,7 +6,6 @@
 (def wk-create-sequence   "/Coding/wellknown-ddl?code=create-sequence")
 
 (def tpl-param-res-type   "/Coding/ddl-params?code=res-type")
-
 (def tpl-param-seq-id     "/Coding/ddl-params?code=seq-id")
 (def tpl-param-seq-start  "/Coding/ddl-params?code=seq-start")
 (def tpl-param-seq-inc    "/Coding/ddl-params?code=seq-inc")
