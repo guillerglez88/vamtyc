@@ -1,8 +1,10 @@
 (ns vamtyc.handler
   (:require
+   [clojure.set :as set]
    [clojure.string :as str]
    [next.jdbc :as jdbc]
    [next.jdbc.sql :as sql]
+   [rest-query.core :as rq]
    [ring.util.response :refer [created header not-found response status]]
    [vamtyc.data.datasource :refer [ds]]
    [vamtyc.data.queryp :as queryp]
@@ -10,9 +12,7 @@
    [vamtyc.fields :as fields]
    [vamtyc.nav :as nav]
    [vamtyc.param :as param]
-   [vamtyc.query :as query]
-   [vamtyc.trn :as trn]
-   [clojure.set :as set]))
+   [vamtyc.trn :as trn]))
 
 (def hdl-create      "/Coding/handlers?code=create")
 (def hdl-read        "/Coding/handlers?code=read")
@@ -20,6 +20,28 @@
 (def hdl-delete      "/Coding/handlers?code=delete")
 (def hdl-search      "/Coding/handlers?code=search")
 (def hdl-not-found   "/Coding/handlers?code=not-found")
+
+(def flt-text     "/Coding/filters?code=text")
+(def flt-keyword  "/Coding/filters?code=keyword")
+(def flt-url      "/Coding/filters?code=url")
+(def flt-number   "/Coding/filters?code=number")
+(def flt-date     "/Coding/filters?code=date")
+(def wkp-limit    "/Coding/wellknown-params?code=limit")
+(def wkp-offset   "/Coding/wellknown-params?code=offset")
+(def wkp-sort     "/Coding/wellknown-params?code=sort")
+(def wkp-type     "/Coding/wellknown-params?code=type")
+(def wkp-of       "/Coding/wellknown-params?code=of")
+(def wkp-fields   "/Coding/wellknown-params?code=fields")
+
+(def coding-map
+  {flt-text     rq/flt-text
+   flt-keyword  rq/flt-keyword
+   flt-url      rq/flt-url
+   flt-number   rq/flt-number
+   flt-date     rq/flt-date
+   wkp-offset   rq/pag-offset
+   wkp-limit    rq/pag-limit
+   wkp-sort     rq/pag-sort})
 
 (defn make-params [req route db-queryps]
   (let [route-params (param/route->param route)
@@ -107,23 +129,34 @@
            db-total (fn [sql] (-> (sql/query tx sql) (first) (:count)))]
        (search req route db-search db-total db-queryps db-upsert))))
   ([req route db-search db-total db-queryps db-upsert]
-   (let [params (make-params req route db-queryps)
-         [of type] (param/get-values params param/wkp-of param/wkp-type)
-         [offset limit] (param/get-values params param/wkp-offset param/wkp-limit)
-         start (-> offset str Integer/parseInt)
-         count (-> limit str Integer/parseInt)
-         param-names (->> params first keys)
-         queryps (db-queryps (vector of type) param-names)
-         fields (param/get-value params param/wkp-fields)
-         ignore-params (->> queryps (filter #(#{param/wkp-type param/wkp-of} (:code %))) (map #(-> % :name name)) (into #{}))
-         req-params (-> (keys (:params req)) hash-set (set/difference ignore-params) (#(select-keys (:params req) %)))
-         table (-> of (or type) keyword)
-         query (query/make-pg-query table req-params queryps)
+   (let [param-names (-> req :params keys)
+         route-type (->> (:path route) (filter #(-> % :code (= wkp-type))) (map :value) (first))
+         queryps (-> route-type vector (db-queryps param-names))
+
+         of-queryp (->> queryps (filter #(-> % :code (= wkp-of))) (first))
+         fields-queryp (->> queryps (filter #(-> % :code (= wkp-fields))) (first))
+         offset-queryp (->> queryps (filter #(-> % :code (= wkp-offset))) (first))
+         limit-queryp (->> queryps (filter #(-> % :code (= wkp-limit))) (first))
+
+         of (-> req :params (get (:name of-queryp)))
+         fields (-> req :params (get (:name fields-queryp)))
+         offset (-> req :params (get (:name offset-queryp)) (or (:default offset-queryp)) str (Integer/parseInt))
+         limit (-> req :params (get (:name limit-queryp)) (or (:default limit-queryp)) str (Integer/parseInt))
+
+         keep-params (set/difference (apply hash-set (keys (:params req))) (hash-set (:name of-queryp)))
+         req-params (select-keys (:params req) keep-params)
+
+         table (-> of (or route-type) keyword)
+         xparams (rq/expand-params req-params)
+         cqueryps (map #(assoc % :code (get coding-map (:code %))) queryps)
+         xqueryps (rq/expand-queryps cqueryps)
+
+         query (rq/make-query table xparams xqueryps)
          total (db-total (:total query))
          pgquery (db-upsert :PgQuery (:hash query) query)]
      (-> (:from query)
          (db-search (:page query))
-         (nav/result-set (param/url req) start count total (:url pgquery))
+         (nav/result-set (param/url req) offset limit total (:url pgquery))
          (fields/select-fields fields)
          (response)))))
 

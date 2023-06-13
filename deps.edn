@@ -15,7 +15,7 @@
         lambdaisland/uri                    {:mvn/version "1.13.95"}
         clj-http/clj-http                   {:mvn/version "3.12.3"}
         ring-cors/ring-cors                 {:mvn/version "0.1.13"}
-        com.github.guillerglez88/rest-query {:git/tag "v0.1.0-alpha.5", :git/sha "a308277"}}
+        com.github.guillerglez88/rest-query {:git/tag "v0.1.0-alpha.8", :git/sha "802b71f"}}
  ;;
  ;; cmd:
  ;;
